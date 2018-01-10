@@ -23,7 +23,7 @@ class App extends React.Component<StoreState & DispatchProps, {}> {
       <div className="App">
         <div className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
-          <h2>Welcome to React</h2>
+          <h2>Mjolnir</h2>
         </div>
          <Object 
           description={this.props.description}      
