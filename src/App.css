@@ -1,16 +1,20 @@
 .App {
+  grid-area: App;
+  grid-column: 1/2;
+  order: 0;
   text-align: center;
 }
 
-.App-logo {
+/* .App-logo {
   animation: App-logo-spin infinite 20s linear;
   height: 80px;
-}
+} */
 
 .App-header {
-  background-color: #222;
-  height: 150px;
-  padding: 20px;
+  background-color: rgba(133, 125, 125, 0.315);
+  text-align: center;
+  /* height: 150px; */
+  padding: 50px;
   color: white;
 }
 
@@ -22,3 +26,32 @@
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
+
+.gui{
+  display: grid;
+  height: 100%;
+  grid-template-columns: 65% 33% 0% 0%;
+  grid-gap: .5%;
+  /* grid-template-rows: 70% 30% 0% 0%; */
+  grid-template-areas: 
+    "chat App";
+}
+
+.message {
+  color: #222;
+  background-color: aliceblue
+}
+
+.user {
+  color: rgb(223, 221, 213);
+  background-color: rgb(73, 73, 172)
+}
+
+.chat {
+  grid-area: chat;
+  grid-column: 2/3;
+  background-color: mintcream;
+  order:1;
+  padding: 20px;
+}
+

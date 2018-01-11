@@ -1,17 +1,16 @@
 import * as React from 'react';
-type ObjectProps = {
-    description: string,
-    feature: () => {},
-    object: () => {}
-};
+import { MouseEvent } from 'react';
 
-const Object = ({description, feature, object}: ObjectProps) => (
-    
-    <div className="App-header App">
+interface ObjectProps {
+    description: string;
+    clicked: (e: MouseEvent<HTMLButtonElement>) => {};
+}
+
+const Object = ({description, clicked}: ObjectProps): JSX.Element => (
+    <div className="App">
         <h1>Description: {description}</h1>
-        <button onClick={feature}>feature</button>
-        <button onClick={object}>object</button>
+        <button onClick={clicked}>feature</button>
+        <button onClick={clicked}>object</button>
     </div>
 );
-
 export default Object;

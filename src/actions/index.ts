@@ -1,23 +1,20 @@
-import * as constants from '../constants';
+import { type } from '../constants';
+import { MessageInterface } from '../interfaces';
+import { MouseEvent } from 'react';
 
-export interface ClickedOnObject {
-    type: constants.CLICKED_ON_OBJECT;
+export interface ClickedOn {
+    type: type.CLICKED;
 }
 
-export interface ClickedOnFeature {
-    type: constants.CLICKED_ON_FEATURE;
+interface Payload {
+    payload: MessageInterface;
 }
 
-export type ObjectClick = ClickedOnObject | ClickedOnFeature;
+export type ObjectClick = ClickedOn & Payload;
 
-export function clickedOnObject(): ClickedOnObject {
+export function clicked(e: MouseEvent<HTMLButtonElement>): ClickedOn & Payload {
     return {
-        type: constants.CLICKED_ON_OBJECT
-    };
-}
-
-export function clickedOnFeature(): ClickedOnFeature {
-    return {
-        type: constants.CLICKED_ON_FEATURE
+        type: type.CLICKED,
+        payload : {author: 'User', text: `clicked on ${e.currentTarget.innerText}`}
     };
 }

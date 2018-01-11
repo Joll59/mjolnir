@@ -4,14 +4,15 @@ import App from './App';
 import registerServiceWorker from './registerServiceWorker';
 import './index.css';
 
-import interactReducer from './reducers/interactReducer';
+import clickReducer from './reducers/clickReducer';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
 
-const store = createStore(interactReducer);
+const store = createStore(clickReducer);
+
 ReactDOM.render(
   <Provider store={store}>
-  <App /> 
+    <App /> 
   </Provider>,
   document.getElementById('root') as HTMLElement
 );

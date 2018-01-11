@@ -1,50 +1,47 @@
 import * as React from 'react';
 import './App.css';
 import Object from './components/object';
-import { clickedOnObject, clickedOnFeature } from './actions/index';
+import { clicked } from './actions/index';
 
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
-import { StoreState } from './types/index';
+import { StoreState } from './interfaces/index';
+import Chat from './components/mockChat';
+import { MouseEvent } from 'react';
 
-const logo = require('./logo.svg');
-
-export type DispatchProps = {
-  objectClicked: () => {};
-  featureClicked: () => {}
-};
+export interface DispatchProps {
+  clicked: (e: MouseEvent<HTMLButtonElement>) => {};
+}
 
 class App extends React.Component<StoreState & DispatchProps, {}> {
-  constructor (props:any) {
+  constructor (props: any) {
     super(props);
   }
-  render() {
+ public render(): JSX.Element {
     return (
-      <div className="App">
-        <div className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h2>Mjolnir</h2>
+      <div>
+        <h2 className="App-header">Mjolnir</h2>
+        <div className="gui">
+          <Object
+            description={this.props.description}
+            clicked={(e: MouseEvent<HTMLButtonElement>) => this.props.clicked(e)} 
+          />
+          <Chat messageList={this.props.messageList}/>
         </div>
-         <Object 
-          description={this.props.description}      
-          feature={() => this.props.featureClicked()} 
-          object={() => this.props.objectClicked()} 
-         />
       </div>
     );
   }
 }
 
 const actionCreator = {
-  objectClicked: clickedOnObject,
-  featureClicked: clickedOnFeature
+    clicked
 };
 const mapDispatchToProps = (dispatch: Dispatch<() => void>) => {
   return bindActionCreators(actionCreator, dispatch);
 };
 
 const mapStateToProps = (state: StoreState) => {
-  return { description: state.description };
+  return { description: state.description, messageList: state.messageList };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(App as any);
