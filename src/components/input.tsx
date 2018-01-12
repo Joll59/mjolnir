@@ -1,41 +1,38 @@
-import * as React from "react";
+import * as React from 'react';
 
-export default class Input extends React.Component {
+class Input extends React.Component<{}, {}> {
 
     constructor() {
-        super();
+        super({});
         this.state = {
             inputActive: false
         };
     }
 
-    handleEntry(event) {
+    handleEntry(event: KeyboardEvent) {
         if (event.keyCode === 13 && !event.shiftKey) {
             this.submitEntry(event);
           }
     }
 
-    submitEntry(event) {
+    submitEntry(event: any) {
         event.preventDefault();
+    }
+
+    setInputActivity() {
+        this.setState({ inputActive: !!true });
     }
 
     render() {
         return (
-            <form className={`${(this.state.inputActive ? 'active' : '')}`}>
-                <div
-                    onFocus={() => this.setState({ inputActive: true });}
-                    onBlur={() => { this.setState({ inputActive: false }); }}
-                    ref={(e) => { this.userInput = e; }}
-                    onKeyDown={this.handleEntry}
-                    contentEditable="true"
-                    placeholder="Write a reply..."
-                    className=""/>
-            
-                {/* <div>
-                    <div/>
-                </div> */}
+            <form>
+                <div 
+                    onFocus={this.setInputActivity} 
+                    onBlur={this.setInputActivity}
+                />
             </form>
-
         );
     }
 }
+
+export default Input;
