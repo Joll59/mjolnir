@@ -13,7 +13,7 @@ const Chat = ( {messageList}: ChatProps) => {
                 {messageList.map((message, index) => {
                     return <Message key={index} {...message}/>;
                 })}
-            <Input />    
+                <Input />    
             </div>
         );
 };
