@@ -1,20 +1,19 @@
 import * as React from 'react';
 import './App.css';
 import Object from './components/object';
-import { clicked } from './actions/index';
-
+import { handleUserInput } from './actions/index';
 import { connect } from 'react-redux';
-import { bindActionCreators, Dispatch } from 'redux';
+import { bindActionCreators, Dispatch, AnyAction } from 'redux';
 import { StoreState } from './interfaces/index';
 import Chat from './components/mockChat';
-import { MouseEvent } from 'react';
+import { MouseEvent, SyntheticEvent } from 'react';
 
 export interface DispatchProps {
-  clicked: (e: MouseEvent<HTMLButtonElement>) => {};
+  handleUserInput: (e: SyntheticEvent<Element>) => {};
 }
 
-class App extends React.Component<StoreState & DispatchProps, {}> {
-  constructor (props: any) {
+class App extends React.Component<StoreState & DispatchProps, StoreState> {
+  constructor (props: StoreState & DispatchProps) {
     super(props);
   }
  public render(): JSX.Element {
@@ -24,9 +23,12 @@ class App extends React.Component<StoreState & DispatchProps, {}> {
         <div className="gui">
           <Object
             description={this.props.description}
-            clicked={(e: MouseEvent<HTMLButtonElement>) => this.props.clicked(e)} 
+            clicked={(e: MouseEvent<HTMLButtonElement>) => this.props.handleUserInput(e)} 
           />
-          <Chat messageList={this.props.messageList}/>
+          <Chat 
+            messageList={this.props.messageList} 
+            handleUserInput={(e: SyntheticEvent<Element>) => this.props.handleUserInput(e)}
+          />
         </div>
       </div>
     );
@@ -34,9 +36,9 @@ class App extends React.Component<StoreState & DispatchProps, {}> {
 }
 
 const actionCreator = {
-    clicked
+  handleUserInput
 };
-const mapDispatchToProps = (dispatch: Dispatch<() => void>) => {
+const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => {
   return bindActionCreators(actionCreator, dispatch);
 };
 

@@ -3,15 +3,11 @@ import * as ReactDOM from 'react-dom';
 import App from './App';
 import registerServiceWorker from './registerServiceWorker';
 import './index.css';
-
-import clickReducer from './reducers/clickReducer';
 import { Provider } from 'react-redux';
-import { createStore } from 'redux';
-
-const store = createStore(clickReducer);
+import  reduxStore from './createReduxStore';
 
 ReactDOM.render(
-  <Provider store={store}>
+  <Provider store={reduxStore}>
     <App /> 
   </Provider>,
   document.getElementById('root') as HTMLElement

@@ -12,7 +12,8 @@ interface Payload {
 
 export type ObjectClick = ClickedOn & Payload;
 
-export function clicked(e: MouseEvent<HTMLButtonElement> | KeyboardEvent<HTMLInputElement>): ClickedOn & Payload {
+export function handleUserInput(
+    e: MouseEvent<HTMLButtonElement> | KeyboardEvent<HTMLInputElement>): ObjectClick {
     return {
         type: type.CLICKED,
         payload : {author: 'User', text: `${e.currentTarget.innerText || e.currentTarget.value}`}
