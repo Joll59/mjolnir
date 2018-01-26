@@ -5,7 +5,7 @@ import { handleUserInput } from './actions/index';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch, AnyAction } from 'redux';
 import { StoreState } from './interfaces/index';
-import Chat from './components/mockChat';
+import Chat from './components/chat';
 import { MouseEvent, SyntheticEvent } from 'react';
 
 export interface DispatchProps {
