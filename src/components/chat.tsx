@@ -14,7 +14,9 @@ const Chat = ( {messageList, handleUserInput}: ChatProps) => {
                 {messageList.map((message, index) => {
                     return <Message key={index} {...message}/>;
                 })}
-                <div className="chat-input"><Input userInput={handleUserInput}/>    </div>
+                <div className="chat-input">
+                    <Input userInput={handleUserInput}/>
+                </div>
             </div>
         );
 };

@@ -1,30 +1,37 @@
 import * as React from 'react';
 import './App.css';
-import Object from './components/object';
+import Chat from './components/chat';
+import HeadsUpDisplay from './components/HUD';
 import { handleUserInput } from './actions/index';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch, AnyAction } from 'redux';
 import { StoreState } from './interfaces/index';
-import Chat from './components/chat';
-import { MouseEvent, SyntheticEvent } from 'react';
+import { /*MouseEvent,*/ SyntheticEvent } from 'react';
+// import GameObject from './components/gameObject';
+import Player from './models/player';
 
 export interface DispatchProps {
   handleUserInput: (e: SyntheticEvent<Element>) => {};
 }
-
-class App extends React.Component<StoreState & DispatchProps, StoreState> {
-  constructor (props: StoreState & DispatchProps) {
+type Props = StoreState & DispatchProps;
+class App extends React.Component<Props, StoreState> {
+  constructor (props: Props) {
     super(props);
   }
- public render(): JSX.Element {
+
+  public render(): JSX.Element {
+    
+    const testPlayer: Player = new Player( undefined, undefined, 100);
+    // testPlayer.health -= 95;
     return (
       <div>
-        <h2 className="App-header">Mjolnir</h2>
+        {/*<h2 className="App-header">Mjolnir</h2> */}
         <div className="gui">
-          <Object
+        <HeadsUpDisplay player={testPlayer}/>
+          {/*<GameObject
             description={this.props.description}
             clicked={(e: MouseEvent<HTMLButtonElement>) => this.props.handleUserInput(e)} 
-          />
+    /> */}
           <Chat 
             messageList={this.props.messageList} 
             handleUserInput={(e: SyntheticEvent<Element>) => this.props.handleUserInput(e)}

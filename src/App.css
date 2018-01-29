@@ -27,21 +27,22 @@ body > #root > div {
 
 
 .gui{
-  /* display: grid; */
+  display: grid;
   height: 100%;
-  /* grid-template-columns: 75% 25%;
-  grid-template-rows: 80% 20%; */
-  /* grid-gap: .5%;
+  grid-template-columns: 75% 25%;
+  grid-template-rows: 80% 20%; 
+  grid-gap: .5%;
   grid-template-areas: 
-    "chat App"; */
+    "chat App";
 }
 
 .App {
-  /* grid-column: 1/2; */
+  grid-column: 1/2;
   /* order: 0; */
+}
+.center{
   text-align: center;
 }
-
 
 
 .message {
@@ -65,9 +66,9 @@ body > #root > div {
   grid-
 } */
 
-/* .chat-input {
+.chat-input {
 grid-row: 2;
-} */
+}
 
 /* 
 *heads p display CSS:
@@ -96,12 +97,6 @@ grid-row: 2;
 
 /* 
 
-<meter id="health" value="100" min="0" low="25" optimum="80" high ="50" max="100"> Health </meter>
-
-
-let health = document.getElementById("health")
-health.value -= 31
-
 use meter to represent health bar in UI component
 
 
@@ -109,34 +104,34 @@ read this if confused http://blog.teamtreehouse.com/use-meter-progress-elements
 */
 
 meter::-webkit-meter-bar {
-  -webkit-appearance: none; 
+  /* -webkit-appearance: none;  */
     background: #EEE;
     box-shadow: 1px 2px 3px rgba(255,255,255,1) inset;
     border-radius: 5px;
-    width: 30vw;
-    height: 15vh;
+    width: 20vw;
+    height: 5vh;
 }
 
 
 meter::-webkit-meter-optimum-value {
     background: #86CC00; /* Green */
     border-radius: 5px;
-    width: 30vw;
-    height: 15vh;
+    width: 20vw;
+    height: 5vh;
 }
 
 meter::-webkit-meter-suboptimum-value {
     background: #FFDB1A; /* Yellow */
     border-radius: 5px;
-    width: 30vw;
-    height: 15vh;
+    width: 20vw;
+    height: 5vh;
 }
 
 meter::-webkit-meter-even-less-good-value {
     background: #CC4600; /* Red */
     border-radius: 5px;
-    width: 30vw;
-    height: 15vh;
+    width: 20vw;
+    height: 5vh;
 }
 
 meter {

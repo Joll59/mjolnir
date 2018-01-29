@@ -6,11 +6,11 @@ interface ObjectProps {
     clicked: (e: MouseEvent<HTMLButtonElement>) => {};
 }
 
-const Object = ({description, clicked}: ObjectProps): JSX.Element => (
+const GameObject = ({description, clicked}: ObjectProps): JSX.Element => (
     <div className="App">
         <h1>Description: {description}</h1>
         <button onClick={clicked}>feature</button>
         <button onClick={clicked}>object</button>
     </div>
 );
-export default Object;
+export default GameObject;

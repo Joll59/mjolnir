@@ -1,8 +1,15 @@
 import { getRandomInt } from '../../helpers/random';
 
+enum ItemType {
+  weapon,
+  armor,
+  chest,
+  key,
+}
+
 interface Item {
     id: number;
-    type: string;
+    type: ItemType;
     name: string;
     description?: string;
     equipable?: boolean;
@@ -18,14 +25,10 @@ interface Armor extends Item {
   protection: number;
 }
 
-interface Entity {
-  name: string;
-  type: string;
-  health: number;
-  initialHealth: number;
-  strength: number;
-  experience?: number;
-  level: number;
+export interface Entity {
+  name?: string;
+  type?: string;
+  level?: number;
   inventory?: Item[]; // should all entities have an inventory?
   weapon?: Weapon; 
   armor?: Armor;
@@ -47,35 +50,34 @@ class Player implements Entity {
   levelUpThreshold: number;
   location: { x: number, y: number };
 
-  constructor(name: string, type: string, health?: number, strength?: number) {
-    this.name = name || 'Entity';
-    this.type = type || 'Entity';
+  constructor(name: string= 'New Player', type: string = 'Player', health?: number, strength?: number) {
+    this.name = name;
+    this.type = type;
     this.health = health || getRandomInt(0, 250);
     this.initialHealth = this.health;
     this.strength = strength || getRandomInt(10, 120);
     this.experience = 0;
     this.level = 0;
     this.levelUpThreshold = 100;
-    this.inventory = [];
     this.weapon = {
-        id: 1, power: Math.floor(Math.random() * 10) + 5, type: 'weapon', name: 'fists'};
+      id: 1, power: Math.floor(Math.random() * 10) + 5, type: ItemType.weapon, name: 'fists', equipable: true};
+    this.armor = {
+      id: 1 , protection: getRandomInt(0, 5), type: ItemType.armor, name : 'basic_clothes', equipable: true}; 
+    this.inventory = [this.weapon, this.armor];
+    this.setLocation();
   }
 
   pickUp = (item: Item) => {
     this.inventory.push(item);
   }
 
-  setStartingItems = () => {
-      this.weapon = {id: 10 * Math.random(), power: getRandomInt(5, 45), type: 'weapon', name: 'enemyWeapon'};
-      // in future realease grab the weapon from a pool of weapons, randomly. 
-  }
-
-  setLocation(x: number, y: number) {
+  setLocation(x: number = 0, y: number= 0) {
     this.location = { x, y };
   }
 
   // attack = (enemy: Entity) => {
-  //   const damage = getRandomInt(this.strength / 2, this.weapon.power + this.strength);
+  //   // arg here should be another entity with the receivedDamage function below.
+  //   const damage = getRandomInt(this.strength / 2, this.weapon.power + this.strength) - this.armor.protection;
   //   enemy.receiveDamage(damage);
   //   return {
   //     who: this,
@@ -86,9 +88,19 @@ class Player implements Entity {
   //   };
   // }
   
-  // receiveDamage = (damage: number) => {
-  //   this.health -= damage;
-  // }
+  receiveDamage = (damage: number) => {
+    this.health -= damage;
+  }
+
+  equip = (item: Weapon & Armor) => {
+    if (item.equipable) {
+      if (item.type === ItemType.armor) {
+        this.armor = item;
+      } else if (item.type === ItemType.weapon) {
+        this.weapon = item;
+      }
+    }
+  }
 
   isDead = (): boolean => {
     return this.health <= 0 ? true : false;
