@@ -1,39 +1,5 @@
-import { getRandomInt } from '../../helpers/random';
-
-enum ItemType {
-  weapon,
-  armor,
-  chest,
-  key,
-}
-
-interface Item {
-    id: number;
-    type: ItemType;
-    name: string;
-    description?: string;
-    equipable?: boolean;
-    questItem?: boolean;
-    action?: string;
-}
-
-interface Weapon extends Item {
-    power: number;
-}
-
-interface Armor extends Item {
-  protection: number;
-}
-
-export interface Entity {
-  name?: string;
-  type?: string;
-  level?: number;
-  inventory?: Item[]; // should all entities have an inventory?
-  weapon?: Weapon; 
-  armor?: Armor;
-  location: { x: number, y: number, z?: number };
-}
+import { getRandomInt } from '../helpers/random';
+import { Item, ItemType, Entity, Armor, Weapon } from '../types'; 
 
 class Player implements Entity {
   name: string;
@@ -50,19 +16,32 @@ class Player implements Entity {
   levelUpThreshold: number;
   location: { x: number, y: number };
 
-  constructor(name: string= 'New Player', type: string = 'Player', health?: number, strength?: number) {
+  constructor(
+    name: string= 'New Player', 
+    type: string = 'Player', 
+    health: number= getRandomInt(0, 250), 
+    strength: number= getRandomInt(10, 120)
+  ) {
     this.name = name;
     this.type = type;
-    this.health = health || getRandomInt(0, 250);
+    this.health = health;
     this.initialHealth = this.health;
-    this.strength = strength || getRandomInt(10, 120);
+    this.strength = strength;
     this.experience = 0;
     this.level = 0;
     this.levelUpThreshold = 100;
     this.weapon = {
-      id: 1, power: Math.floor(Math.random() * 10) + 5, type: ItemType.weapon, name: 'fists', equipable: true};
+      id: 1, 
+      power: Math.floor(Math.random() * 10) + 5, 
+      type: ItemType.weapon, 
+      name: 'fists'
+    };
     this.armor = {
-      id: 1 , protection: getRandomInt(0, 5), type: ItemType.armor, name : 'basic_clothes', equipable: true}; 
+      id: 1 , 
+      protection: getRandomInt(0, 5), 
+      type: ItemType.armor, 
+      name : 'basic_clothes'
+    }; 
     this.inventory = [this.weapon, this.armor];
     this.setLocation();
   }
@@ -76,7 +55,7 @@ class Player implements Entity {
   }
 
   // attack = (enemy: Entity) => {
-  //   // arg here should be another entity with the receivedDamage function below.
+  //  arg here should be another entity with the receivedDamage function below.
   //   const damage = getRandomInt(this.strength / 2, this.weapon.power + this.strength) - this.armor.protection;
   //   enemy.receiveDamage(damage);
   //   return {
@@ -92,13 +71,19 @@ class Player implements Entity {
     this.health -= damage;
   }
 
-  equip = (item: Weapon & Armor) => {
-    if (item.equipable) {
-      if (item.type === ItemType.armor) {
+  useItem = (item: Item & Weapon & Armor) => {
+    switch (item.type) {
+      case ItemType.armor:
         this.armor = item;
-      } else if (item.type === ItemType.weapon) {
+        break;
+      case ItemType.weapon:
         this.weapon = item;
-      }
+        break;
+      case ItemType.health:
+        this.health += item.power;
+        break;  
+      default:
+        break;
     }
   }
 

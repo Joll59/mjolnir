@@ -1,6 +1,10 @@
-import { createStore } from 'redux';
-import clickReducer from './reducers/clickReducer';
+import { createStore, combineReducers } from 'redux';
+import { messageReducer } from './reducers/messageReducer';
 
-const reduxStore = createStore(clickReducer);
+const rootReducer = combineReducers({
+    message: messageReducer
+});
+
+const reduxStore = createStore(rootReducer);
 
 export default reduxStore;

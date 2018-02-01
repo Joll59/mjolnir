@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { MessageInterface } from '../interfaces/index';
+import { MessageInterface } from '../types';
 
 interface LocalState {
     inputActive: boolean;

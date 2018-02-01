@@ -1,6 +1,6 @@
 import * as React from 'react';
 import Message from './message';
-import { MessageInterface } from '../interfaces/index';
+import { MessageInterface } from '../types';
 import Input from './input';
 import { DispatchProps } from '../App';
 
@@ -8,7 +8,7 @@ interface ChatProps extends DispatchProps {
     messageList: MessageInterface[];
 }
 
-const Chat = ( {messageList, handleUserInput}: ChatProps) => {
+export const Chat = ( {messageList, handleUserInput}: ChatProps) => {
         return (
             <div className="chat">
                 {messageList.map((message, index) => {
@@ -20,5 +20,3 @@ const Chat = ( {messageList, handleUserInput}: ChatProps) => {
             </div>
         );
 };
-
-export default Chat;
