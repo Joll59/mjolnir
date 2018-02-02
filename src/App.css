@@ -1,0 +1,158 @@
+
+/* .App-logo {
+  animation: App-logo-spin infinite 20s linear;
+  height: 80px;
+} */
+
+body > #root > div {
+  height: 80vh;
+}
+
+.App-header {
+  background-color: rgba(206, 100, 100, 0.541);
+  text-align: center;
+  /* height: 150px; */
+  padding: 50px;
+  color: white;
+}
+
+.App-intro {
+  font-size: large;
+}
+
+/* @keyframes App-logo-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+} */
+
+
+.gui{
+  display: grid;
+  height: 100%;
+  grid-template-columns: 75% 25%;
+  grid-template-rows: 80% 20%; 
+  grid-gap: .5%;
+  grid-template-areas: 
+    "App App chat";
+}
+
+.App {
+  grid-column: 1/2;
+  /* order: 0; */
+}
+.center{
+  text-align: center;
+}
+
+
+.message {
+  color: #222;
+  background-color: aliceblue
+}
+
+.user {
+  color: rgb(223, 221, 213);
+  background-color: rgb(73, 73, 172)
+}
+
+.chat {
+  /* display: grid; */
+  /* grid-column: 2/3; */
+  background-color: rgb(163, 198, 212);
+  /* order:1; */
+  padding: 20px;
+}
+/* .chat-text-area{
+  grid-
+} */
+
+.chat-input {
+grid-row: 2;
+}
+
+/* 
+*heads p display CSS:
+*/
+
+/* HEALTH  BAR */
+
+@-webkit-keyframes flash {
+  0% { opacity: 1; } 
+  50% { opacity: .5; } 
+  100% { opacity: 1; }
+} 
+
+@keyframes flash {
+	0% { opacity: 1; } 
+	50% { opacity: .5; } 
+	100% { opacity: 1; }
+}
+
+/* apply class to health bar at low helath */
+
+.flash{
+  -webkit-animation: flash ease-in-out 3s infinite alternate;
+	  animation: flash ease-in-out 3s infinite alternate;
+}
+
+/* 
+
+use meter to represent health bar in UI component
+
+
+read this if confused http://blog.teamtreehouse.com/use-meter-progress-elements
+*/
+
+meter::-webkit-meter-bar {
+  /* -webkit-appearance: none;  */
+    background: #EEE;
+    box-shadow: 1px 2px 3px rgba(255,255,255,1) inset;
+    border-radius: 5px;
+    width: 20vw;
+    height: 5vh;
+}
+
+
+meter::-webkit-meter-optimum-value {
+    background: #86CC00; /* Green */
+    border-radius: 5px;
+    width: 20vw;
+    height: 5vh;
+}
+
+meter::-webkit-meter-suboptimum-value {
+    background: #FFDB1A; /* Yellow */
+    border-radius: 5px;
+    width: 20vw;
+    height: 5vh;
+}
+
+meter::-webkit-meter-even-less-good-value {
+    background: #CC4600; /* Red */
+    border-radius: 5px;
+    width: 20vw;
+    height: 5vh;
+}
+
+meter {
+    /* For Firefox */
+    background: #EEE;
+    box-shadow: 0 2px 3px rgba(0,0,0,0.2) inset;
+    border-radius: 3px;
+}
+
+meter::-moz-meter-bar {
+    border-radius: 3px;
+}
+
+meter:-moz-meter-optimum::-moz-meter-bar {
+    background: #86CC00;
+}
+
+meter:-moz-meter-sub-optimum::-moz-meter-bar {
+    background: #FFDB1A;
+}
+
+meter:-moz-meter-sub-sub-optimum::-moz-meter-bar {
+    background: #CC4600;
+}
