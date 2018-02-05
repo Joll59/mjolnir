@@ -1,17 +1,16 @@
-// import { Entity } from '../types'; 
 
-// export default class Room {
-//     entities: Array<Entity>;
+const createRoomGrid = () => {
+    let grid: Array<{}> = [];
 
-//     constructor(entities: Entity[] /* takes an array of objects one of which has to be a door maybe*/) {
-//         this.entities = entities;
-//     }
-
-//     render() {
-//         this.entities.map(entity => {
-//             return entity;
-//             /// need some logic to render each object/property. 
-//         });
-//     }
-
-// }
+    for (let i = 0; i < 5; i++) {
+        grid.push([]);
+        for (let j = 0; j < 5; j++) {
+            if ( j === 4 && i === 0 ) {
+                 grid[i][j] = {id: [i, j], type: 'door'};
+            } else {
+                grid[i][j] = { id: [i, j], type: 'floor'};
+            }
+        }
+    }
+    return grid;
+}; 

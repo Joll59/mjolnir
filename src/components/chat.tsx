@@ -2,10 +2,10 @@ import * as React from 'react';
 import Message from './message';
 import { MessageInterface } from '../types';
 import Input from './input';
-import { DispatchProps } from '../App';
 
-interface ChatProps extends DispatchProps {
+interface ChatProps {
     messageList: MessageInterface[];
+    handleUserInput: (e: React.SyntheticEvent<Element>) => {};
 }
 
 export const Chat = ( {messageList, handleUserInput}: ChatProps) => {

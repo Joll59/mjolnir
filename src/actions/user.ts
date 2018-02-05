@@ -10,12 +10,3 @@ export const handleUserInput = (e: MouseEvent<HTMLButtonElement> | KeyboardEvent
         }
     };
 };
-
-export const handleObjectClick = () => {
-    return {
-        type: actionTypes.clicked,
-        payload: {
-
-        } 
-    };
-};

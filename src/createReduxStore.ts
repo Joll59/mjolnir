@@ -1,8 +1,10 @@
 import { createStore, combineReducers } from 'redux';
-import { messageReducer } from './reducers/messageReducer';
+import { MessageReducer } from './reducers/message';
+import { PlayerReducer } from './reducers/player';
 
 const rootReducer = combineReducers({
-    message: messageReducer
+    message: MessageReducer,
+    player: PlayerReducer
 });
 
 const reduxStore = createStore(rootReducer);

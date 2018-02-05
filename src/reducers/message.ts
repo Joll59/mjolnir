@@ -14,9 +14,10 @@ const InitialState: MessageState = {
     ]
 };
 
-export const messageReducer: Reducer<MessageState> = (
+export const MessageReducer: Reducer<MessageState> = (
     state = InitialState, 
-    action: AnyAction) => {
+    action: AnyAction
+) => {
     switch (action.type) {
         case actionTypes.clicked:
             return {

@@ -1,15 +1,37 @@
-import Player from '../models/player';
+// VIEW/REACT TYPES
+
+export type StoreState = {
+    message: MessageState;
+    item?: Item;
+    player?: PlayerState;
+};
 
 export type MessageState = {
     description: string;
     messageList: MessageInterface[];
 };
 
-export type StoreState = {
-    message: MessageState;
-    item?: Item;
-    player?: Player;
+export type MessageInterface = {
+    author: string;
+    text: string;
 };
+
+export enum actionTypes {
+    clicked = 'CLICKED'
+}
+
+export enum playerAction {
+    pickUpItem = 'PICK_UP_ITEM',
+    dropItem = 'DROP_ITEM',
+    useItem = 'USE_ITEM',
+    setLocation = 'SET_LOCATION',
+    attack = 'ATTACK',
+    receiveDamage = 'RECEIVE_DAMAGE',
+    isDead = 'IS_DEAD',
+    gainExperience = 'GAIN_EXPERIENCE',
+}
+
+// GAME LOGIC TYPES
 
 export enum ItemType {
     weapon,
@@ -39,23 +61,26 @@ export interface Armor extends Item {
 
 export interface Entity {
     name?: string;
-    type?: string;
+    type: string;
     level?: number;
     inventory?: Item[]; // should all entities have an inventory?
     weapon?: Weapon;
     armor?: Armor;
-    location: { x: number, y: number, z?: number };
+    location?: { x: number, y: number, z?: number };
 }
 
-export type ChatState = {
-    messageList: MessageInterface[];
-};
-
-export type MessageInterface = {
-    author: string;
-    text: string;
-};
-
-export enum actionTypes {
-    clicked = 'CLICKED'
+export interface PlayerState extends Entity {
+    name: string;
+    type: string;
+    health: number;
+    initialHealth: number;
+    strength: number;
+    experience: number;
+    level: number;
+    inventory: Item[];
+    weapon: Weapon; 
+    // consider individual interfaces for weapon and armor both extending item, so you can use power/protection.
+    armor: Armor;
+    levelUpThreshold: number;
+    location: { x: number, y: number };
 }
