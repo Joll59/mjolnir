@@ -7,7 +7,7 @@ import { setPlayerLocation, pickUp, dropItem } from './actions/player';
 import { StoreState, Item } from './types/index';
 import { Chat, HeadsUpDisplay as HUD, TestButton } from './components';
 
-export interface DispatchProps {
+interface DispatchProps {
   handleUserInput: (e: React.SyntheticEvent<Element>) => {};
   pickUp: (Item: Item) => {};
   dropItem: (Item: Item) => {};
@@ -19,7 +19,7 @@ type Props = StoreState & DispatchProps;
 class App extends React.Component<Props, StoreState> {
 
   public render(): JSX.Element {
-    let { handleUserInput, setPlayerLocation,pickUp,dropItem } = this.props;
+    let { handleUserInput, setPlayerLocation,pickUp,dropItem, player, message } = this.props;
     
     let methods = {
       setPlayerLocation, pickUp, dropItem
@@ -29,13 +29,13 @@ class App extends React.Component<Props, StoreState> {
       <div>
         <h2 className="App-header">Mjolnir</h2>
         <div className="gui">
-        <HUD player={this.props.player!} methods={methods} />
-        <p> {this.props.message.description} </p>
+        <HUD player={player!} methods={methods} />
+        <p> {message.description} </p>
           <TestButton
             clicked={(e: React.MouseEvent<HTMLButtonElement>) => handleUserInput(e)} 
           />
         <Chat 
-            messageList={this.props.message.messageList} 
+            messageList={message.messageList} 
             handleUserInput={(e: React.SyntheticEvent<Element>) => handleUserInput(e)}
         />
         </div>
