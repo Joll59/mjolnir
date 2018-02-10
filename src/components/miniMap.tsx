@@ -15,7 +15,7 @@ const rowData = (data: [number, number], mapPath: any) => {
     if (mapPath.getConnectedDoorways(data).length > 0) {
             return '-';
         } else {
-       return '[ ]';
+       return  `${data[0]}${data[1]}`;
     }
 };
 

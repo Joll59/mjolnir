@@ -1,9 +1,11 @@
+import { Doorways } from '../models/doorways';
 // VIEW/REACT TYPES
 
 export type StoreState = {
     message: MessageState;
     item?: Item;
     player?: PlayerState;
+    map?: MiniMapState;
 };
 
 export type MessageState = {
@@ -61,7 +63,7 @@ export interface Armor extends Item {
 
 export interface Entity {
     name?: string;
-    type: string;
+    type?: string;
     level?: number;
     inventory?: Item[]; // should all entities have an inventory?
     weapon?: Weapon;
@@ -71,16 +73,21 @@ export interface Entity {
 
 export interface PlayerState extends Entity {
     name: string;
-    type: string;
+    // type: string;
     health: number;
     initialHealth: number;
-    strength: number;
-    experience: number;
-    level: number;
+    // strength: number;
+    // experience: number;
+    // level: number;
     inventory: Item[];
-    weapon: Weapon; 
-    // consider individual interfaces for weapon and armor both extending item, so you can use power/protection.
-    armor: Armor;
-    levelUpThreshold: number;
+    // weapon: Weapon; 
+    // // consider individual interfaces for weapon and armor both extending item, so you can use power/protection.
+    // armor: Armor;
+    // levelUpThreshold: number;
     location: { x: number, y: number };
+}
+
+export interface MiniMapState {
+    grid: Array<Array<[number, number]>>;
+    mapPath: Doorways;
 }

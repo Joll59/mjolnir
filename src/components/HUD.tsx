@@ -33,9 +33,9 @@ export class HeadsUpDisplay extends React.Component<PassedProps, { player: Playe
                         onMouseUp={(e) => this.handleLocation(e)}
                     /></div>
                 <div>
-                    {console.log(player.inventory.map(x => (x.type)))}
+                    {/*console.log(player.inventory.map(x => (x.type)))*/}
                     
-                    {console.log(player.location)}
+                    {/*console.log(player.location)*/}
                 </div>
             </div>
         );

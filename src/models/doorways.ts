@@ -30,42 +30,41 @@ export class Doorways {
             getRandomInt(1, this.mapGridSize[1] - 1)
         ];
 
-         // let counter = 0;
+        // let counter = 0;
 
         // let gridArea = mapGridSize[1] + 1 * mapGridSize[0] + 1;
 
         // FIXME: recursive method call. not perfect!
-        this.createDoorways(roomCount, startingRoom);
+        this.createDoorways(roomCount - 1, startingRoom);
 
         // let room: [number, number] = startingRoom;
 
         // const onGrid = (roomFrom: [number, number], direction: Direction): boolean => {
-            // functionality if the room is not on map...return pathing to start of path.
-            // if (roomFrom[0] < 0 ||
-            //     roomFrom[1] < 0 ||
-            //     roomFrom[0] > this.mapGridSize[0] ||
-            //     roomFrom[1] > this.mapGridSize[1]
-            // ) {
-            //     // FIXME: this function needs access to set the starting room currently fix that. 
-            //     room = randomShift;
-            //     return false;
-            // }
-            // let roomTo = this.roomToFromDirection(roomFrom, direction);
-            // if (roomTo[0] < 0 ||
-            //     roomTo[1] < 0 ||
-            //     roomTo[0] > this.mapGridSize[0] ||
-            //     roomTo[1] > this.mapGridSize[1]
-            // ) {
-            //     room = startingRoom;
-            //     return false;
-            // }
+        //         // FIXME: this function needs access to set the starting room currently fix that. 
 
-            // return true;
+        //     let roomTo = this.roomToFromDirection(roomFrom, direction);
+        //     if (roomFrom[0] < 0 ||
+        //         roomFrom[1] < 0 ||
+        //         roomFrom[0] > this.mapGridSize[0]-1 ||
+        //         roomFrom[1] > this.mapGridSize[1]-1
+        //     ) {
+        //         room = startingRoom;
+        //         return false;
+        //     } else if (roomTo[0] < 0 ||
+        //         roomTo[1] < 0 ||
+        //         roomTo[0] > this.mapGridSize[0]-1 ||
+        //         roomTo[1] > this.mapGridSize[1]-1
+        //     ) {
+        //         room = startingRoom;
+        //         return false;
+        //     }
+
+        //     return true;
         // };
 
         // while (counter <= gridArea && this.numberOfDoorways() <= roomCount) {
 
-        //     let direction = <Direction>DirectionRand[getRandomInt(1, 4)];
+        //     let direction = <Direction> DirectionEnum[getRandomInt(1, 4)];
 
         //     if (!this.isDoorway(room, direction) && onGrid(room, direction)) {
 
@@ -83,54 +82,91 @@ export class Doorways {
         // }
     }
 
-    // FIXME: complete recursive solution
-
-        createDoorways = (roomCount: number, room: [number, number] ): any => {
-            if (this.numberOfDoorways() >= roomCount) {
-                return;
-            }
-
-            const validDirections = [];
-            for (let direction in DirectionEnum) {
-                if (!Number(direction) && 
-                this.isDoorwayonGrid(room, <Direction> direction) && 
-                !this.isDoorway(room, <Direction> direction)
-            )   {
-                    validDirections.push(direction);
+    possibleDoors = (room: [number, number]) => {
+        return this.getConnectedDoorways(room).map(
+            doorway => {
+                let direction: string = '';
+                if (equals(doorway.to, room)) {
+                    // run logic against doorway.from
+                    if (doorway.from[1] === room[1] - 1) { 
+                        direction = 'N'; 
+                    }
+                    if (doorway.from[1] === room[1] + 1) { direction = 'S'; }
+                    if (doorway.from[0] === room[0] - 1) { direction = 'W'; }
+                    if (doorway.from[0] === room[0] + 1) { direction = 'E'; }
+                    return direction;
+                } else {
+                    // run logic against doorway.to
+                    if (doorway.to[1] === room[1] - 1) { direction = 'N'; }
+                    if (doorway.to[1] === room[1] + 1) { direction = 'S'; }
+                    if (doorway.to[0] === room[0] - 1) { direction = 'W'; }
+                    if (doorway.to[0] === room[0] + 1) { direction = 'E'; }
+                    return direction;
                 }
             }
-
-            const randomLoop = Math.floor(Math.random() * validDirections.length);
-            let availableDirection = validDirections.splice(randomLoop, getRandomInt(0, validDirections.length));
-            
-            // const availableDirection = [];
-            for (let i = 0; i < randomLoop; i++) {
-                const randomIndex = Math.floor(Math.random() * validDirections.length);
-                availableDirection.push(validDirections.splice(randomIndex, 1)[0]);
-            }
-
-            for (let direction of availableDirection) {
-                    this.addDoorway(room, <Direction> direction);
-                    room = this.roomToFromDirection(room, <Direction> direction);
-                    this.createDoorways(roomCount, room);
-            }
-        }
+        );
+    }
 
     getConnectedDoorways = (room: [number, number]) => {
         return this.doorways.filter(doorway =>
             equals(doorway.to, room) || equals(doorway.from, room));
     }
 
-    isDoorwayonGrid = (roomFrom: [number, number], direction: Direction): boolean => {
+      // FIXME: complete recursive solution
+
+    private createDoorways = (roomCount: number, room: [number, number]): any => {
+        // if (this.numberOfDoorways() >= roomCount) {
+        //     return;
+        // }
+
+        const validDirections = [];
+        for (let direction in DirectionEnum) {
+            if (!Number(direction) &&
+                this.isDoorwayonGrid(room, <Direction> direction) &&
+                !this.isDoorway(room, <Direction> direction)
+            ) {
+                validDirections.push(direction);
+            }
+        }
+
+        const randomLoop = Math.floor(Math.random() * validDirections.length);
+        let availableDirection = validDirections.splice(randomLoop, getRandomInt(0, validDirections.length));
+
+        // const availableDirection = [];
+        for (let i = 0; i < randomLoop; i++) {
+            const randomIndex = Math.floor(Math.random() * validDirections.length);
+            availableDirection.push(validDirections.splice(randomIndex, 1)[0]);
+        }
+
+        for (let direction of availableDirection) {
+            if (this.numberOfDoorways() >= roomCount) {
+                return;
+            }
+            if (this.isDoorwayonGrid(room, <Direction> direction) &&
+            !this.isDoorway(room, <Direction> direction)) {
+                this.addDoorway(room, <Direction> direction);
+                room = this.roomToFromDirection(room, <Direction> direction);
+                this.createDoorways(roomCount, room);
+            }
+        }
+    }
+
+    private isDoorwayonGrid = (roomFrom: [number, number], direction: Direction): boolean => {
+
         let roomTo = this.roomToFromDirection(roomFrom, direction);
-        if (roomTo[0] < 0 ||
+        if (roomFrom[0] < 0 ||
+            roomFrom[1] < 0 ||
+            roomFrom[0] > this.mapGridSize[0] - 1 ||
+            roomFrom[1] > this.mapGridSize[1] - 1
+        ) {
+            return false;
+        } else if (roomTo[0] < 0 ||
             roomTo[1] < 0 ||
-            roomTo[0] > this.mapGridSize[0] ||
-            roomTo[1] > this.mapGridSize[1]
+            roomTo[0] > this.mapGridSize[0] - 1 ||
+            roomTo[1] > this.mapGridSize[1] - 1
         ) {
             return false;
         }
-
         return true;
     }
 
