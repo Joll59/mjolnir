@@ -1,5 +1,5 @@
 import { getRandomInt, equals } from '../helpers/random';
-
+import { Direction } from '../types';
 // type Doorway2 = [number, number, number, number];
 
 interface Doorway {
@@ -7,7 +7,6 @@ interface Doorway {
     to: [number, number];
 }
 
-type Direction = 'N' | 'S' | 'E' | 'W';
 enum DirectionEnum { N = 1, S, E, W }
 
 export class Doorways {
@@ -28,7 +27,7 @@ export class Doorways {
         const startingRoom: [number, number] = [
             getRandomInt(1, this.mapGridSize[0] - 1),
             getRandomInt(1, this.mapGridSize[1] - 1)
-        ];
+        ] || [0, 0];
 
         // let counter = 0;
 
@@ -82,7 +81,7 @@ export class Doorways {
         // }
     }
 
-    possibleDoors = (room: [number, number]) => {
+    possibleExits = (room: [number, number]) => {
         return this.getConnectedDoorways(room).map(
             doorway => {
                 let direction: string = '';
@@ -111,8 +110,26 @@ export class Doorways {
         return this.doorways.filter(doorway =>
             equals(doorway.to, room) || equals(doorway.from, room));
     }
+    
+    startingRoom = () => {
+        return this.doorways[0].from;
+    }
 
-      // FIXME: complete recursive solution
+    roomToFromDirection = (room: [number, number], direction: Direction): [number, number] => {
+        switch (direction) {
+            case 'S':
+                return [room[0], room[1] + 1];
+            case 'N':
+                return [room[0], room[1] - 1];
+            case 'E':
+                return [room[0] + 1, room[1]];
+            case 'W':
+                return [room[0] - 1, room[1]];
+            default:
+                return room;
+        }
+    }
+    // FIXME: complete recursive solution
 
     private createDoorways = (roomCount: number, room: [number, number]): any => {
         // if (this.numberOfDoorways() >= roomCount) {
@@ -193,21 +210,6 @@ export class Doorways {
             to: this.roomToFromDirection(room, direction)
         })
         )
-
-    private roomToFromDirection = (room: [number, number], direction: Direction): [number, number] => {
-        switch (direction) {
-            case 'S':
-                return [room[0], room[1] + 1];
-            case 'N':
-                return [room[0], room[1] - 1];
-            case 'E':
-                return [room[0] + 1, room[1]];
-            case 'W':
-                return [room[0] - 1, room[1]];
-            default:
-                return room;
-        }
-    }
 
     private normalizeDoorway(
         doorway: Doorway

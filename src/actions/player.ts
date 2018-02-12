@@ -1,16 +1,13 @@
 import { playerAction, Item } from '../types';
 
-export const setPlayerLocation = (
-    x: number, 
-    y: number,
-) => {
+export const setPlayerLocation = (playerLocation: [number, number]) => {
     return {
         type: playerAction.setLocation,
-        payload: {x: x, y: y}
+        payload: playerLocation
     };
 };
 
-export const  pickUp = (
+export const  pickUpItem = (
     item: Item,
 ) => {
     return {

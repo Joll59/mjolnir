@@ -5,7 +5,7 @@ export type StoreState = {
     message: MessageState;
     item?: Item;
     player?: PlayerState;
-    map?: MiniMapState;
+    gameMap?: GameMapState;
 };
 
 export type MessageState = {
@@ -43,6 +43,8 @@ export enum ItemType {
     armor,
 }
 
+export type Direction = 'N' | 'S' | 'E' | 'W';
+
 export interface Item {
     id: number;
     type: ItemType;
@@ -68,7 +70,7 @@ export interface Entity {
     inventory?: Item[]; // should all entities have an inventory?
     weapon?: Weapon;
     armor?: Armor;
-    location?: { x: number, y: number, z?: number };
+    location?: [number, number];
 }
 
 export interface PlayerState extends Entity {
@@ -84,10 +86,10 @@ export interface PlayerState extends Entity {
     // // consider individual interfaces for weapon and armor both extending item, so you can use power/protection.
     // armor: Armor;
     // levelUpThreshold: number;
-    location: { x: number, y: number };
+    location: [number, number];
 }
 
-export interface MiniMapState {
+export interface GameMapState {
     grid: Array<Array<[number, number]>>;
     mapPath: Doorways;
 }

@@ -14,7 +14,7 @@ class Player implements Entity {
   // consider individual interfaces for weapon and armor both extending item, so you can use power/protection.
   armor: Armor;
   levelUpThreshold: number;
-  location: { x: number, y: number };
+  location: [number, number];
 
   constructor(
     name: string= 'New Player', 

@@ -1,6 +1,7 @@
-import { setPlayerLocation } from '../../actions/player';
+import { setPlayerLocation, pickUpItem, dropItem } from '../../actions/player';
 import { PlayerReducer } from '../../reducers/player';
 import { expect } from 'chai';
+import { PlayerState, Weapon, ItemType } from '../../types/index';
 
 const state = {
         name: 'New Player', 
@@ -9,14 +10,40 @@ const state = {
         experience: 0,
         level: 0,
         levelUpThreshold: 100,
-        location: {x: 0, y: 0},
+        location: <[number, number]> [0, 0],
         inventory: []
 };
 
-const nextState = PlayerReducer(state, setPlayerLocation(1, 1));
-it(
-    'testing player reducer setting player location',
-    () => {
-        expect(nextState).to.deep.equal({...state, location: {x: 1, y: 1}});
-    }
-);
+const fist: Weapon = {
+    id: 1, 
+    power: 5, 
+    type: ItemType.weapon, 
+    name: 'fists'
+};
+
+let nextState: PlayerState;
+describe('PlayerReducer ', () => {
+    
+    it( 'sets player location',
+        () => {
+            nextState = PlayerReducer(state, setPlayerLocation([1, 1]));
+            expect(nextState).to.deep.equal({...state, location: [1, 1]});
+        }
+    );
+
+    describe('player inventory', () => {
+        it( 'adds item to player inventory',
+            () => {
+                nextState = PlayerReducer(state, pickUpItem(fist) );
+                expect(nextState).to.deep.equal({...state, inventory: [fist]});
+            }
+        );
+
+        it ( 'removes item from player inventory',
+             () => {
+                nextState = PlayerReducer(state, dropItem(fist));
+                expect(nextState).to.deep.equal(state);
+             }
+        );
+    });
+});

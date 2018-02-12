@@ -1,6 +1,6 @@
 import { Doorways } from '../models/doorways';
 import { Reducer, AnyAction } from 'redux';
-import { MiniMapState } from '../types/index';
+import { GameMapState } from '../types/index';
 
 const c = {
     GRID_HEIGHT: 5,
@@ -8,8 +8,6 @@ const c = {
     MAX_ROOMS: 10,
 };
   
-const mapPath = new Doorways(c.MAX_ROOMS, [c.GRID_WIDTH, c.GRID_HEIGHT]);
-
 const createGrid = () => {
     let grid: Array<Array<[number, number]>> = [];
     for (let y = 0; y < c.GRID_HEIGHT; y++) {
@@ -21,24 +19,19 @@ const createGrid = () => {
     return grid;
 };
 
-// interface MiniMapState {
-//     grid: Array<Array<[number, number]>>;
-//     mapPath: Doorways;
-// }
-
-const InitialState: MiniMapState = {
+const InitialState: GameMapState = {
     grid: createGrid(),
-    mapPath: mapPath
+    mapPath: new Doorways(c.MAX_ROOMS, [c.GRID_WIDTH, c.GRID_HEIGHT]),
 };
 
-export const MiniMapReducer: Reducer<MiniMapState> = (
+export const GameMapReducer: Reducer<GameMapState> = (
     state = InitialState,
     action: AnyAction,
 ) => {
     switch (action.type) {
+        case 'NEW_LEVEL':
+            return {...state, mapPath: new Doorways(c.MAX_ROOMS, [c.GRID_WIDTH, c.GRID_HEIGHT])};
         default:
-        console.log(state.mapPath);
-        console.log(state.mapPath.possibleDoors([0, 0]));
         return state;
     }
 };

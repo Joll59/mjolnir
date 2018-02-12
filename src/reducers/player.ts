@@ -10,7 +10,7 @@ let weapon = {
     name: 'fists'
   };
 let armor = {
-    id: 1 , 
+    id: 2 , 
     protection: getRandomInt(0, 5), 
     type: ItemType.armor, 
     name : 'basic_clothes'
@@ -28,7 +28,7 @@ const InitialState: PlayerState = {
     inventory: [weapon, armor],
     weapon: weapon,
     armor: armor,
-    location: {x: 0, y: 0}
+    location: [0, 0]
 }; 
 
 export const PlayerReducer: Reducer<PlayerState> = (
@@ -47,10 +47,10 @@ export const PlayerReducer: Reducer<PlayerState> = (
                 inventory: [...state.inventory, action.item]
             };
         case playerAction.dropItem:
-            let dropItemInventory = state.inventory.filter(item => item.id !== action.itemId);
+            let newInventory = state.inventory.filter(item => item.id !== action.itemId);
             return {
                 ...state,
-                inventory : dropItemInventory
+                inventory : newInventory
             };        
         default:
             return state;

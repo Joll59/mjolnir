@@ -3,27 +3,53 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch, AnyAction } from 'redux';
 import { handleUserInput } from './actions/user';
-import { setPlayerLocation, pickUp, dropItem } from './actions/player';
-import { StoreState, Item } from './types/index';
+import { setPlayerLocation, pickUpItem, dropItem } from './actions/player';
+import { StoreState, Item, Direction } from './types/index';
 import { Chat, HeadsUpDisplay as HUD, TestButton } from './components';
-import { MiniMap } from './components/miniMap';
+import { GameMap } from './components/GameMap';
 
 interface DispatchProps {
   handleUserInput: (e: React.SyntheticEvent<Element>) => {};
-  pickUp: (Item: Item) => {};
+  pickUpItem: (Item: Item) => {};
   dropItem: (Item: Item) => {};
-  setPlayerLocation: (x: number, y: number) => {};
+  setPlayerLocation: (location: [number, number]) => {};
+}
+
+interface DirectionProps {
+  exitDirection: string;
+  exitClick: (direction: string) => void;
+}
+
+class Exit extends React.Component<DirectionProps, {}> {
+
+  render() {
+    return (
+      <button onClick={() => this.props.exitClick(this.props.exitDirection)}>
+        Exit to the {this.props.exitDirection}
+      </button>);
+  }
+
 }
 
 type Props = StoreState & DispatchProps;
 
 class App extends React.Component<Props, StoreState> {
 
+    componentDidMount() {
+      this.props.setPlayerLocation(this.props.gameMap!.mapPath.startingRoom());
+    }
+ 
+    handleExitClick = (direction: Direction) => {
+      let { location } = this.props.player!;
+      let nextRoom = this.props.gameMap!.mapPath.roomToFromDirection(location, direction);
+      this.props.setPlayerLocation(nextRoom);
+    }
+    
   public render(): JSX.Element {
-    let { handleUserInput, setPlayerLocation, pickUp, dropItem, player, message, map } = this.props;
+    let { handleUserInput, pickUpItem, dropItem, player, message, gameMap } = this.props;
     
     let methods = {
-      setPlayerLocation, pickUp, dropItem
+      pickUpItem, dropItem
     };
 
     return (
@@ -34,8 +60,10 @@ class App extends React.Component<Props, StoreState> {
         />
         <div className="gui">
         <HUD player={player!} methods={methods} />
-        <MiniMap grid={map!.grid} mapPath={map!.mapPath}/>
-        <p> {message.description} </p>
+        <GameMap grid={gameMap!.grid} mapPath={gameMap!.mapPath}/>
+        <p> Current Room: x:{player!.location[0]} y: {player!.location[1]} </p>
+        {gameMap!.mapPath.possibleExits(player!.location).map(
+          (door, index) => <Exit key={index} exitDirection={door} exitClick={this.handleExitClick}/>)}
         <Chat 
           messageList={message.messageList} 
           handleUserInput={(e: React.SyntheticEvent<Element>) => handleUserInput(e)}
@@ -49,7 +77,7 @@ class App extends React.Component<Props, StoreState> {
 const actionCreator = {
   handleUserInput,
   setPlayerLocation,
-  pickUp,
+  pickUpItem,
   dropItem
 };
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => {
@@ -63,7 +91,7 @@ const mapStateToProps = (state: StoreState) => {
       messageList: state.message.messageList 
     },
     player: state.player,
-    map: state.map
+    gameMap: state.gameMap
   };
 };
 
