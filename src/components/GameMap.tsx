@@ -1,29 +1,35 @@
 // import { Doorways } from './doorways';
 import * as React from 'react';
+import { equals } from '../helpers/random';
 
 interface MapRowData {
     rows: Array<[number, number]>;
     mapPath: any;
+    playerLocation: [number, number];
 }
 
 interface WholeGrid {
     grid: Array<Array<[number, number]>>;
     mapPath: any;
+    playerLocation: [number, number];
 }
 
 const rowData = (data: [number, number], mapPath: any) => {
     if (mapPath.getConnectedDoorways(data).length > 0) {
-        return '-';
+        return ` + `;
     } else {
-        return `${data[0]}${data[1]}`;
+        return `[_]`;
     }
 };
 
-const MapRow = ({ rows, mapPath }: MapRowData) => (
+const MapRow = ({ rows, mapPath, playerLocation }: MapRowData) => (
     <tr>
         {
             rows.map((data, index) =>
-                <td key={index}>
+                <td 
+                    key={index}
+                    className={equals(playerLocation, data) ? 'flash red center' : 'center'}
+                >
                     {
                         rowData(data, mapPath)
                     }
@@ -33,12 +39,12 @@ const MapRow = ({ rows, mapPath }: MapRowData) => (
     </tr>
 );
 
-export const GameMap = ({ grid, mapPath }: WholeGrid, ) => (
+export const Gamemap = ({ grid, mapPath, playerLocation }: WholeGrid, ) => (
     <table>
         <tbody>
             {
                 grid.map((rows, index) =>
-                    <MapRow key={index} mapPath={mapPath} rows={rows} />
+                    <MapRow key={index} mapPath={mapPath} rows={rows} playerLocation={playerLocation} />
                 )
             }
         </tbody>

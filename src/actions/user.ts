@@ -1,12 +1,13 @@
 import { actionTypes } from '../types';
 import { MouseEvent, KeyboardEvent } from 'react';
 
-export const handleUserInput = (e: MouseEvent<HTMLButtonElement> | KeyboardEvent<HTMLInputElement>) => {
+export const handleUserChatInput = (e: MouseEvent<HTMLButtonElement> | KeyboardEvent<HTMLInputElement>) => {
+    let text = e.currentTarget.value || e.currentTarget.innerText;
     return {
         type: actionTypes.clicked,
         payload : {
             author: 'User', 
-            text: `${e.currentTarget.innerText || e.currentTarget.value}`
+            text: text
         }
     };
 };

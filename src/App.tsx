@@ -2,14 +2,13 @@ import './App.css';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch, AnyAction } from 'redux';
-import { handleUserInput } from './actions/user';
+import { handleUserChatInput } from './actions/user';
 import { setPlayerLocation, pickUpItem, dropItem } from './actions/player';
 import { StoreState, Item, Direction } from './types/index';
-import { Chat, HeadsUpDisplay as HUD, TestButton } from './components';
-import { GameMap } from './components/GameMap';
+import { Chat, HeadsUpDisplay as HUD, Gamemap } from './components';
 
 interface DispatchProps {
-  handleUserInput: (e: React.SyntheticEvent<Element>) => {};
+  handleUserChatInput: (e: React.MouseEvent<HTMLButtonElement> | React.KeyboardEvent<HTMLInputElement>) => {};
   pickUpItem: (Item: Item) => {};
   dropItem: (Item: Item) => {};
   setPlayerLocation: (location: [number, number]) => {};
@@ -17,15 +16,15 @@ interface DispatchProps {
 
 interface DirectionProps {
   exitDirection: string;
-  exitClick: (direction: string) => void;
+  exitClick: (e: React.SyntheticEvent<Element>) => void;
 }
 
 class Exit extends React.Component<DirectionProps, {}> {
 
   render() {
     return (
-      <button onClick={() => this.props.exitClick(this.props.exitDirection)}>
-        Exit to the {this.props.exitDirection}
+      <button onClick={(e: React.SyntheticEvent<Element>) => this.props.exitClick(e)}>
+        Exit to {this.props.exitDirection}
       </button>);
   }
 
@@ -35,19 +34,32 @@ type Props = StoreState & DispatchProps;
 
 class App extends React.Component<Props, StoreState> {
 
-    componentDidMount() {
-      this.props.setPlayerLocation(this.props.gameMap!.mapPath.startingRoom());
-    }
- 
-    handleExitClick = (direction: Direction) => {
+  componentDidMount() {
+    this.props.setPlayerLocation(this.props.gameMap!.mapPath.startingRoom());
+  }
+
+  handleInput = (
+    e: React.MouseEvent<HTMLButtonElement> | React.KeyboardEvent<HTMLInputElement>
+  ) => {
+    let text = e.currentTarget.value || e.currentTarget.innerText;
+    let direction: Direction = 'BLANK';
+    // process what was entered by user and decide what to do. 
+    let currentTextTest = /Exit/i.exec(text);
+    if (currentTextTest) {
+      let result = currentTextTest.input.trim().toLowerCase().split(' ');
+      direction = result[result.length - 1][0].toUpperCase() as Direction ;
       let { location } = this.props.player!;
-      let nextRoom = this.props.gameMap!.mapPath.roomToFromDirection(location, direction);
-      this.props.setPlayerLocation(nextRoom);
+      if (this.props.gameMap!.mapPath.isDoorway(location, direction)) {
+        let nextRoom = this.props.gameMap!.mapPath.roomToFromDirection(location, direction);
+        this.props.setPlayerLocation(nextRoom);
+      }
     }
-    
+    this.props.handleUserChatInput(e);
+  }
+
   public render(): JSX.Element {
-    let { handleUserInput, pickUpItem, dropItem, player, message, gameMap } = this.props;
-    
+    let { pickUpItem, dropItem, player, message, gameMap } = this.props;
+
     let methods = {
       pickUpItem, dropItem
     };
@@ -55,19 +67,15 @@ class App extends React.Component<Props, StoreState> {
     return (
       <div>
         <h2 className="App-header">Mjolnir</h2>
-        <TestButton
-            clicked={(e: React.MouseEvent<HTMLButtonElement>) => handleUserInput(e)} 
-        />
         <div className="gui">
-        <HUD player={player!} methods={methods} />
-        <GameMap grid={gameMap!.grid} mapPath={gameMap!.mapPath}/>
-        <p> Current Room: x:{player!.location[0]} y: {player!.location[1]} </p>
-        {gameMap!.mapPath.possibleExits(player!.location).map(
-          (door, index) => <Exit key={index} exitDirection={door} exitClick={this.handleExitClick}/>)}
-        <Chat 
-          messageList={message.messageList} 
-          handleUserInput={(e: React.SyntheticEvent<Element>) => handleUserInput(e)}
-        />
+          <HUD player={player!} methods={methods} />
+          <Gamemap grid={gameMap!.grid} mapPath={gameMap!.mapPath} playerLocation={player!.location} />
+          {gameMap!.mapPath.possibleExits(player!.location).map(
+            (door, index) => <Exit key={index} exitDirection={door} exitClick={this.handleInput} />)}
+          <Chat
+            messageList={message.messageList}
+            handleUserChatInput={(e: React.KeyboardEvent<HTMLInputElement>) => this.handleInput(e)}
+          />
         </div>
       </div>
     );
@@ -75,7 +83,7 @@ class App extends React.Component<Props, StoreState> {
 }
 
 const actionCreator = {
-  handleUserInput,
+  handleUserChatInput,
   setPlayerLocation,
   pickUpItem,
   dropItem
@@ -87,9 +95,10 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => {
 const mapStateToProps = (state: StoreState) => {
   return {
     message:
-    { ...state.message,
-      messageList: state.message.messageList 
-    },
+      {
+        ...state.message,
+        messageList: state.message.messageList
+      },
     player: state.player,
     gameMap: state.gameMap
   };

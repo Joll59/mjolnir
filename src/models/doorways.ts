@@ -129,6 +129,17 @@ export class Doorways {
                 return room;
         }
     }
+
+    isDoorway = (room: [number, number], direction: Direction): boolean => {
+        let normDoor = this.normalizeDoorway({
+            from: room,
+            to: this.roomToFromDirection(room, direction)
+        });
+        return this.doorways.find(
+            doorway =>
+                equals(doorway.from, normDoor.from) &&
+                equals(normDoor.to, doorway.to)) !== undefined;
+    }
     // FIXME: complete recursive solution
 
     private createDoorways = (roomCount: number, room: [number, number]): any => {
@@ -193,16 +204,7 @@ export class Doorways {
 
     // private lastDoorway = () => this.doorways[this.numberOfDoorways() - 1];
 
-    private isDoorway = (room: [number, number], direction: Direction): boolean => {
-        let normDoor = this.normalizeDoorway({
-            from: room,
-            to: this.roomToFromDirection(room, direction)
-        });
-        return this.doorways.find(
-            doorway =>
-                equals(doorway.from, normDoor.from) &&
-                equals(normDoor.to, doorway.to)) !== undefined;
-    }
+    
 
     private addDoorway = (room: [number, number], direction: Direction) =>
         this.doorways.push(this.normalizeDoorway({

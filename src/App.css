@@ -93,6 +93,10 @@ grid-row: 2;
 	  animation: flash ease-in-out 3s infinite alternate;
 }
 
+.red{
+  background-color: red;
+}
+
 /* 
 
 use meter to represent health bar in UI component

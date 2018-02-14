@@ -5,17 +5,17 @@ import Input from './input';
 
 interface ChatProps {
     messageList: MessageInterface[];
-    handleUserInput: (e: React.SyntheticEvent<Element>) => {};
+    handleUserChatInput: (e: React.KeyboardEvent<HTMLInputElement>) => void;
 }
 
-export const Chat = ( {messageList, handleUserInput}: ChatProps) => {
+export const Chat = ( {messageList, handleUserChatInput}: ChatProps) => {
         return (
             <div className="chat">
                 {messageList.map((message, index) => {
                     return <Message key={index} {...message}/>;
                 })}
                 <div className="chat-input">
-                    <Input userInput={handleUserInput}/>
+                    <Input userChatInput={handleUserChatInput}/>
                 </div>
             </div>
         );

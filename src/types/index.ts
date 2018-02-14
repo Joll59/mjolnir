@@ -43,7 +43,7 @@ export enum ItemType {
     armor,
 }
 
-export type Direction = 'N' | 'S' | 'E' | 'W';
+export type Direction = 'N' | 'S' | 'E' | 'W' | 'BLANK';
 
 export interface Item {
     id: number;
