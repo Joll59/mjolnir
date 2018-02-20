@@ -1,6 +1,7 @@
 import { Doorways } from '../models/doorways';
 import { Reducer, AnyAction } from 'redux';
-import { GameMapState, mapAction, Room, Item, ItemType } from '../types/index';
+import { GameMapState, mapAction, Room, Item, ItemType, roomAction } from '../types/index';
+import { RoomReducer } from './room';
 // import { getRandomInt } from '../helpers/random';
 
 const c = {
@@ -21,6 +22,7 @@ const createGrid = () => {
 };
 
 const mapPath =  new Doorways(c.MAX_ROOMS, [c.GRID_WIDTH, c.GRID_HEIGHT]);
+
 const roomCoords = mapPath.getConnectedRooms();
 
 const testItem = (): Item[] => {
@@ -29,7 +31,6 @@ const testItem = (): Item[] => {
         name: 'weapon',
         type: ItemType.weapon
     };
-
     return [roomItem];
 };
 
@@ -42,10 +43,11 @@ const generateRoom = (location: [number, number]): Room => {
 };
 
 const rooms = roomCoords.map(room => generateRoom(room));
+
 const InitialState: GameMapState = {
     grid: createGrid(),
     map: mapPath,
-    rooms: rooms,
+    rooms: RoomReducer(rooms, {type: roomAction.newMap}),
 };
 
 export const GameMapReducer: Reducer<GameMapState> = (
@@ -54,7 +56,7 @@ export const GameMapReducer: Reducer<GameMapState> = (
 ) => {
     switch (action.type) {
         case mapAction.newLevel:
-            return InitialState;
+            return state;
         default:
         return state;
     }

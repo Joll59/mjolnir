@@ -50,7 +50,7 @@ class App extends React.Component<Props, StoreState> {
     let currentExitTest = /Exit(.*)/i.exec(text);
     if (currentExitTest) {
       let result = currentExitTest[1].trim().toLowerCase().split(' ');
-      let direction = result[result.length - 1][0].toUpperCase() as Direction ;
+      let direction = result[result.length - 1][0].toUpperCase() as Direction;
       let { location } = this.props.player!;
       if (this.props.gameMap!.map.isDoorway(location, direction)) {
         let nextRoom = this.props.gameMap!.map.roomToFromDirection(location, direction);
@@ -65,25 +65,27 @@ class App extends React.Component<Props, StoreState> {
   }
 
   public render(): JSX.Element {
-    let { pickUpItem, dropItem, player, message, gameMap } = this.props;
+    let { /*pickUpItem,*/ dropItem, player, message, gameMap } = this.props;
 
-    let methods = {
-      pickUpItem, dropItem
-    };
+    // let methods = {
+    //   pickUpItem, dropItem
+    // };
 
     return (
       <div>
         <h2 className="App-header">Mjolnir</h2>
-        <div className="gui">
-          <HUD player={player!} methods={methods} />
+        <div>
+          <HUD player={player!} dropItem={dropItem}/>
           <Gamemap grid={gameMap!.grid} mapPath={gameMap!.map} playerLocation={player!.location} />
-            {gameMap!.map.possibleExits(player!.location).map(
-              (door, index) => <Exit key={index} exitDirection={door} exitClick={this.handleInput} />)}
           <Chat
-            messageList={message.messageList}
-            handleUserChatInput={(e: React.KeyboardEvent<HTMLInputElement>) => this.handleInput(e)}
+          messageList={message.messageList}
+          handleUserChatInput={(e: React.KeyboardEvent<HTMLInputElement>) => this.handleInput(e)}
           />
-        </div>
+          </div>
+              <div className='center'>
+                    {gameMap!.map.possibleExits(player!.location).map(
+                      (door, index) => <Exit key={index} exitDirection={door} exitClick={this.handleInput} />)}
+              </div>
       </div>
     );
   }
@@ -95,6 +97,7 @@ const actionCreator = {
   pickUpItem,
   dropItem
 };
+
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => {
   return bindActionCreators(actionCreator, dispatch);
 };

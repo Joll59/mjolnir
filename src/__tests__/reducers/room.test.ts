@@ -1,13 +1,14 @@
 // import { expect } from 'chai';
 import { Room } from '../../types/index';
+import { RoomReducer } from '../../reducers/room';
 
-let roomState: Room[];
+let roomState: Room[]= [];
 
 describe('RoomReducer', () => {
 
     it('RoomReducer is defined', 
        () => {
-            expect(RoomReducer()).toBeDefined();
+            expect(RoomReducer(roomState, {type: 'NEW_MAP'})).toEqual(roomState);
         });
 
     it( 'room state is an array',

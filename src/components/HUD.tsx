@@ -1,13 +1,11 @@
 import * as React from 'react';
 import { percentage25, percentage50, percentage80 } from '../helpers/random';
 import { PlayerState, Item } from '../types';
+import { dropItem } from '../actions/player';
 
 interface PassedProps {
     player: PlayerState;
-    methods: {
-        pickUpItem: (Item: Item) => {},
-        dropItem: (Item: Item) => {},
-    };
+    dropItem: (Item: Item) => {};
 }
 
 export class HeadsUpDisplay extends React.Component<PassedProps, { player: PlayerState }> {
@@ -25,11 +23,28 @@ export class HeadsUpDisplay extends React.Component<PassedProps, { player: Playe
                         optimum={percentage80(player.initialHealth)}
                         high={percentage50(player.initialHealth)}
                         max={player.initialHealth}
-                    /></div>
-                <div>
-                    {/*console.log(player.inventory.map(x => (x.type)))*/}
+                    />
+                </div>
+                <div className="wrapper">
+                    {(player.inventory.map(x => playerItemInInventory(x, dropItem)))}
                 </div>
             </div>
         );
     }
+}
+
+const playerItemInInventory = (item: Item, dropItem: (Item: Item) => {}) => {
+    let view: boolean = false;
+    const changeView = () => {
+        view = !view
+    }
+
+    return (
+        <div onFocus={changeView} onBlur={changeView}>
+            {view ? <button type="drop item" onClick={() => dropItem(item)} /> : <div />}
+            {item.id}
+            {item.type}
+            {item.name}
+        </div>
+    );
 }

@@ -28,7 +28,7 @@ const MapRow = ({ rows, mapPath, playerLocation }: MapRowData) => (
             rows.map((data, index) =>
                 <td 
                     key={index}
-                    className={arrayEquals(playerLocation, data) ? 'flash red center' : 'center'}
+                    className={arrayEquals(playerLocation, data) ? 'flash red center' : 'black center'}
                 >
                     {
                         rowData(data, mapPath)

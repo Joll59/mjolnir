@@ -1,5 +1,5 @@
 import { Reducer, AnyAction } from 'redux';
-import { MessageState, actionTypes } from '../types';
+import { MessageState, userInputAction } from '../types';
 
 // try not to make decisions you dont have to. 
 const botMessage = {
@@ -19,7 +19,7 @@ export const MessageReducer: Reducer<MessageState> = (
     action: AnyAction
 ) => {
     switch (action.type) {
-        case actionTypes.userInput:
+        case userInputAction.userInput:
             return {
                 ...state, 
                 description: action.payload.text,

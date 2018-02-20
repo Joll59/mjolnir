@@ -68,6 +68,12 @@
 grid-row: 2;
 } */
 
+.wrapper {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-gap: 10px;
+}
+
 /* 
 *heads p display CSS:
 */
@@ -95,6 +101,11 @@ grid-row: 2;
 
 .red{
   background-color: red;
+}
+
+.black {
+  background-color: black;
+  color: white;
 }
 
 /* 
