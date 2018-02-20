@@ -1,5 +1,12 @@
-export const getRandomInt = (min: number, max: number) => {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+
+/**
+ * generates a random number between the minimum and maximum value provided, with minimum and maximum value included. 
+ * @param minimum lower bound
+ * @param maximum upper bound
+ * @returns random number
+ */
+export const getRandomInt = (minimum: number, maximum: number) => {
+    return Math.floor(Math.random() * (maximum - minimum + 1)) + minimum;
 };
 
 const percentage = (value: number) => {
@@ -13,7 +20,7 @@ export const percentage25 = percentage(25);
 export const percentage50 = percentage(50); 
 export const percentage80 = percentage(80);
 
-export const equals = (array1: number[], array2: number[]) => {
+export const arrayEquals = (array1: number[], array2: number[]) => {
     // if the either array is a falsy value, return
     if (!array1 || !array2) {
         return false;

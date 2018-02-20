@@ -19,8 +19,12 @@ interface DirectionProps {
   exitClick: (e: React.SyntheticEvent<Element>) => void;
 }
 
+/**
+ * Exit component representing the passing from one room to another. 
+ * It provides a button to UI for a player move action from one room to another.
+ *
+ */
 class Exit extends React.Component<DirectionProps, {}> {
-
   render() {
     return (
       <button onClick={(e: React.SyntheticEvent<Element>) => this.props.exitClick(e)}>
@@ -35,24 +39,27 @@ type Props = StoreState & DispatchProps;
 class App extends React.Component<Props, StoreState> {
 
   componentDidMount() {
-    this.props.setPlayerLocation(this.props.gameMap!.mapPath.startingRoom());
+    this.props.setPlayerLocation(this.props.gameMap!.map.startingRoom());
   }
 
   handleInput = (
     e: React.MouseEvent<HTMLButtonElement> | React.KeyboardEvent<HTMLInputElement>
   ) => {
     let text = e.currentTarget.value || e.currentTarget.innerText;
-    let direction: Direction = 'BLANK';
     // process what was entered by user and decide what to do. 
-    let currentTextTest = /Exit/i.exec(text);
-    if (currentTextTest) {
-      let result = currentTextTest.input.trim().toLowerCase().split(' ');
-      direction = result[result.length - 1][0].toUpperCase() as Direction ;
+    let currentExitTest = /Exit(.*)/i.exec(text);
+    if (currentExitTest) {
+      let result = currentExitTest[1].trim().toLowerCase().split(' ');
+      let direction = result[result.length - 1][0].toUpperCase() as Direction ;
       let { location } = this.props.player!;
-      if (this.props.gameMap!.mapPath.isDoorway(location, direction)) {
-        let nextRoom = this.props.gameMap!.mapPath.roomToFromDirection(location, direction);
+      if (this.props.gameMap!.map.isDoorway(location, direction)) {
+        let nextRoom = this.props.gameMap!.map.roomToFromDirection(location, direction);
         this.props.setPlayerLocation(nextRoom);
       }
+    }
+    let currentItemTest = /Pick Up(.*)/i.exec(text);
+    if (currentItemTest) {
+      console.log(currentItemTest[1].trim());
     }
     this.props.handleUserChatInput(e);
   }
@@ -69,9 +76,9 @@ class App extends React.Component<Props, StoreState> {
         <h2 className="App-header">Mjolnir</h2>
         <div className="gui">
           <HUD player={player!} methods={methods} />
-          <Gamemap grid={gameMap!.grid} mapPath={gameMap!.mapPath} playerLocation={player!.location} />
-          {gameMap!.mapPath.possibleExits(player!.location).map(
-            (door, index) => <Exit key={index} exitDirection={door} exitClick={this.handleInput} />)}
+          <Gamemap grid={gameMap!.grid} mapPath={gameMap!.map} playerLocation={player!.location} />
+            {gameMap!.map.possibleExits(player!.location).map(
+              (door, index) => <Exit key={index} exitDirection={door} exitClick={this.handleInput} />)}
           <Chat
             messageList={message.messageList}
             handleUserChatInput={(e: React.KeyboardEvent<HTMLInputElement>) => this.handleInput(e)}

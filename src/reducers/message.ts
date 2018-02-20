@@ -19,7 +19,7 @@ export const MessageReducer: Reducer<MessageState> = (
     action: AnyAction
 ) => {
     switch (action.type) {
-        case actionTypes.clicked:
+        case actionTypes.userInput:
             return {
                 ...state, 
                 description: action.payload.text,

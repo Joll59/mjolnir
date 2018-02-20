@@ -3,7 +3,6 @@ import { Doorways } from '../models/doorways';
 
 export type StoreState = {
     message: MessageState;
-    item?: Item;
     player?: PlayerState;
     gameMap?: GameMapState;
 };
@@ -19,7 +18,11 @@ export type MessageInterface = {
 };
 
 export enum actionTypes {
-    clicked = 'CLICKED'
+    userInput = 'USER_INPUT',
+}
+
+export enum mapAction {
+    newLevel = 'NEW_LEVEL'
 }
 
 export enum playerAction {
@@ -37,13 +40,11 @@ export enum playerAction {
 
 export enum ItemType {
     weapon,
-    chest,
-    key,
     health,
     armor,
 }
 
-export type Direction = 'N' | 'S' | 'E' | 'W' | 'BLANK';
+export type Direction = 'N' | 'S' | 'E' | 'W' ;
 
 export interface Item {
     id: number;
@@ -52,7 +53,6 @@ export interface Item {
     description?: string;
     // equipable?: boolean;
     // questItem?: boolean;
-    // action?: string;
 }
 
 export interface Weapon extends Item {
@@ -75,21 +75,27 @@ export interface Entity {
 
 export interface PlayerState extends Entity {
     name: string;
-    // type: string;
     health: number;
     initialHealth: number;
+    inventory: Item[];
+    location: [number, number];
     // strength: number;
     // experience: number;
     // level: number;
-    inventory: Item[];
     // weapon: Weapon; 
     // // consider individual interfaces for weapon and armor both extending item, so you can use power/protection.
     // armor: Armor;
     // levelUpThreshold: number;
+}
+
+export interface Room extends Entity {
+    inventory: Item[];
+    description: string;
     location: [number, number];
 }
 
 export interface GameMapState {
     grid: Array<Array<[number, number]>>;
-    mapPath: Doorways;
+    map: Doorways;
+    rooms: Room[];
 }

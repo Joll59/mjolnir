@@ -1,6 +1,5 @@
-import { getRandomInt, equals } from '../helpers/random';
+import { getRandomInt, arrayEquals } from '../helpers/random';
 import { Direction } from '../types';
-// type Doorway2 = [number, number, number, number];
 
 interface Doorway {
     from: [number, number];
@@ -12,21 +11,21 @@ enum DirectionEnum { N = 1, S, E, W }
 export class Doorways {
 
     private doorways: Doorway[] = [];
-    private mapGridSize: [number, number] = [10, 10];
+    private mapSize: [number, number] = [10, 10];
 
-    constructor(roomCount: number = 15, mapGridSize: [number, number]) {
-        this.mapGridSize = mapGridSize;
-        if (roomCount < 1) {
-            roomCount = 5;
+    constructor(maxRoomCount: number = 15, mapSize: [number, number]) {
+        this.mapSize = mapSize;
+        if (maxRoomCount < 1) {
+            maxRoomCount = 5;
         }
 
-        if (roomCount === 1) {
-            mapGridSize = [0, 0];
+        if (maxRoomCount === 1) {
+            mapSize = [0, 0];
         }
 
         const startingRoom: [number, number] = [
-            getRandomInt(1, this.mapGridSize[0] - 1),
-            getRandomInt(1, this.mapGridSize[1] - 1)
+            getRandomInt(1, this.mapSize[0] - 1),
+            getRandomInt(1, this.mapSize[1] - 1)
         ] || [0, 0];
 
         // let counter = 0;
@@ -34,7 +33,7 @@ export class Doorways {
         // let gridArea = mapGridSize[1] + 1 * mapGridSize[0] + 1;
 
         // FIXME: recursive method call. not perfect!
-        this.createDoorways(roomCount - 1, startingRoom);
+        this.createDoorways(maxRoomCount - 1, startingRoom);
 
         // let room: [number, number] = startingRoom;
 
@@ -85,7 +84,7 @@ export class Doorways {
         return this.getConnectedDoorways(room).map(
             doorway => {
                 let direction: string = '';
-                if (equals(doorway.to, room)) {
+                if (arrayEquals(doorway.to, room)) {
                     // run logic against doorway.from
                     if (doorway.from[1] === room[1] - 1) { 
                         direction = 'N'; 
@@ -106,11 +105,6 @@ export class Doorways {
         );
     }
 
-    getConnectedDoorways = (room: [number, number]) => {
-        return this.doorways.filter(doorway =>
-            equals(doorway.to, room) || equals(doorway.from, room));
-    }
-    
     startingRoom = () => {
         return this.doorways[0].from;
     }
@@ -137,15 +131,42 @@ export class Doorways {
         });
         return this.doorways.find(
             doorway =>
-                equals(doorway.from, normDoor.from) &&
-                equals(normDoor.to, doorway.to)) !== undefined;
+                arrayEquals(doorway.from, normDoor.from) &&
+                arrayEquals(normDoor.to, doorway.to)) !== undefined;
     }
-    // FIXME: complete recursive solution
+    
+    /**
+     * a method that returns the rooms that are available for exploration on the map.
+     */
+    getConnectedRooms = (): [number, number][] => {
+        let roomCollection: [number, number][] = [];
 
-    private createDoorways = (roomCount: number, room: [number, number]): any => {
-        // if (this.numberOfDoorways() >= roomCount) {
-        //     return;
-        // }
+        const roomExists = (room: [number, number]): boolean => {
+            if (roomCollection.find(currentRoom => arrayEquals(currentRoom, room)) === undefined) {
+                return false; 
+            }
+            return true; 
+        };
+
+        this.doorways.forEach(doorway => {
+            if (!roomExists(doorway.from)) {
+                roomCollection.push(doorway.from);
+            }  
+            if (!roomExists(doorway.to)) {
+                roomCollection.push(doorway.to);
+            }
+        });
+        return roomCollection;
+    }
+
+    private getConnectedDoorways = (room: [number, number]) => {
+        return this.doorways.filter(doorway =>
+            arrayEquals(doorway.to, room) || arrayEquals(doorway.from, room));
+        }
+
+            // FIXME: complete recursive solution
+            
+    private createDoorways = (roomCount: number, room: [number, number]) => {
 
         const validDirections = [];
         for (let direction in DirectionEnum) {
@@ -184,41 +205,37 @@ export class Doorways {
         let roomTo = this.roomToFromDirection(roomFrom, direction);
         if (roomFrom[0] < 0 ||
             roomFrom[1] < 0 ||
-            roomFrom[0] > this.mapGridSize[0] - 1 ||
-            roomFrom[1] > this.mapGridSize[1] - 1
+            roomFrom[0] > this.mapSize[0] - 1 ||
+            roomFrom[1] > this.mapSize[1] - 1
         ) {
             return false;
         } else if (roomTo[0] < 0 ||
             roomTo[1] < 0 ||
-            roomTo[0] > this.mapGridSize[0] - 1 ||
-            roomTo[1] > this.mapGridSize[1] - 1
+            roomTo[0] > this.mapSize[0] - 1 ||
+            roomTo[1] > this.mapSize[1] - 1
         ) {
             return false;
         }
         return true;
     }
 
-    // private randomDoorway = () => this.doorways[getRandomInt(0, this.numberOfDoorways() - 1)];
-
     private numberOfDoorways = () => this.doorways.length;
-
-    // private lastDoorway = () => this.doorways[this.numberOfDoorways() - 1];
-
     
-
+    // private lastDoorway = () => this.doorways[this.numberOfDoorways() - 1];
+    // private randomDoorway = () => this.doorways[getRandomInt(0, this.numberOfDoorways() - 1)];
+    
     private addDoorway = (room: [number, number], direction: Direction) =>
-        this.doorways.push(this.normalizeDoorway({
+    this.doorways.push(this.normalizeDoorway({
             from: room,
             to: this.roomToFromDirection(room, direction)
         })
-        )
+    )
 
     private normalizeDoorway(
         doorway: Doorway
     ) {
         return (doorway.from[1] > doorway.to[1] || doorway.from[0] > doorway.to[0])
-            ? { from: doorway.to, to: doorway.from }
-            : doorway;
+        ? { from: doorway.to, to: doorway.from }
+        : doorway;
     }
 }
-// TODO: Create Rooms based on doorways. 

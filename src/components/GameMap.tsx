@@ -1,6 +1,6 @@
 // import { Doorways } from './doorways';
 import * as React from 'react';
-import { equals } from '../helpers/random';
+import { arrayEquals } from '../helpers/random';
 
 interface MapRowData {
     rows: Array<[number, number]>;
@@ -28,7 +28,7 @@ const MapRow = ({ rows, mapPath, playerLocation }: MapRowData) => (
             rows.map((data, index) =>
                 <td 
                     key={index}
-                    className={equals(playerLocation, data) ? 'flash red center' : 'center'}
+                    className={arrayEquals(playerLocation, data) ? 'flash red center' : 'center'}
                 >
                     {
                         rowData(data, mapPath)
