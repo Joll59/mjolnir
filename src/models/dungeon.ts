@@ -1,4 +1,4 @@
-// // import Room from './room';
+// import { Room } from './room';
 // /*
 // * a dungeon is made of rooms, an array of rooms should be passed to the constructor.
 // */

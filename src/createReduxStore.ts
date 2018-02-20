@@ -1,8 +1,12 @@
 import { createStore, combineReducers } from 'redux';
-import { messageReducer } from './reducers/messageReducer';
+import { MessageReducer } from './reducers/message';
+import { PlayerReducer } from './reducers/player';
+import { GameMapReducer } from './reducers/gamemap';
 
 const rootReducer = combineReducers({
-    message: messageReducer
+    message: MessageReducer,
+    player: PlayerReducer,
+    gameMap: GameMapReducer
 });
 
 const reduxStore = createStore(rootReducer);

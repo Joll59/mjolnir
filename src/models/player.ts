@@ -14,7 +14,7 @@ class Player implements Entity {
   // consider individual interfaces for weapon and armor both extending item, so you can use power/protection.
   armor: Armor;
   levelUpThreshold: number;
-  location: { x: number, y: number };
+  location: [number, number];
 
   constructor(
     name: string= 'New Player', 
@@ -43,28 +43,14 @@ class Player implements Entity {
       name : 'basic_clothes'
     }; 
     this.inventory = [this.weapon, this.armor];
-    this.setLocation();
-  }
-
-  pickUp = (item: Item) => {
-    this.inventory.push(item);
-  }
-
-  setLocation(x: number = 0, y: number= 0) {
-    this.location = { x, y };
+    // this.setLocation();
   }
 
   // attack = (enemy: Entity) => {
   //  arg here should be another entity with the receivedDamage function below.
   //   const damage = getRandomInt(this.strength / 2, this.weapon.power + this.strength) - this.armor.protection;
   //   enemy.receiveDamage(damage);
-  //   return {
-  //     who: this,
-  //     enemy,
-  //     damage,
-  //     opponentDead: enemy.isDead(),
-  //     levelUp: this.gainExperience(damage),
-  //   };
+  //   return this.gainExperience(damage)
   // }
   
   receiveDamage = (damage: number) => {

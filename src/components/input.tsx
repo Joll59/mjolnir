@@ -7,7 +7,7 @@ interface LocalState {
 }
 
 interface Props {
- userInput: (e: React.SyntheticEvent<Element>) => {} ;
+ userChatInput: (e: React.SyntheticEvent<Element>) => void ;
 }
 
 export default class Input extends React.Component<Props, LocalState> {
@@ -22,7 +22,7 @@ export default class Input extends React.Component<Props, LocalState> {
     
     handleEntry = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.keyCode === 13 && !e.shiftKey && e.currentTarget.value !== '') {
-            this.props.userInput(e);
+            this.props.userChatInput(e);
             e.currentTarget.value = '';
         }
         let data = ({ author: 'User', text: e.currentTarget.value});
