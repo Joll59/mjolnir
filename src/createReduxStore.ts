@@ -9,6 +9,12 @@ const rootReducer = combineReducers({
     gameMap: GameMapReducer
 });
 
-const reduxStore = createStore(rootReducer);
+const devToolExt = 'devToolsExtension';
+
+const enhancer = window[devToolExt] ? window[devToolExt]()(createStore) : createStore;
+
+const reduxStore = enhancer(rootReducer);
+
+// const reduxStore = createStore(rootReducer);
 
 export default reduxStore;

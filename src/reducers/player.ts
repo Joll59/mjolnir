@@ -17,18 +17,17 @@ let armor = {
   };
 
 const InitialState: PlayerState = {
-    name: 'New Player', 
-    type: 'Player', 
+    name: 'Player', 
     health: health, 
-    // strength: getRandomInt(10, 120),
     initialHealth: health,
-    // experience: 0,
-    level: 0,
-    // levelUpThreshold: 100,
     inventory: [weapon, armor],
-    weapon: weapon,
-    armor: armor,
     location: [0, 0]
+    // strength: getRandomInt(10, 120),
+    // experience: 0,
+    // level: 0,
+    // levelUpThreshold: 100,
+    // weapon: this.inventory[0],
+    // armor: this.inventory[1],
 }; 
 
 export const PlayerReducer: Reducer<PlayerState> = (
@@ -47,7 +46,7 @@ export const PlayerReducer: Reducer<PlayerState> = (
                 inventory: [...state.inventory, action.item]
             };
         case playerAction.dropItem:
-            let newInventory = state.inventory.filter(item => item.id !== action.itemId);
+            let newInventory = state.inventory.filter(item => item !== action.item);
             return {
                 ...state,
                 inventory : newInventory
