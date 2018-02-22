@@ -6,6 +6,8 @@ import { handleUserChatInput } from './actions/user';
 import { setPlayerLocation, pickUpItem, dropItem } from './actions/player';
 import { StoreState, Item, Direction, Room } from './types/index';
 import { Chat, HeadsUpDisplay as HUD, Gamemap } from './components';
+import * as Rx from 'rxjs';
+import { arrayEquals } from './helpers/random';
 
 interface DispatchProps {
   handleUserChatInput: (e: React.MouseEvent<HTMLButtonElement> | React.KeyboardEvent<HTMLInputElement>) => {};
@@ -64,11 +66,13 @@ class App extends React.Component<Props, StoreState> {
     this.props.handleUserChatInput(e);
   }
 
-  public render(): JSX.Element {
-    let { pickUpItem, dropItem, player, message, gameMap } = this.props;
-    let currentRoom: Room | undefined = gameMap!.rooms.find(room => room.location === player!.location)
+  currentObservableRoom = Rx.Observable.of(this.props.player!.location);
 
-    return (
+public render(): JSX.Element {
+  let { pickUpItem, dropItem, player, message, gameMap } = this.props;
+  let currentRoom: Room | undefined = gameMap.rooms.find(room => arrayEquals(room.location, player.location));
+  
+  return (
       <div>
         <h2 className="App-header">Mjolnir</h2>
         <div>
@@ -88,7 +92,7 @@ class App extends React.Component<Props, StoreState> {
             handleUserChatInput={(e: React.KeyboardEvent<HTMLInputElement>) => this.handleInput(e)}
           />
         </div>
-        <div className='center'>
+        <div className="center">
               {gameMap!.map.possibleExits(player!.location).map(
                 (
                   door, 

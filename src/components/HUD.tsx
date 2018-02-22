@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { percentage25, percentage50, percentage80 } from '../helpers/random';
-import { PlayerState, Item, Room } from '../types';
-
+import { PlayerState, Item, Room, Entity } from '../types';
 
 interface PassedProps {
     player: PlayerState;
@@ -10,25 +9,46 @@ interface PassedProps {
     currentRoom: Room | undefined;
 }
 
-export class HeadsUpDisplay extends React.Component<PassedProps, { isPlayerInventoryVisible: boolean}> {
+export class HeadsUpDisplay extends React.Component<PassedProps, { viewPlayerInv: boolean, viewRoomInv: boolean}> {
 
     constructor (props: PassedProps) {
         super (props);
         this.state = {
-            isPlayerInventoryVisible: false
+            viewPlayerInv: false, 
+            viewRoomInv: false
         };
     }
     
     viewPlayerInventory = () => {
-        this.setState({isPlayerInventoryVisible: !this.state.isPlayerInventoryVisible});
+        this.setState({viewPlayerInv: !this.state.viewPlayerInv});
     }
+
+    viewRoomInventory = () => {
+        this.setState({viewRoomInv: !this.state.viewRoomInv});
+    }
+
     componentDidUpdate() {
-        console.log(this.props.currentRoom!.description);
         console.log(this.props.currentRoom!.inventory);
     }
 
+    Inventory: any = (entity: Entity, hideInvMethod: ()=> {}, itemClickMethod: (Item: Item)=>{}, buttonValue: string) => (
+        <ul className="wrapper">
+            {
+                entity.inventory!.map(x =>
+                    (<Inventory
+                        key={x.id + x.type}
+                        item={x}
+                        InteractWithItem={itemClickMethod}
+                        buttonValue={buttonValue}
+                    />)
+                )
+            }
+            <button onClick={hideInvMethod}> Hide </button>
+        </ul>
+    );
+
     render() {
-        let { player } = this.props;
+        let { player, currentRoom } = this.props;
         const healthBar = (
             <meter 
                 className={player.health <= percentage25(player.initialHealth) ? 'flash' : ''} 
@@ -40,59 +60,48 @@ export class HeadsUpDisplay extends React.Component<PassedProps, { isPlayerInven
                 max={player.initialHealth} 
             />
         );
-        const showInvBtn = (<button onClick={this.viewPlayerInventory}>Inventory</button>);
-        const inventory = (
-            <ul className="wrapper">
-                {
-                    player.inventory.map(x =>
-                        (<PlayerInventory
-                            key={x.id + x.type}
-                            item={x}
-                            dropItem={this.props.dropItem}
-                        />)
-                    )
-                }
-                <button onClick={this.viewPlayerInventory}> Hide </button>
-            </ul>
-        );
+        const showPlayerInvBtn = (<button onClick={this.viewPlayerInventory}>Inventory</button>);
+
+        const showRoomInvBtn = (<button onClick={this.viewRoomInventory}> Chest in Room </button>);
+
         return (
             <div>
                 <div className="center" hidden={true}> {healthBar} </div>
-                <div>{this.state.isPlayerInventoryVisible ? inventory : showInvBtn}</div>
+                <div>{this.state.viewPlayerInv ? this.Inventory(player, this.viewPlayerInventory, this.props.dropItem, 'drop') : showPlayerInvBtn}</div>
                 <div>
-                {this.props.currentRoom ? this.props.currentRoom!.inventory[0].name : <br/>}
+                {currentRoom && this.state.viewRoomInv ? this.Inventory(currentRoom,this.viewRoomInventory, this.props.pickUpItem, 'add to inventory') : showRoomInvBtn}
                 </div>
             </div>
         );
     }
 }
 
-interface inventoryProps {
+interface InventoryProps {
     item: Item; 
-    dropItem: (Item: Item) => {};
+    InteractWithItem: (Item: Item) => {};
+    buttonValue: string;
 }
 
-class PlayerInventory extends React.Component<inventoryProps, {view: boolean}> {
+class Inventory extends React.Component<InventoryProps, {view: boolean}> {
     
-    constructor (props: inventoryProps) {
+    constructor (props: InventoryProps) {
         super (props);
         this.state = {
             view: true
         };
     }
     changeView = () => {
-        // e.stopPropagation();
         this.setState({view: !this.state.view});
     }
 
-    handleItemDrop = () => {
-        this.props.dropItem(this.props.item);
+    handleItemInteraction = () => {
+        this.props.InteractWithItem(this.props.item);
     }
 
     render() {
-        const dropButton = (<button onClick={this.handleItemDrop}>drop</button>);
+        const itemInteractButton = (<button onClick={this.handleItemInteraction}>{this.props.buttonValue}</button>);
 
-        const item = (<p>{this.props.item.name} </p>);
+        const item = (<p> {this.props.item.name}: {this.props.item.id} </p>);
 
         return (
             <li 
@@ -100,7 +109,7 @@ class PlayerInventory extends React.Component<inventoryProps, {view: boolean}> {
                 tabIndex={0}
                 className="box"
             >
-                {this.state.view ? item : dropButton}
+                {this.state.view ? item : itemInteractButton}
             </li>
         );
     }

@@ -3,8 +3,8 @@ import { Doorways } from '../models/doorways';
 
 export type StoreState = {
     message: MessageState;
-    player?: PlayerState;
-    gameMap?: GameMapState;
+    player: PlayerState;
+    gameMap: GameMapState;
 };
 
 export type MessageState = {

@@ -25,9 +25,11 @@ const mapPath =  new Doorways(c.MAX_ROOMS, [c.GRID_WIDTH, c.GRID_HEIGHT]);
 
 const roomCoords = mapPath.getConnectedRooms();
 
+let idCounter = 0;
+
 const testItem = (): Item[] => {
     let roomItem: Item = {
-        id: 1,
+        id: idCounter++,
         name: 'weapon',
         type: ItemType.weapon
     };

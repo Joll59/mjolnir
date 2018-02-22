@@ -16,16 +16,16 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 - [ ] LOGIC:
     - [ ] Review recursive call for creating doorways
-    - [ ] state management
-      - [ ] decide how to create rooms & find rooms.  
+    - [x] state management
+      - [x] decide how to create rooms & find rooms.
       Choices:
         - create room when player enters and push room into rooms array
         - have the Doorways class create rooms with items based on created doorways, method returns a rooms array. (Leaning heavily towards this choice.)
         - something i haven't thought of yet.
-      - [ ] rooms array in state.
-        - [ ] create rooms with:
-          - [ ] inventory: an array of Item Objects.
-          - [ ] Location/ID: x,y coordinates
+      - [x] rooms array in state.
+        - [x] create rooms with:
+          - [x] inventory: an array of Item Objects.
+          - [x] Location/ID: x,y coordinates
 
 - [ ] GUI:
     - [ ] Improve Visuals

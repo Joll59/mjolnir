@@ -104,11 +104,21 @@ export class Doorways {
             }
         );
     }
-
+    /**
+     * method to return coordinates of the first room in generated doorways or return origin if algorithm fails. 
+     */
     startingRoom = () => {
-        return this.doorways[0].from;
+        if (this.doorways[0]) {
+            return this.doorways[0].from;
+        }
+        return <[number, number]> [0, 0];
     }
 
+    /**
+     * returns the expected room(coordinates) from the current room provided and the direction of movement.
+     * @param room x,y coordinate of a room e.g. [0,0]
+     * @param direction: direction you want to check: N,W,S,E
+     */
     roomToFromDirection = (room: [number, number], direction: Direction): [number, number] => {
         switch (direction) {
             case 'S':
@@ -124,6 +134,11 @@ export class Doorways {
         }
     }
 
+    /**
+     * a method when given a room coordinate and a direction will check if there a doorway there.
+     * @param room: x,y coordinate of a room e.g. [0,0]
+     * @param direction: direction you want to check: N,W,S,E
+     */
     isDoorway = (room: [number, number], direction: Direction): boolean => {
         let normDoor = this.normalizeDoorway({
             from: room,
@@ -164,8 +179,7 @@ export class Doorways {
             arrayEquals(doorway.to, room) || arrayEquals(doorway.from, room));
         }
 
-            // FIXME: complete recursive solution
-            
+    // FIXME: complete recursive solution     
     private createDoorways = (roomCount: number, room: [number, number]) => {
 
         const validDirections = [];
@@ -230,7 +244,7 @@ export class Doorways {
             to: this.roomToFromDirection(room, direction)
         })
     )
-
+    
     private normalizeDoorway(
         doorway: Doorway
     ) {
