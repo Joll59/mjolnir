@@ -49,9 +49,9 @@ export enum playerAction {
 // GAME LOGIC TYPES
 
 export enum ItemType {
-    weapon,
-    health,
-    armor,
+    weapon = 'weapon',
+    health = 'health',
+    armor = 'armor',
 }
 
 export type Direction = 'N' | 'S' | 'E' | 'W' ;
@@ -83,7 +83,7 @@ export interface Entity {
     location?: [number, number];
 }
 
-export interface PlayerState extends Entity {
+export interface PlayerState {
     name: string;
     health: number;
     initialHealth: number;
@@ -98,7 +98,7 @@ export interface PlayerState extends Entity {
     // levelUpThreshold: number;
 }
 
-export interface Room extends Entity {
+export interface Room {
     inventory: Item[];
     description: string;
     location: [number, number];

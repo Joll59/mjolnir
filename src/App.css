@@ -70,8 +70,26 @@ grid-row: 2;
 
 .wrapper {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(16, 0.5fr);
+  grid-template-rows: repeat(2, 1fr);
   grid-gap: 10px;
+}
+
+.box {
+  background-color: #444;
+  color: #fff;
+  border-radius: 5px;
+  padding: 20px;
+  font-size: 150%;
+}
+
+.box:nth-child(even) {
+  background-color: #ccc;
+  color: #000;
+}
+
+ul {
+  list-style-type: none;
 }
 
 /* 

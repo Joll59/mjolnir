@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch, AnyAction } from 'redux';
 import { handleUserChatInput } from './actions/user';
 import { setPlayerLocation, pickUpItem, dropItem } from './actions/player';
-import { StoreState, Item, Direction } from './types/index';
+import { StoreState, Item, Direction, Room } from './types/index';
 import { Chat, HeadsUpDisplay as HUD, Gamemap } from './components';
 
 interface DispatchProps {
@@ -65,27 +65,42 @@ class App extends React.Component<Props, StoreState> {
   }
 
   public render(): JSX.Element {
-    let { /*pickUpItem,*/ dropItem, player, message, gameMap } = this.props;
-
-    // let methods = {
-    //   pickUpItem, dropItem
-    // };
+    let { pickUpItem, dropItem, player, message, gameMap } = this.props;
+    let currentRoom: Room | undefined = gameMap!.rooms.find(room => room.location === player!.location)
 
     return (
       <div>
         <h2 className="App-header">Mjolnir</h2>
         <div>
-          <HUD player={player!} dropItem={dropItem}/>
-          <Gamemap grid={gameMap!.grid} mapPath={gameMap!.map} playerLocation={player!.location} />
-          <Chat
-          messageList={message.messageList}
-          handleUserChatInput={(e: React.KeyboardEvent<HTMLInputElement>) => this.handleInput(e)}
+          <HUD 
+            player={player!} 
+            dropItem={dropItem}
+            pickUpItem={pickUpItem}
+            currentRoom={currentRoom}
           />
-          </div>
-              <div className='center'>
-                    {gameMap!.map.possibleExits(player!.location).map(
-                      (door, index) => <Exit key={index} exitDirection={door} exitClick={this.handleInput} />)}
-              </div>
+          <Gamemap 
+            grid={gameMap!.grid} 
+            mapPath={gameMap!.map}
+            playerLocation={player!.location}
+          />
+          <Chat
+            messageList={message.messageList}
+            handleUserChatInput={(e: React.KeyboardEvent<HTMLInputElement>) => this.handleInput(e)}
+          />
+        </div>
+        <div className='center'>
+              {gameMap!.map.possibleExits(player!.location).map(
+                (
+                  door, 
+                  index) => 
+                  <Exit 
+                    key={index} 
+                    exitDirection={door} 
+                    exitClick={this.handleInput} 
+                  />
+                )
+              }
+        </div>
       </div>
     );
   }
