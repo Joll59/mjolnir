@@ -1,4 +1,4 @@
-import { setPlayerLocation, pickUpItem, dropItem } from '../../actions/player';
+import { setPlayerLocation, addItem, removeItem } from '../../actions/player';
 import { PlayerReducer } from '../../reducers/player';
 import { expect } from 'chai';
 import { PlayerState, Weapon, ItemType } from '../../types/index';
@@ -34,14 +34,14 @@ describe('PlayerReducer ', () => {
     describe('player inventory', () => {
         it( 'adds item to player inventory',
             () => {
-                nextState = PlayerReducer(state, pickUpItem(fist) );
+                nextState = PlayerReducer(state, addItem(fist));
                 expect(nextState).to.deep.equal({...state, inventory: [fist]});
             }
         );
 
         it ( 'removes item from player inventory',
              () => {
-                nextState = PlayerReducer(state, dropItem(fist));
+                nextState = PlayerReducer(state, removeItem(fist));
                 expect(nextState).to.deep.equal(state);
              }
         );

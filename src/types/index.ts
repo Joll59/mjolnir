@@ -33,11 +33,12 @@ export enum mapAction {
 
 export enum roomAction {
     newMap = 'NEW_MAP',
+    playerTakesItem = 'ADD_ITEM'
 }
 
 export enum playerAction {
-    pickUpItem = 'PICK_UP_ITEM',
-    dropItem = 'DROP_ITEM',
+    addItem = 'ADD_ITEM',
+    removeItem = 'REMOVE_ITEM',
     setLocation = 'SET_LOCATION',
     // useItem = 'USE_ITEM',
     // attack = 'ATTACK',

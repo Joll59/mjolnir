@@ -1,6 +1,7 @@
 import * as React from 'react';
+
 import { percentage25, percentage50, percentage80 } from '../helpers/random';
-import { PlayerState, Item, Room, Entity } from '../types';
+import { Entity, Item, PlayerState, Room } from '../types';
 
 interface PassedProps {
     player: PlayerState;
@@ -14,7 +15,7 @@ export class HeadsUpDisplay extends React.Component<PassedProps, { viewPlayerInv
     constructor (props: PassedProps) {
         super (props);
         this.state = {
-            viewPlayerInv: false, 
+            viewPlayerInv: false,
             viewRoomInv: false
         };
     }
@@ -27,24 +28,27 @@ export class HeadsUpDisplay extends React.Component<PassedProps, { viewPlayerInv
         this.setState({viewRoomInv: !this.state.viewRoomInv});
     }
 
-    componentDidUpdate() {
-        console.log(this.props.currentRoom!.inventory);
-    }
-
-    Inventory: any = (entity: Entity, hideInvMethod: ()=> {}, itemClickMethod: (Item: Item)=>{}, buttonValue: string) => (
-        <ul className="wrapper">
-            {
-                entity.inventory!.map(x =>
-                    (<Inventory
-                        key={x.id + x.type}
-                        item={x}
-                        InteractWithItem={itemClickMethod}
-                        buttonValue={buttonValue}
-                    />)
-                )
-            }
-            <button onClick={hideInvMethod}> Hide </button>
-        </ul>
+    Inventory: any = (
+        entity: Entity, 
+        hideInvMethod: ()=> {}, 
+        itemClickMethod: (Item: Item)=>{}, 
+        buttonValue: string
+    ) => (
+        <section>
+            <ul className="wrapper">
+                {
+                    entity.inventory!.map(x =>
+                        (<Inventory
+                            key={x.id + x.type}
+                            item={x}
+                            InteractWithItem={itemClickMethod}
+                            buttonValue={buttonValue}
+                        />)
+                    )
+                }
+            </ul>
+            <button onClick={hideInvMethod}> Close </button>
+        </section>
     );
 
     render() {
@@ -60,9 +64,9 @@ export class HeadsUpDisplay extends React.Component<PassedProps, { viewPlayerInv
                 max={player.initialHealth} 
             />
         );
-        const showPlayerInvBtn = (<button onClick={this.viewPlayerInventory}>Inventory</button>);
+        const showPlayerInvBtn = (<button onClick={this.viewPlayerInventory}>Player Inventory</button>);
 
-        const showRoomInvBtn = (<button onClick={this.viewRoomInventory}> Chest in Room </button>);
+        const showRoomInvBtn = (<button onClick={this.viewRoomInventory}> Treasure Chest </button>);
 
         return (
             <div>

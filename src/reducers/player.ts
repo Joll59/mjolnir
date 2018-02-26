@@ -40,12 +40,12 @@ export const PlayerReducer: Reducer<PlayerState> = (
                 ...state, 
                 location: action.payload
             };
-        case playerAction.pickUpItem:
+        case playerAction.addItem:
             return {
                 ...state, 
                 inventory: [...state.inventory, action.item]
             };
-        case playerAction.dropItem:
+        case playerAction.removeItem:
             let newInventory = state.inventory.filter(item => item !== action.item);
             return {
                 ...state,

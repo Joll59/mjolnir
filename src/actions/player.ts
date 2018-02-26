@@ -7,16 +7,16 @@ export const setPlayerLocation = (
         payload: playerLocation
     });
 
-export const  pickUpItem = (
+export const  addItem = (
     item: Item,
 ) => ({
-        type: playerAction.pickUpItem,
+        type: playerAction.addItem,
         item
     });
 
-export const dropItem = (
+export const removeItem = (
     item: Item
 ) => ({
-        type: playerAction.dropItem,
+        type: playerAction.removeItem,
         item
     });
