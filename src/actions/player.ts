@@ -1,5 +1,9 @@
-import { playerAction, Item } from '../types';
+import { playerAction, Item, Room } from '../types';
 
+/**
+ * sets the current players location given coordinates, in a [number, number] form.
+ * @param playerLocation coordinates for current player location: [ x , y]
+ */
 export const setPlayerLocation = (
     playerLocation: [number, number],
 ) => ({
@@ -7,16 +11,17 @@ export const setPlayerLocation = (
         payload: playerLocation
     });
 
-export const  pickUpItem = (
-    item: Item,
+export const addItem = (
+    item: Item, room: Room
 ) => ({
-        type: playerAction.pickUpItem,
-        item
+        type: playerAction.addItem,
+        item, 
+        room
     });
 
-export const dropItem = (
+export const removeItem = (
     item: Item
 ) => ({
-        type: playerAction.dropItem,
+        type: playerAction.removeItem,
         item
     });

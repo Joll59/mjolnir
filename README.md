@@ -26,11 +26,19 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
         - [x] create rooms with:
           - [x] inventory: an array of Item Objects.
           - [x] Location/ID: x,y coordinates
+    - [ ] Player removes items from Room inventory.
+      - [x] add item into player inventory from room inventory.
+      - [ ] removing item from room inventory.
+        - [ ] create a room Reducer
+          - [ ] handles all room logic
+      - [x] remove item from player inventory.
 
 - [ ] GUI:
     - [ ] Improve Visuals
       - [ ] exit buttons should appear oriented to the direction they are pointing to. North exit should appear at top, East to right.
-      - [ ] Display Items in Rooms
+      - [ ] Display Items in Rooms.
+        - [X] display room inventory.
+        - [ ] display room description on entry.
 
 - [ ] CUI:
     - [ ] Implement Webchat

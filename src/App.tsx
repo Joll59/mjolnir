@@ -1,18 +1,20 @@
 import './App.css';
+
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { bindActionCreators, Dispatch, AnyAction } from 'redux';
+import { AnyAction, bindActionCreators, Dispatch } from 'redux';
+// import * as Rx from 'rxjs';
+
+import { removeItem, addItem, setPlayerLocation } from './actions/player';
 import { handleUserChatInput } from './actions/user';
-import { setPlayerLocation, pickUpItem, dropItem } from './actions/player';
-import { StoreState, Item, Direction, Room } from './types/index';
-import { Chat, HeadsUpDisplay as HUD, Gamemap } from './components';
-import * as Rx from 'rxjs';
+import { Chat, Gamemap, HeadsUpDisplay as HUD } from './components';
 import { arrayEquals } from './helpers/random';
+import { Direction, Item, Room, StoreState } from './types';
 
 interface DispatchProps {
   handleUserChatInput: (e: React.MouseEvent<HTMLButtonElement> | React.KeyboardEvent<HTMLInputElement>) => {};
-  pickUpItem: (Item: Item) => {};
-  dropItem: (Item: Item) => {};
+  addItem: (Item: Item, room: Room | undefined) => {};
+  removeItem: (Item: Item) => {};
   setPlayerLocation: (location: [number, number]) => {};
 }
 
@@ -23,8 +25,7 @@ interface DirectionProps {
 
 /**
  * Exit component representing the passing from one room to another. 
- * It provides a button to UI for a player move action from one room to another.
- *
+ * It provides button for player move action from one room to another.
  */
 class Exit extends React.Component<DirectionProps, {}> {
   render() {
@@ -38,6 +39,9 @@ class Exit extends React.Component<DirectionProps, {}> {
 
 type Props = StoreState & DispatchProps;
 
+/** 
+ * top level component.
+*/
 class App extends React.Component<Props, StoreState> {
 
   componentDidMount() {
@@ -66,10 +70,15 @@ class App extends React.Component<Props, StoreState> {
     this.props.handleUserChatInput(e);
   }
 
-  currentObservableRoom = Rx.Observable.of(this.props.player!.location);
+  givePlayerItem = (item:Item) => {
+    //now i can have player location hard wired in ..... by modifying the removeItem method here. 
+    let currentRoom: Room | undefined = this.props.gameMap.rooms.find(room => arrayEquals(room.location, this.props.player.location));
+    return this.props.addItem(item, currentRoom)
+  }
+  // currentObservableRoom = Rx.Observable.of(this.props.player!.location);
 
 public render(): JSX.Element {
-  let { pickUpItem, dropItem, player, message, gameMap } = this.props;
+  let { removeItem, player, message, gameMap } = this.props;
   let currentRoom: Room | undefined = gameMap.rooms.find(room => arrayEquals(room.location, player.location));
   
   return (
@@ -78,19 +87,22 @@ public render(): JSX.Element {
         <div>
           <HUD 
             player={player!} 
-            dropItem={dropItem}
-            pickUpItem={pickUpItem}
+            dropItem={removeItem}
+            pickUpItem={this.givePlayerItem}
             currentRoom={currentRoom}
           />
+
           <Gamemap 
             grid={gameMap!.grid} 
             mapPath={gameMap!.map}
             playerLocation={player!.location}
           />
+
           <Chat
             messageList={message.messageList}
             handleUserChatInput={(e: React.KeyboardEvent<HTMLInputElement>) => this.handleInput(e)}
           />
+
         </div>
         <div className="center">
               {gameMap!.map.possibleExits(player!.location).map(
@@ -113,8 +125,8 @@ public render(): JSX.Element {
 const actionCreator = {
   handleUserChatInput,
   setPlayerLocation,
-  pickUpItem,
-  dropItem
+  addItem,
+  removeItem
 };
 
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => {
