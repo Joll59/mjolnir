@@ -1,7 +1,7 @@
 import { setPlayerLocation, addItem, removeItem } from '../../actions/player';
 import { PlayerReducer } from '../../reducers/player';
-import { expect } from 'chai';
 import { PlayerState, Weapon, ItemType } from '../../types/index';
+import { oneRoomState } from './rooms.test';
 
 const state = {
         name: 'New Player', 
@@ -27,22 +27,22 @@ describe('PlayerReducer ', () => {
     it( 'sets player location',
         () => {
             nextState = PlayerReducer(state, setPlayerLocation([1, 1]));
-            expect(nextState).to.deep.equal({...state, location: [1, 1]});
+            expect(nextState).toMatchObject({...state, location: [1, 1]});
         }
     );
 
     describe('player inventory', () => {
         it( 'adds item to player inventory',
             () => {
-                nextState = PlayerReducer(state, addItem(fist));
-                expect(nextState).to.deep.equal({...state, inventory: [fist]});
+                nextState = PlayerReducer(state, addItem(fist, oneRoomState));
+                expect(nextState).toMatchObject({...state, inventory: [fist]});
             }
         );
 
         it ( 'removes item from player inventory',
              () => {
                 nextState = PlayerReducer(state, removeItem(fist));
-                expect(nextState).to.deep.equal(state);
+                expect(nextState).toMatchObject(state);
              }
         );
     });

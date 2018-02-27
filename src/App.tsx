@@ -3,7 +3,7 @@ import './App.css';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { AnyAction, bindActionCreators, Dispatch } from 'redux';
-import * as Rx from 'rxjs';
+// import * as Rx from 'rxjs';
 
 import { removeItem, addItem, setPlayerLocation } from './actions/player';
 import { handleUserChatInput } from './actions/user';
@@ -13,7 +13,7 @@ import { Direction, Item, Room, StoreState } from './types';
 
 interface DispatchProps {
   handleUserChatInput: (e: React.MouseEvent<HTMLButtonElement> | React.KeyboardEvent<HTMLInputElement>) => {};
-  addItem: (Item: Item) => {};
+  addItem: (Item: Item, room: Room | undefined) => {};
   removeItem: (Item: Item) => {};
   setPlayerLocation: (location: [number, number]) => {};
 }
@@ -39,6 +39,9 @@ class Exit extends React.Component<DirectionProps, {}> {
 
 type Props = StoreState & DispatchProps;
 
+/** 
+ * top level component.
+*/
 class App extends React.Component<Props, StoreState> {
 
   componentDidMount() {
@@ -67,10 +70,15 @@ class App extends React.Component<Props, StoreState> {
     this.props.handleUserChatInput(e);
   }
 
-  currentObservableRoom = Rx.Observable.of(this.props.player!.location);
+  givePlayerItem = (item:Item) => {
+    //now i can have player location hard wired in ..... by modifying the removeItem method here. 
+    let currentRoom: Room | undefined = this.props.gameMap.rooms.find(room => arrayEquals(room.location, this.props.player.location));
+    return this.props.addItem(item, currentRoom)
+  }
+  // currentObservableRoom = Rx.Observable.of(this.props.player!.location);
 
 public render(): JSX.Element {
-  let { addItem, removeItem, player, message, gameMap } = this.props;
+  let { removeItem, player, message, gameMap } = this.props;
   let currentRoom: Room | undefined = gameMap.rooms.find(room => arrayEquals(room.location, player.location));
   
   return (
@@ -80,7 +88,7 @@ public render(): JSX.Element {
           <HUD 
             player={player!} 
             dropItem={removeItem}
-            pickUpItem={addItem}
+            pickUpItem={this.givePlayerItem}
             currentRoom={currentRoom}
           />
 

@@ -2,7 +2,7 @@ import { AnyAction, Reducer } from 'redux';
 
 import { Doorways } from '../models/doorways';
 import { GameMapState, Item, ItemType, mapAction, Room, roomAction, playerAction } from '../types';
-import { RoomsReducer } from './room';
+import { RoomsReducer } from './rooms';
 
 // import { getRandomInt } from '../helpers/random';
 
