@@ -32,7 +32,6 @@ export enum mapAction {
 }
 
 export enum roomAction {
-    newMap = 'NEW_MAP',
     playerTakesItem = 'ADD_ITEM'
 }
 

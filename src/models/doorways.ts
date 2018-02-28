@@ -183,17 +183,32 @@ export class Doorways {
     private createDoorways = (roomCount: number, room: [number, number]) => {
 
         const validDirections = [];
+
         for (let direction in DirectionEnum) {
             if (!Number(direction) &&
                 this.isDoorwayonGrid(room, <Direction> direction) &&
                 !this.isDoorway(room, <Direction> direction)
             ) {
                 validDirections.push(direction);
-            }
+            } 
+        }
+
+        if (validDirections.length < 1){
+            return 
         }
 
         const randomLoop = Math.floor(Math.random() * validDirections.length);
-        let availableDirection = validDirections.splice(randomLoop, getRandomInt(0, validDirections.length));
+        console.log('Value of RandomLoop::::', randomLoop);
+        const removeAmount = getRandomInt(1, validDirections.length);
+
+        let availableDirection = validDirections.splice(randomLoop, removeAmount);
+
+           if (availableDirection.length < 1)
+           {    
+               let test = 1 + 1 ;
+               console.log('breakpoint', test)
+           } 
+           
 
         // const availableDirection = [];
         for (let i = 0; i < randomLoop; i++) {

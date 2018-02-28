@@ -1,76 +1,10 @@
-
-/* .App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 80px;
-} */
-
-/* body > #root > div {
-  height: 80vh;
-} */
-
-/* .App-header {
-  background-color: rgba(206, 100, 100, 0.541);
-  text-align: center;
-  height: 150px; 
-  padding: 50px;
-  color: white;
-} */
-
-/* .App-intro {
-  font-size: large;
-} */
-
-/* @keyframes App-logo-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-} */
-
-/* 
-.gui{
-  display: grid;
-  height: 100%;
-  grid-template-columns: 75% 25%;
-  grid-template-rows: 80% 20%; 
-  grid-gap: .5%;
-  grid-template-areas: 
-    "App App chat";
-} */
-
-/* .App {
-  grid-column: 1/2;
-  order: 0; 
-} */
-
 .center{
   text-align: center;
 }
 
-
-/* .message {
-  color: #222;
-  background-color: aliceblue
-} */
-
-/* .user {
-  color: rgb(223, 221, 213);
-  background-color: rgb(73, 73, 172)
-} */
-
-/* .chat {
-    display: grid; 
-   grid-column: 2/3; 
-   background-color: rgb(163, 198, 212); 
-   order:1; 
-   padding: 20px; 
- } */ 
-
-/* .chat-input {
-grid-row: 2;
-} */
-
 .wrapper {
   display: grid;
-  grid-template-columns: repeat(16, 0.5fr);
+  grid-template-columns: repeat(5, 0.5fr);
   grid-template-rows: repeat(2, 1fr);
   grid-gap: 10px;
 }
@@ -91,6 +25,48 @@ grid-row: 2;
 ul {
   list-style-type: none;
 }
+
+.exit {
+  margin: 2rem;
+}
+
+.lowerLeft {
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+}
+
+.lowerRight {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+}
+
+.upperRight {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+}
+
+/* .N {
+  position: absolute;
+  top: 8px;
+}
+
+.S {
+  position: absolute;
+  bottom: 8px;
+}
+
+.E {
+  position: absolute;
+  right: 8px;
+}
+
+.W {
+  position: absolute;
+  left: 8px;
+} */
 
 /* 
 *heads p display CSS:

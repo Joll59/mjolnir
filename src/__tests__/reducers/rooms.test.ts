@@ -13,12 +13,12 @@ describe('RoomsReducer', () => {
     
     it('RoomsReducer is Defined', 
         () => {
-            expect(RoomsReducer(allRoomsState, {type: ''})).toBeDefined();
+            expect(RoomsReducer).toBeDefined();
         });
 
     it('RoomsReducer When called with NEW_MAP returns default state', 
         () => {
-            expect(RoomsReducer(allRoomsState, {type: 'NEW_MAP'})).toMatchObject(allRoomsState);
+            expect(RoomsReducer(allRoomsState, {type: 'INIT'})).toMatchObject(allRoomsState);
         });
 
     it( 'state is an array of rooms',
@@ -27,10 +27,11 @@ describe('RoomsReducer', () => {
         }
     );
 
-    describe('RoomReducer', () => {
-        it('RoomsReducer is Defined', 
+    describe('RoomReducer: Reducer for Individual room', () => {
+        
+        it('RoomReducer is Defined', 
             () => {
-                expect(RoomsReducer(allRoomsState, {type: ''})).toBeDefined();
+                expect(RoomReducer).toBeDefined();
             });
 
         it('RoomReducer returns default state', 

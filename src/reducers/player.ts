@@ -3,6 +3,7 @@ import { PlayerState, ItemType, playerAction } from '../types/index';
 import { getRandomInt } from '../helpers/random';
 
 let health = getRandomInt(0, 250);
+
 let weapon = {
     id: 1, 
     power: Math.floor(Math.random() * 10) + 5, 

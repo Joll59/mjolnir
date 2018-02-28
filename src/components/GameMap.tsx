@@ -40,7 +40,7 @@ const MapRow = ({ rows, mapPath, playerLocation }: MapRowData) => (
 );
 
 export const Gamemap = ({ grid, mapPath, playerLocation }: WholeGrid, ) => (
-    <table>
+    <table className={"lowerLeft"}>
         <tbody>
             {
                 grid.map((rows, index) =>

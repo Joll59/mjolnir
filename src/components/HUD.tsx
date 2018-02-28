@@ -2,6 +2,7 @@ import * as React from 'react';
 
 import { percentage25, percentage50, percentage80 } from '../helpers/random';
 import { Entity, Item, PlayerState, Room } from '../types';
+import { DefaultButton } from  'office-ui-fabric-react/lib/Button';
 
 interface PassedProps {
     player: PlayerState;
@@ -28,7 +29,7 @@ export class HeadsUpDisplay extends React.Component<PassedProps, { viewPlayerInv
         this.setState({viewRoomInv: !this.state.viewRoomInv});
     }
 
-    Inventory: any = (
+    createInventory: any = (
         entity: Entity, 
         hideInvMethod: ()=> {}, 
         itemClickMethod: (Item: Item)=>{}, 
@@ -47,7 +48,7 @@ export class HeadsUpDisplay extends React.Component<PassedProps, { viewPlayerInv
                     )
                 }
             </ul>
-            <button onClick={hideInvMethod}> Close </button>
+            <DefaultButton onClick={hideInvMethod}> Close </DefaultButton>
         </section>
     );
 
@@ -64,16 +65,16 @@ export class HeadsUpDisplay extends React.Component<PassedProps, { viewPlayerInv
                 max={player.initialHealth} 
             />
         );
-        const showPlayerInvBtn = (<button onClick={this.viewPlayerInventory}>Player Inventory</button>);
+        const showPlayerInvBtn = (<DefaultButton onClick={this.viewPlayerInventory}>Player Inventory</DefaultButton>);
 
-        const showRoomInvBtn = (<button onClick={this.viewRoomInventory}> Treasure Chest </button>);
+        const showRoomInvBtn = (<DefaultButton onClick={this.viewRoomInventory}> Treasure Chest </DefaultButton>);
 
         return (
             <div>
                 <div className="center" hidden={true}> {healthBar} </div>
-                <div>{this.state.viewPlayerInv ? this.Inventory(player, this.viewPlayerInventory, this.props.dropItem, 'drop') : showPlayerInvBtn}</div>
+                <div className="lowerRight">{this.state.viewPlayerInv ? this.createInventory(player, this.viewPlayerInventory, this.props.dropItem, 'drop') : showPlayerInvBtn}</div>
                 <div>
-                {currentRoom && this.state.viewRoomInv ? this.Inventory(currentRoom,this.viewRoomInventory, this.props.pickUpItem, 'add to inventory') : showRoomInvBtn}
+                {currentRoom && this.state.viewRoomInv ? this.createInventory(currentRoom,this.viewRoomInventory, this.props.pickUpItem, 'add to inventory') : showRoomInvBtn}
                 </div>
             </div>
         );
@@ -103,7 +104,7 @@ class Inventory extends React.Component<InventoryProps, {view: boolean}> {
     }
 
     render() {
-        const itemInteractButton = (<button onClick={this.handleItemInteraction}>{this.props.buttonValue}</button>);
+        const itemInteractButton = (<DefaultButton onClick={this.handleItemInteraction}>{this.props.buttonValue}</DefaultButton>);
 
         const item = (<p> {this.props.item.name}: {this.props.item.id} </p>);
 
