@@ -28,7 +28,7 @@ export class HeadsUpDisplay extends React.Component<PassedProps, { viewPlayerInv
         this.setState({viewRoomInv: !this.state.viewRoomInv});
     }
 
-    Inventory: any = (
+    createInventory: any = (
         entity: Entity, 
         hideInvMethod: ()=> {}, 
         itemClickMethod: (Item: Item)=>{}, 
@@ -71,9 +71,9 @@ export class HeadsUpDisplay extends React.Component<PassedProps, { viewPlayerInv
         return (
             <div>
                 <div className="center" hidden={true}> {healthBar} </div>
-                <div>{this.state.viewPlayerInv ? this.Inventory(player, this.viewPlayerInventory, this.props.dropItem, 'drop') : showPlayerInvBtn}</div>
+                <div className="lowerRight">{this.state.viewPlayerInv ? this.createInventory(player, this.viewPlayerInventory, this.props.dropItem, 'drop') : showPlayerInvBtn}</div>
                 <div>
-                {currentRoom && this.state.viewRoomInv ? this.Inventory(currentRoom,this.viewRoomInventory, this.props.pickUpItem, 'add to inventory') : showRoomInvBtn}
+                {currentRoom && this.state.viewRoomInv ? this.createInventory(currentRoom,this.viewRoomInventory, this.props.pickUpItem, 'add to inventory') : showRoomInvBtn}
                 </div>
             </div>
         );

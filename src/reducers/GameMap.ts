@@ -1,7 +1,7 @@
 import { AnyAction, Reducer } from 'redux';
 
 import { Doorways } from '../models/doorways';
-import { GameMapState, Item, ItemType, mapAction, Room, roomAction, playerAction } from '../types';
+import { GameMapState, Item, ItemType, mapAction, Room, playerAction } from '../types';
 import { RoomsReducer } from './rooms';
 
 // import { getRandomInt } from '../helpers/random';
@@ -25,7 +25,7 @@ const createGrid = () => {
 
 const mapPath =  new Doorways(c.MAX_ROOMS, [c.GRID_WIDTH, c.GRID_HEIGHT]);
 
-const roomCoords = mapPath.getConnectedRooms();
+const coordinatesForAllRooms = mapPath.getConnectedRooms();
 
 let idCounter = 0;
 
@@ -38,20 +38,20 @@ const testItem = (): Item => {
     return roomItem;
 };
 
-const generateRoom = (location: [number, number]): Room => {
+const generateRoom = (roomCoordinate: [number, number]): Room => {
     return {
-        inventory: [testItem(), testItem()],
-        description: `room at map coordinates X:${location[0]}, Y:${location[1]}`,
-        location: location
+        description: `Room X:${roomCoordinate[0]}, Y:${roomCoordinate[1]}`,
+        inventory: [testItem()],
+        location: roomCoordinate,
     };
 };
 
-const rooms = roomCoords.map(room => generateRoom(room));
+const rooms = coordinatesForAllRooms.map(coordinate => generateRoom(coordinate));
 
 const InitialState: GameMapState = {
     grid: createGrid(),
     map: mapPath,
-    rooms: RoomsReducer(rooms, {type: roomAction.newMap}),
+    rooms: RoomsReducer(rooms, {type: 'INIT'}),
 };
 
 export const GameMapReducer: Reducer<GameMapState> = (
@@ -60,7 +60,7 @@ export const GameMapReducer: Reducer<GameMapState> = (
 ) => {
     switch (action.type) {
         case mapAction.newLevel:
-            return state;
+            return InitialState;
         case playerAction.addItem: 
             return {
                 ...state, rooms: RoomsReducer(state.rooms, action)

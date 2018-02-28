@@ -10,7 +10,7 @@ interface ChatProps {
 
 export const Chat = ( {messageList, handleUserChatInput}: ChatProps) => {
         return (
-            <div className="chat">
+            <div className="chat upperRight">
                 {messageList.map((message, index) => {
                     return <Message key={index} {...message}/>;
                 })}

@@ -10,7 +10,9 @@ import { handleUserChatInput } from './actions/user';
 import { Chat, Gamemap, HeadsUpDisplay as HUD } from './components';
 import { arrayEquals } from './helpers/random';
 import { Direction, Item, Room, StoreState } from './types';
-
+import { DefaultButton } from  'office-ui-fabric-react/lib/Button';
+import { initializeIcons } from '@uifabric/icons';
+initializeIcons();
 interface DispatchProps {
   handleUserChatInput: (e: React.MouseEvent<HTMLButtonElement> | React.KeyboardEvent<HTMLInputElement>) => {};
   addItem: (Item: Item, room: Room | undefined) => {};
@@ -20,7 +22,7 @@ interface DispatchProps {
 
 interface DirectionProps {
   exitDirection: string;
-  exitClick: (e: React.SyntheticEvent<Element>) => void;
+  exitClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
 /**
@@ -30,11 +32,14 @@ interface DirectionProps {
 class Exit extends React.Component<DirectionProps, {}> {
   render() {
     return (
-      <button onClick={(e: React.SyntheticEvent<Element>) => this.props.exitClick(e)}>
-        Exit to {this.props.exitDirection}
-      </button>);
+      <DefaultButton
+        onClick={(e: React.MouseEvent<HTMLButtonElement>) => this.props.exitClick(e)}
+        className={`exit ${this.props.exitDirection}`}
+        // iconProps={{iconName: `CompassN${this.props.exitDirection}`}}
+      >
+      Exit to {this.props.exitDirection}
+    </DefaultButton>);
   }
-
 }
 
 type Props = StoreState & DispatchProps;
@@ -70,30 +75,31 @@ class App extends React.Component<Props, StoreState> {
     this.props.handleUserChatInput(e);
   }
 
-  givePlayerItem = (item:Item) => {
+  givePlayerItem = (item: Item) => {
     //now i can have player location hard wired in ..... by modifying the removeItem method here. 
     let currentRoom: Room | undefined = this.props.gameMap.rooms.find(room => arrayEquals(room.location, this.props.player.location));
-    return this.props.addItem(item, currentRoom)
+    return this.props.addItem(item, currentRoom);
   }
   // currentObservableRoom = Rx.Observable.of(this.props.player!.location);
 
-public render(): JSX.Element {
-  let { removeItem, player, message, gameMap } = this.props;
-  let currentRoom: Room | undefined = gameMap.rooms.find(room => arrayEquals(room.location, player.location));
-  
-  return (
+  public render(): JSX.Element {
+    let { removeItem, player, message, gameMap } = this.props;
+    let currentRoom: Room | undefined = gameMap.rooms.find(room => arrayEquals(room.location, player.location));
+
+    return (
       <div>
-        <h2 className="App-header">Mjolnir</h2>
+        <h2 className="center">Mjolnir</h2>
         <div>
-          <HUD 
-            player={player!} 
+        <div>
+          <HUD
+            player={player!}
             dropItem={removeItem}
             pickUpItem={this.givePlayerItem}
             currentRoom={currentRoom}
           />
 
-          <Gamemap 
-            grid={gameMap!.grid} 
+          <Gamemap
+            grid={gameMap!.grid}
             mapPath={gameMap!.map}
             playerLocation={player!.location}
           />
@@ -104,18 +110,17 @@ public render(): JSX.Element {
           />
 
         </div>
-        <div className="center">
-              {gameMap!.map.possibleExits(player!.location).map(
-                (
-                  door, 
-                  index) => 
-                  <Exit 
-                    key={index} 
-                    exitDirection={door} 
-                    exitClick={this.handleInput} 
-                  />
-                )
-              }
+          {gameMap!.map.possibleExits(player!.location).map(
+            (
+              door,
+              index) =>
+              <Exit
+                key={index}
+                exitDirection={door}
+                exitClick={this.handleInput}
+              />
+          )
+          }
         </div>
       </div>
     );

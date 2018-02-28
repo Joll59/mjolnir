@@ -23,7 +23,10 @@ const fist: Weapon = {
 
 let nextState: PlayerState;
 describe('PlayerReducer ', () => {
-    
+    it('returns inital state', () => {
+        expect(PlayerReducer(state, {type: "INIT"})).toMatchObject(state)
+    });
+
     it( 'sets player location',
         () => {
             nextState = PlayerReducer(state, setPlayerLocation([1, 1]));

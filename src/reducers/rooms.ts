@@ -40,4 +40,4 @@ export const RoomReducer: Reducer<Room> = (state, action: AnyAction) => {
     }
 }
 
-// HELP: would it make sense to have an inventory reducer instead.??? takes an inventory as state and returns a new inventory......simple enough so both player and room use that reducer for any invetory action..... worth exploring. 
+// IDEA: would it make sense to have an inventory reducer instead.??? takes an inventory as state and returns a new inventory......simple enough so both player and room use that reducer for any invetory action..... worth exploring. 

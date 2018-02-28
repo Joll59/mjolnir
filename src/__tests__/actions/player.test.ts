@@ -25,15 +25,15 @@ describe('Player Action Creators', () => {
         });
     });
 
-    describe('removeItem', () => {
-        it('creates Player remove item action when item is given', () => {
-            expect(removeItem(item)).toMatchObject(removeItemAction)
-        });
-    });
-
     describe('addItem', () => {
         it('creates Player add item action when item is given', () => {
             expect(addItem(item,oneRoomState)).toMatchObject(addItemAction)
+        });
+    });
+
+    describe('removeItem', () => {
+        it('creates Player remove item action when item is given', () => {
+            expect(removeItem(item)).toMatchObject(removeItemAction)
         });
     });
 });
