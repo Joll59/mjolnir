@@ -7,9 +7,9 @@ import { RoomsReducer } from './rooms';
 // import { getRandomInt } from '../helpers/random';
 
 const c = {
-    GRID_HEIGHT: 5,
-    GRID_WIDTH: 5,
-    MAX_ROOMS: 10,
+    GRID_HEIGHT: 4,
+    GRID_WIDTH: 4,
+    MAX_ROOMS: 6,
 };
   
 const createGrid = () => {

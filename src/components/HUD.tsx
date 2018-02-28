@@ -2,6 +2,7 @@ import * as React from 'react';
 
 import { percentage25, percentage50, percentage80 } from '../helpers/random';
 import { Entity, Item, PlayerState, Room } from '../types';
+import { DefaultButton } from  'office-ui-fabric-react/lib/Button';
 
 interface PassedProps {
     player: PlayerState;
@@ -47,7 +48,7 @@ export class HeadsUpDisplay extends React.Component<PassedProps, { viewPlayerInv
                     )
                 }
             </ul>
-            <button onClick={hideInvMethod}> Close </button>
+            <DefaultButton onClick={hideInvMethod}> Close </DefaultButton>
         </section>
     );
 
@@ -64,9 +65,9 @@ export class HeadsUpDisplay extends React.Component<PassedProps, { viewPlayerInv
                 max={player.initialHealth} 
             />
         );
-        const showPlayerInvBtn = (<button onClick={this.viewPlayerInventory}>Player Inventory</button>);
+        const showPlayerInvBtn = (<DefaultButton onClick={this.viewPlayerInventory}>Player Inventory</DefaultButton>);
 
-        const showRoomInvBtn = (<button onClick={this.viewRoomInventory}> Treasure Chest </button>);
+        const showRoomInvBtn = (<DefaultButton onClick={this.viewRoomInventory}> Treasure Chest </DefaultButton>);
 
         return (
             <div>
@@ -103,7 +104,7 @@ class Inventory extends React.Component<InventoryProps, {view: boolean}> {
     }
 
     render() {
-        const itemInteractButton = (<button onClick={this.handleItemInteraction}>{this.props.buttonValue}</button>);
+        const itemInteractButton = (<DefaultButton onClick={this.handleItemInteraction}>{this.props.buttonValue}</DefaultButton>);
 
         const item = (<p> {this.props.item.name}: {this.props.item.id} </p>);
 
