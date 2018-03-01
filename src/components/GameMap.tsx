@@ -1,6 +1,7 @@
 // import { Doorways } from './doorways';
 import * as React from 'react';
 import { arrayEquals } from '../helpers/random';
+import { Icon } from 'office-ui-fabric-react/lib/components/Icon';
 
 interface MapRowData {
     rows: Array<[number, number]>;
@@ -16,9 +17,11 @@ interface WholeGrid {
 
 const rowData = (data: [number, number], mapPath: any) => {
     if (mapPath.getConnectedDoorways(data).length > 0) {
-        return ` + `;
+        // return ` + `;
+        return <Icon iconName={'BoxAdditionSolid'}/>
     } else {
-        return `[_]`;
+        // return `[_]`;
+        return <Icon iconName={ 'StopSolid'}/>
     }
 };
 
@@ -28,7 +31,7 @@ const MapRow = ({ rows, mapPath, playerLocation }: MapRowData) => (
             rows.map((data, index) =>
                 <td 
                     key={index}
-                    className={arrayEquals(playerLocation, data) ? 'flash red center' : 'black center'}
+                    className={arrayEquals(playerLocation, data) ? 'flash green center' : 'black center'}
                 >
                     {
                         rowData(data, mapPath)

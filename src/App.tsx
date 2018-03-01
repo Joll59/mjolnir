@@ -35,7 +35,6 @@ class Exit extends React.Component<DirectionProps, {}> {
       <DefaultButton
         onClick={(e: React.MouseEvent<HTMLButtonElement>) => this.props.exitClick(e)}
         className={`exit ${this.props.exitDirection}`}
-        // iconProps={{iconName: `CompassN${this.props.exitDirection}`}}
       >
       Exit to {this.props.exitDirection}
     </DefaultButton>);
@@ -76,7 +75,6 @@ class App extends React.Component<Props, StoreState> {
   }
 
   givePlayerItem = (item: Item) => {
-    //now i can have player location hard wired in ..... by modifying the removeItem method here. 
     let currentRoom: Room | undefined = this.props.gameMap.rooms.find(room => arrayEquals(room.location, this.props.player.location));
     return this.props.addItem(item, currentRoom);
   }
