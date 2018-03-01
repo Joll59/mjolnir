@@ -21,7 +21,9 @@ export class HeadsUpDisplay extends React.Component<PassedProps, { viewPlayerInv
             viewRoomInv: false
         };
     }
-    
+    componentWillReceiveProps(){
+        this.setState({viewRoomInv: false});
+    }
     viewPlayerInventory = () => {
         this.setState({viewPlayerInv: !this.state.viewPlayerInv});
     }
@@ -107,7 +109,7 @@ class Inventory extends React.Component<InventoryProps, {view: boolean}> {
     render() {
         const itemInteractButton = (<DefaultButton onClick={this.handleItemInteraction} iconProps={{iconName: 'MiniExpand'}} title={this.props.buttonValue} ariaLabel={this.props.buttonValue}/>);
 
-        const item = (<p> {this.props.item.name}: {this.props.item.id} </p>);
+        const item = (<p className={'center'}>{this.props.item.name}</p>);
 
         return (
             <li 
