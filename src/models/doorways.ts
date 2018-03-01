@@ -22,62 +22,13 @@ export class Doorways {
         if (maxRoomCount === 1) {
             mapSize = [0, 0];
         }
-
         const startingRoom: [number, number] = [
             getRandomInt(1, this.mapSize[0] - 1),
             getRandomInt(1, this.mapSize[1] - 1)
         ] || [0, 0];
 
-        // let counter = 0;
-
-        // let gridArea = mapGridSize[1] + 1 * mapGridSize[0] + 1;
-
-        // FIXME: recursive method call. not perfect!
         this.createDoorways(maxRoomCount - 1, startingRoom);
 
-        // let room: [number, number] = startingRoom;
-
-        // const onGrid = (roomFrom: [number, number], direction: Direction): boolean => {
-        //         // FIXME: this function needs access to set the starting room currently fix that. 
-
-        //     let roomTo = this.roomToFromDirection(roomFrom, direction);
-        //     if (roomFrom[0] < 0 ||
-        //         roomFrom[1] < 0 ||
-        //         roomFrom[0] > this.mapGridSize[0]-1 ||
-        //         roomFrom[1] > this.mapGridSize[1]-1
-        //     ) {
-        //         room = startingRoom;
-        //         return false;
-        //     } else if (roomTo[0] < 0 ||
-        //         roomTo[1] < 0 ||
-        //         roomTo[0] > this.mapGridSize[0]-1 ||
-        //         roomTo[1] > this.mapGridSize[1]-1
-        //     ) {
-        //         room = startingRoom;
-        //         return false;
-        //     }
-
-        //     return true;
-        // };
-
-        // while (counter <= gridArea && this.numberOfDoorways() <= roomCount) {
-
-        //     let direction = <Direction> DirectionEnum[getRandomInt(1, 4)];
-
-        //     if (!this.isDoorway(room, direction) && onGrid(room, direction)) {
-
-        //         this.addDoorway(room, direction);
-
-        //         if (this.numberOfDoorways() > 2) {
-        //             let randomRoom = this.randomDoorway();
-        //             let roomRandomizer = [randomRoom.from, randomRoom.to];
-        //             // room = randomRoom.from;
-        //             room = roomRandomizer[getRandomInt(0, 1)];
-        //         }
-        //         room = this.lastDoorway().to;
-        //     }
-        //     counter++;
-        // }
     }
 
     possibleExits = (room: [number, number]) => {
@@ -108,10 +59,7 @@ export class Doorways {
      * method to return coordinates of the first room in generated doorways or return origin if algorithm fails. 
      */
     startingRoom = () => {
-        if (this.doorways[0]) {
-            return this.doorways[0].from;
-        }
-        return <[number, number]> [0, 0];
+        return this.doorways[0].from;
     }
 
     /**
