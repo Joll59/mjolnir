@@ -178,8 +178,7 @@ export class Doorways {
         return this.doorways.filter(doorway =>
             arrayEquals(doorway.to, room) || arrayEquals(doorway.from, room));
         }
-
-    // FIXME: complete recursive solution     
+  
     private createDoorways = (roomCount: number, room: [number, number]) => {
 
         const validDirections = [];
@@ -198,17 +197,10 @@ export class Doorways {
         }
 
         const randomLoop = Math.floor(Math.random() * validDirections.length);
-        console.log('Value of RandomLoop::::', randomLoop);
+        
         const removeAmount = getRandomInt(1, validDirections.length);
 
         let availableDirection = validDirections.splice(randomLoop, removeAmount);
-
-           if (availableDirection.length < 1)
-           {    
-               let test = 1 + 1 ;
-               console.log('breakpoint', test)
-           } 
-           
 
         // const availableDirection = [];
         for (let i = 0; i < randomLoop; i++) {

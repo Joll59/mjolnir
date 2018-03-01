@@ -16,7 +16,16 @@ export const RoomsReducer: Reducer<Room[]> = (
         //     return state;
         case roomAction.playerTakesItem: 
             let newState = state.filter(room => room !== action.room)
-            return [...newState, RoomReducer(action.room, {type: "GIVE_PLAYER_ITEM", item: action.item })]
+            return [
+                ...newState, 
+                RoomReducer( 
+                    action.room, 
+                    { 
+                        type: roomAction.givePlayerItem, 
+                        item: action.item 
+                    }
+                )
+            ]
         default:
             return state;
     }
@@ -29,7 +38,7 @@ export const RoomsReducer: Reducer<Room[]> = (
  */
 export const RoomReducer: Reducer<Room> = (state, action: AnyAction) => {
     switch (action.type) {
-        case "GIVE_PLAYER_ITEM":
+        case roomAction.givePlayerItem:
             let newInventory = state.inventory.filter(item => item !== action.item);
             return {
                 ...state,

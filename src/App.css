@@ -1,33 +1,56 @@
+body {
+  font-family: 'Anonymous Pro', monospace;
+  /* font-family: 'Inconsolata', monospace; */
+}
+
 .center{
   text-align: center;
 }
 
+.larger {
+  font-size: x-large !important; 
+}
+
+.redText{
+  color: red;
+}
+
+.parent{
+    display: grid;
+    grid-template-columns: repeat(5, 20%);
+    grid-template-rows: repeat(5, 20%);
+}
+
 .wrapper {
   display: grid;
-  grid-template-columns: repeat(5, 0.5fr);
+  grid-template-columns: repeat(5, 1fr);
   grid-template-rows: repeat(2, 1fr);
-  grid-gap: 10px;
+  width: 500px;
+  grid-gap: 5px;
+  justify-content: center;
+  position: relative;
+  font-family: 'Inconsolata', monospace;
 }
 
 .box {
-  background-color: #444;
-  color: #fff;
-  border-radius: 5px;
-  padding: 20px;
-  font-size: 150%;
-}
-
-.box:nth-child(even) {
   background-color: #ccc;
   color: #000;
+  border-radius: 3px;
+  padding: 5px;
+  font-size: 100%;
 }
+
+/* .box:nth-child(even) {
+ background-color: #444;
+  color: #fff;
+} */
 
 ul {
   list-style-type: none;
 }
 
 .exit {
-  margin: 2rem;
+  margin: 1%;
 }
 
 .lowerLeft {
@@ -46,6 +69,12 @@ ul {
   position: absolute;
   top: 8px;
   right: 8px;
+}
+
+.upperLeft{
+  position: absolute;
+  top: 8px;
+  left: 8px;
 }
 
 /* .N {
@@ -89,17 +118,20 @@ ul {
 /* apply class to health bar at low helath */
 
 .flash{
-  -webkit-animation: flash ease-in-out 3s infinite alternate;
-	  animation: flash ease-in-out 3s infinite alternate;
+  -webkit-animation: flash ease-in-out 5s infinite alternate;
+	  animation: flash ease-in-out 5s infinite alternate-reverse;
 }
 
-.red{
-  background-color: red;
+.green{
+  background-color: green;
+  border-radius: 20%;
 }
 
 .black {
   background-color: black;
   color: white;
+  border: 1px cornsilk;
+  border-radius: 15%;
 }
 
 /* 

@@ -32,7 +32,8 @@ export enum mapAction {
 }
 
 export enum roomAction {
-    playerTakesItem = 'ADD_ITEM'
+    playerTakesItem = 'ADD_ITEM',
+    givePlayerItem = "GIVE_PLAYER_ITEM"
 }
 
 export enum playerAction {
