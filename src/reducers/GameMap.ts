@@ -4,12 +4,12 @@ import { Doorways } from '../models/doorways';
 import { GameMapState, Item, ItemType, mapAction, Room, playerAction } from '../types';
 import { RoomsReducer } from './rooms';
 
-// import { getRandomInt } from '../helpers/random';
+import { getRandomInt } from '../helpers/random';
 
 const c = {
     GRID_HEIGHT: 4,
     GRID_WIDTH: 4,
-    MAX_ROOMS: 6,
+    MAX_ROOMS: 25,
 };
   
 const createGrid = () => {
@@ -29,19 +29,33 @@ const coordinatesForAllRooms = mapPath.getConnectedRooms();
 
 let idCounter = 0;
 
-const testItem = (): Item => {
-    let roomItem: Item = {
+const randomItem = (): Item[] => {
+    let itemTypes = [];
+    for (let item in ItemType) {
+        itemTypes.push(item);
+    }
+
+    const randomStart = Math.floor(Math.random() * itemTypes.length);
+    
+    const removeAmount = getRandomInt(0, itemTypes.length - 1);
+
+    let availableItemTypes = itemTypes.splice(randomStart, removeAmount);
+
+    return availableItemTypes.map(x => ({
+        
         id: idCounter++,
-        name: 'weapon',
-        type: ItemType.weapon
-    };
-    return roomItem;
+        name: `${x}${idCounter}`,
+        type: <ItemType>ItemType[x]
+    }));
 };
+
+
+
 
 const generateRoom = (roomCoordinate: [number, number]): Room => {
     return {
         description: `Room X:${roomCoordinate[0]}, Y:${roomCoordinate[1]}`,
-        inventory: [testItem()],
+        inventory: randomItem(),
         location: roomCoordinate,
     };
 };

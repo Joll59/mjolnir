@@ -50,9 +50,11 @@ export enum playerAction {
 // GAME LOGIC TYPES
 
 export enum ItemType {
-    weapon = 'weapon',
-    health = 'health',
     armor = 'armor',
+    nothing = 'nothing',
+    health = 'health',
+    chocolateCoins = 'chocolateCoins',
+    weapon = 'weapon',
 }
 
 export type Direction = 'N' | 'S' | 'E' | 'W' ;
