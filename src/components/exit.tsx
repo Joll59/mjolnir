@@ -19,6 +19,6 @@ export class Exit extends React.Component<DirectionProps, {}> {
           className={`exit ${this.props.exitDirection}`}
         >
         Exit to {this.props.exitDirection}
-      </DefaultButton>);
+        </DefaultButton>);
     }
   }

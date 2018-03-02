@@ -21,12 +21,12 @@ interface DispatchProps {
   setPlayerLocation: (location: [number, number]) => {};
 }
 
-type myUserEvent = React.MouseEvent<HTMLButtonElement> | React.KeyboardEvent<HTMLInputElement>
+type myUserEvent = React.MouseEvent<HTMLButtonElement> | React.KeyboardEvent<HTMLInputElement>;
 type Props = StoreState & DispatchProps;
 
 /** 
  * top level component.
-*/
+ */
 class App extends React.Component<Props, StoreState> {
 
   componentDidMount() {
@@ -48,19 +48,21 @@ class App extends React.Component<Props, StoreState> {
     }
     let currentItemTest = /Pick Up(.*)/i.exec(text);
     if (currentItemTest) {
-      console.log(currentItemTest[1].trim());
+      // console.log(currentItemTest[1].trim());
     }
   }
 
   handleInput = (
     e: myUserEvent
   ) => {
-    this.parseInput(e)
+    this.parseInput(e);
     this.props.handleUserChatInput(e);
   }
 
   givePlayerItem = (item: Item) => {
-    let currentRoom: Room | undefined = this.props.gameMap.rooms.find(room => arrayEquals(room.location, this.props.player.location));
+    let currentRoom: Room | undefined = this.props.gameMap.rooms.find
+      (room => arrayEquals(room.location, this.props.player.location));
+      
     return this.props.addItem(item, currentRoom);
   }
   // currentObservableRoom = Rx.Observable.of(this.props.player!.location);

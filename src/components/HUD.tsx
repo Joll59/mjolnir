@@ -22,18 +22,18 @@ export class HeadsUpDisplay extends React.Component<PassedProps, { viewPlayerInv
         };
     }
     
-    viewPlayerInventory = () => {
+    showPlayerInventory = () => {
         this.setState({viewPlayerInv: !this.state.viewPlayerInv});
     }
 
-    viewRoomInventory = () => {
+    showRoomTreasures = () => {
         this.setState({viewRoomInv: !this.state.viewRoomInv});
     }
 
     createInventory: any = (
         entity: Entity, 
-        hideInvMethod: ()=> {}, 
-        itemClickMethod: (Item: Item)=>{}, 
+        hideInvMethod: () => {}, 
+        itemClickMethod: (Item: Item) => {}, 
         buttonValue: string
     ) => (
         <section>
@@ -49,9 +49,13 @@ export class HeadsUpDisplay extends React.Component<PassedProps, { viewPlayerInv
                     )
                 }
             </ul>
-            <Icon className={'redText larger'} iconName= {'Cancel'} onClick={hideInvMethod}/>
+            <Icon 
+                className={'redText larger'} 
+                iconName={'Cancel'} 
+                onClick={hideInvMethod}
+            />
         </section>
-    );
+    )
 
     render() {
         let { player, currentRoom } = this.props;
@@ -66,16 +70,32 @@ export class HeadsUpDisplay extends React.Component<PassedProps, { viewPlayerInv
                 max={player.initialHealth} 
             />
         );
-        const showPlayerInvBtn = (<IconButton iconProps={{iconName: 'Save'}} onClick={this.viewPlayerInventory}/>);
+        const showPlayerInvBtn = (<IconButton iconProps={{iconName: 'Save'}} onClick={this.showPlayerInventory}/>);
 
-        const showRoomInvBtn = (<IconButton iconProps={{iconName: 'Archive'}} onClick={this.viewRoomInventory}/>);
+        const showRoomInvBtn = (<IconButton iconProps={{iconName: 'Archive'}} onClick={this.showRoomTreasures}/>);
 
         return (
             <div>
                 <div className="upperLeft" hidden={false}> {healthBar} </div>
-                <div className="lowerRight">{this.state.viewPlayerInv ? this.createInventory(player, this.viewPlayerInventory, this.props.dropItem, 'drop') : showPlayerInvBtn}</div>
+                <div className="lowerRight"> 
+                {
+                    this.state.viewPlayerInv ? 
+                        this.createInventory(
+                            player, 
+                            this.showPlayerInventory, 
+                            this.props.dropItem, 
+                            'drop item') : showPlayerInvBtn
+                }
+                </div>
                 <div>
-                {currentRoom && this.state.viewRoomInv ? this.createInventory(currentRoom,this.viewRoomInventory, this.props.pickUpItem, 'add to inventory') : showRoomInvBtn}
+                { 
+                    currentRoom && this.state.viewRoomInv ? 
+                        this.createInventory(
+                        currentRoom,
+                        this.showRoomTreasures, 
+                        this.props.pickUpItem, 
+                        'add to inventory') : showRoomInvBtn 
+                }
                 </div>
             </div>
         );
@@ -105,9 +125,15 @@ class Inventory extends React.Component<InventoryProps, {view: boolean}> {
     }
 
     render() {
-        const itemInteractButton = (<DefaultButton onClick={this.handleItemInteraction} iconProps={{iconName: 'MiniExpand'}} title={this.props.buttonValue} ariaLabel={this.props.buttonValue}/>);
+        const itemInteractButton = (
+            <DefaultButton 
+                onClick={this.handleItemInteraction} 
+                iconProps={{iconName: 'MiniExpand'}} 
+                title={this.props.buttonValue} 
+                ariaLabel={this.props.buttonValue}
+            />);
 
-        const item = (<p> {this.props.item.name}: {this.props.item.id} </p>);
+        const item = (<p className={'center'}> {this.props.item.name}</p>);
 
         return (
             <li 

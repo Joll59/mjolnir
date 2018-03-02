@@ -45,12 +45,9 @@ const randomItem = (): Item[] => {
         
         id: idCounter++,
         name: `${x}${idCounter}`,
-        type: <ItemType>ItemType[x]
+        type: <ItemType> ItemType[x]
     }));
 };
-
-
-
 
 const generateRoom = (roomCoordinate: [number, number]): Room => {
     return {
@@ -78,7 +75,7 @@ export const GameMapReducer: Reducer<GameMapState> = (
         case playerAction.addItem: 
             return {
                 ...state, rooms: RoomsReducer(state.rooms, action)
-            }    
+            };    
         default:
         return state;
     }
