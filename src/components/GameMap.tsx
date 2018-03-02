@@ -18,10 +18,10 @@ interface WholeGrid {
 const rowData = (data: [number, number], mapPath: any) => {
     if (mapPath.getConnectedDoorways(data).length > 0) {
         // return ` + `;
-        return <Icon iconName={'BoxAdditionSolid'}/>
+        return <Icon iconName={'BoxAdditionSolid'}/>;
     } else {
         // return `[_]`;
-        return <Icon iconName={ 'StopSolid'}/>
+        return <Icon iconName={'StopSolid'}/>;
     }
 };
 
@@ -43,7 +43,7 @@ const MapRow = ({ rows, mapPath, playerLocation }: MapRowData) => (
 );
 
 export const Gamemap = ({ grid, mapPath, playerLocation }: WholeGrid, ) => (
-    <table className={"lowerLeft"}>
+    <table className={'lowerLeft'}>
         <tbody>
             {
                 grid.map((rows, index) =>

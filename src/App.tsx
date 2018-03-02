@@ -62,7 +62,7 @@ class App extends React.Component<Props, StoreState> {
   givePlayerItem = (item: Item) => {
     let currentRoom: Room | undefined = this.props.gameMap.rooms.find
       (room => arrayEquals(room.location, this.props.player.location));
-      
+
     return this.props.addItem(item, currentRoom);
   }
   // currentObservableRoom = Rx.Observable.of(this.props.player!.location);
@@ -95,6 +95,7 @@ class App extends React.Component<Props, StoreState> {
           />
 
         </div>
+        <div className={'exit'}>
           {gameMap!.map.possibleExits(player!.location).map(
             (
               door,
@@ -106,6 +107,7 @@ class App extends React.Component<Props, StoreState> {
               />
           )
           }
+          </div>
         </div>
       </div>
     );

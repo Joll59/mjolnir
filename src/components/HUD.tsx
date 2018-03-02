@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { percentage25, percentage50, percentage80 } from '../helpers/random';
+import { percentage25, percentage50, percentage80, arrayEquals } from '../helpers/random';
 import { Entity, Item, PlayerState, Room } from '../types';
 import { DefaultButton, IconButton } from  'office-ui-fabric-react/lib/Button';
 import { Icon } from 'office-ui-fabric-react/lib/components/Icon';
@@ -21,7 +21,15 @@ export class HeadsUpDisplay extends React.Component<PassedProps, { viewPlayerInv
             viewRoomInv: false
         };
     }
-    
+      
+    componentWillReceiveProps(nextProps: PassedProps) {
+        if ( this.props.currentRoom && 
+             !arrayEquals(this.props.currentRoom!.location, nextProps.currentRoom!.location)
+           ) {
+            this.setState({viewRoomInv: false});
+        }
+    }
+
     showPlayerInventory = () => {
         this.setState({viewPlayerInv: !this.state.viewPlayerInv});
     }
@@ -133,7 +141,7 @@ class Inventory extends React.Component<InventoryProps, {view: boolean}> {
                 ariaLabel={this.props.buttonValue}
             />);
 
-        const item = (<p className={'center'}> {this.props.item.name}</p>);
+        const item = (<p className={'center'}>{this.props.item.name}</p>);
 
         return (
             <li 

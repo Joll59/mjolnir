@@ -15,12 +15,6 @@ body {
   color: red;
 }
 
-.parent{
-    display: grid;
-    grid-template-columns: repeat(5, 20%);
-    grid-template-rows: repeat(5, 20%);
-}
-
 .wrapper {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
@@ -50,7 +44,36 @@ ul {
 }
 
 .exit {
-  margin: 1%;
+  display: grid;
+  grid-template-columns: repeat(5, 20%);
+  grid-template-rows: repeat(5, 20%);
+  height: 100vh;
+}
+
+.N{
+  grid-row: 1/1;
+  grid-column: 3/4;
+}
+
+.S{
+  grid-row: 5/5;
+  grid-column: 3/4;
+}
+
+.W{
+  grid-row: 3/3;
+  grid-column: 1/1;
+}
+
+.E{
+  grid-row: 3/3;
+  grid-column: 5/5;
+}
+
+
+
+.space {
+  margin: 0.5%;
 }
 
 .lowerLeft {
@@ -77,28 +100,8 @@ ul {
   left: 8px;
 }
 
-/* .N {
-  position: absolute;
-  top: 8px;
-}
-
-.S {
-  position: absolute;
-  bottom: 8px;
-}
-
-.E {
-  position: absolute;
-  right: 8px;
-}
-
-.W {
-  position: absolute;
-  left: 8px;
-} */
-
 /* 
-*heads p display CSS:
+*heads Up display CSS:
 */
 
 /* HEALTH  BAR */

@@ -16,9 +16,10 @@ export class Exit extends React.Component<DirectionProps, {}> {
       return (
         <DefaultButton
           onClick={(e: React.MouseEvent<HTMLButtonElement>) => this.props.exitClick(e)}
-          className={`exit ${this.props.exitDirection}`}
+          className={`${this.props.exitDirection} space`}
         >
         Exit to {this.props.exitDirection}
-        </DefaultButton>);
+        </DefaultButton>
+      );
     }
   }
