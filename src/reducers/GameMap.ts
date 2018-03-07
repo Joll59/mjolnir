@@ -9,15 +9,15 @@ import { getRandomInt } from '../helpers/random';
 const c = {
     GRID_HEIGHT: 4,
     GRID_WIDTH: 4,
-    MAX_ROOMS: 25,
+    MAX_ROOMS: 15,
 };
   
 const createGrid = () => {
     let grid: Array<Array<[number, number]>> = [];
-    for (let y = 0; y < c.GRID_HEIGHT; y++) {
+    for (let column = 0; column < c.GRID_HEIGHT; column++) {
         grid.push([]);
-        for (let x = 0; x < c.GRID_WIDTH; x++) {
-            grid[y].push([x, y]);
+        for (let row = 0; row < c.GRID_WIDTH; row++) {
+            grid[column].push([row, column]);
         }
     }
     return grid;
@@ -29,33 +29,27 @@ const coordinatesForAllRooms = mapPath.getConnectedRooms();
 
 let idCounter = 0;
 
-const randomItem = (): Item[] => {
+const randomItems = (): Item[] => {
     let itemTypes = [];
     for (let item in ItemType) {
         itemTypes.push(item);
     }
-
     const randomStart = Math.floor(Math.random() * itemTypes.length);
-    
     const removeAmount = getRandomInt(0, itemTypes.length - 1);
+    const availableItemTypes = itemTypes.splice(randomStart, removeAmount);
 
-    let availableItemTypes = itemTypes.splice(randomStart, removeAmount);
-
-    return availableItemTypes.map(x => ({
-        
+    return availableItemTypes.map(item => ({
         id: idCounter++,
-        name: `${x}${idCounter}`,
-        type: <ItemType>ItemType[x]
+        name: `${item}${idCounter}`,
+        type: <ItemType>ItemType[item]
     }));
 };
 
 
-
-
 const generateRoom = (roomCoordinate: [number, number]): Room => {
     return {
-        description: `Room X:${roomCoordinate[0]}, Y:${roomCoordinate[1]}`,
-        inventory: randomItem(),
+        description: `Room${roomCoordinate[0]}${roomCoordinate[1]}`,
+        inventory: randomItems(),
         location: roomCoordinate,
     };
 };
