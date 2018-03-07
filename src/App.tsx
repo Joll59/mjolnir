@@ -7,12 +7,13 @@ import { AnyAction, bindActionCreators, Dispatch } from 'redux';
 
 import { removeItem, addItem, setPlayerLocation } from './actions/player';
 import { handleUserChatInput } from './actions/user';
-import { Chat, Gamemap, HeadsUpDisplay as HUD } from './components';
+import { Chat, Gamemap, HeadsUpDisplay as HUD, Exit } from './components';
 import { arrayEquals } from './helpers/random';
 import { Direction, Item, Room, StoreState } from './types';
-import { DefaultButton } from  'office-ui-fabric-react/lib/Button';
 import { initializeIcons } from '@uifabric/icons';
+
 initializeIcons();
+
 interface DispatchProps {
   handleUserChatInput: (e: React.MouseEvent<HTMLButtonElement> | React.KeyboardEvent<HTMLInputElement>) => {};
   addItem: (Item: Item, room: Room | undefined) => {};
@@ -20,42 +21,20 @@ interface DispatchProps {
   setPlayerLocation: (location: [number, number]) => {};
 }
 
-interface DirectionProps {
-  exitDirection: string;
-  exitClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
-}
-
-/**
- * Exit component representing the passing from one room to another. 
- * It provides button for player move action from one room to another.
- */
-class Exit extends React.Component<DirectionProps, {}> {
-  render() {
-    return (
-      <DefaultButton
-        onClick={(e: React.MouseEvent<HTMLButtonElement>) => this.props.exitClick(e)}
-        className={`exit ${this.props.exitDirection}`}
-      >
-      Exit to {this.props.exitDirection}
-    </DefaultButton>);
-  }
-}
-
+type myUserEvent = React.MouseEvent<HTMLButtonElement> | React.KeyboardEvent<HTMLInputElement>;
 type Props = StoreState & DispatchProps;
 
 /** 
  * top level component.
-*/
+ */
 class App extends React.Component<Props, StoreState> {
 
   componentDidMount() {
     this.props.setPlayerLocation(this.props.gameMap!.map.startingRoom());
   }
-
-  handleInput = (
-    e: React.MouseEvent<HTMLButtonElement> | React.KeyboardEvent<HTMLInputElement>
-  ) => {
-    let text = e.currentTarget.value || e.currentTarget.innerText;
+  
+  parseInput = (e: myUserEvent) => {
+    let text = e.currentTarget!.value || e.currentTarget.innerText;
     // process what was entered by user and decide what to do. 
     let currentExitTest = /Exit(.*)/i.exec(text);
     if (currentExitTest) {
@@ -69,13 +48,21 @@ class App extends React.Component<Props, StoreState> {
     }
     let currentItemTest = /Pick Up(.*)/i.exec(text);
     if (currentItemTest) {
-      console.log(currentItemTest[1].trim());
+      // console.log(currentItemTest[1].trim());
     }
+  }
+
+  handleInput = (
+    e: myUserEvent
+  ) => {
+    this.parseInput(e);
     this.props.handleUserChatInput(e);
   }
 
   givePlayerItem = (item: Item) => {
-    let currentRoom: Room | undefined = this.props.gameMap.rooms.find(room => arrayEquals(room.location, this.props.player.location));
+    let currentRoom: Room | undefined = this.props.gameMap.rooms.find
+      (room => arrayEquals(room.location, this.props.player.location));
+
     return this.props.addItem(item, currentRoom);
   }
   // currentObservableRoom = Rx.Observable.of(this.props.player!.location);
@@ -108,6 +95,7 @@ class App extends React.Component<Props, StoreState> {
           />
 
         </div>
+        <div className={'exit'}>
           {gameMap!.map.possibleExits(player!.location).map(
             (
               door,
@@ -119,6 +107,7 @@ class App extends React.Component<Props, StoreState> {
               />
           )
           }
+          </div>
         </div>
       </div>
     );

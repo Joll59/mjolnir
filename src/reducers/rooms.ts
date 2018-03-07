@@ -1,7 +1,6 @@
 import { roomAction, Room } from '../types/index';
 import { Reducer, AnyAction } from 'redux';
 
-
 /**
  * reducer for rooms array
  * @param state rooms array, Room[ ]
@@ -15,7 +14,7 @@ export const RoomsReducer: Reducer<Room[]> = (
         // case roomAction.newMap:
         //     return state;
         case roomAction.playerTakesItem: 
-            let newState = state.filter(room => room !== action.room)
+            let newState = state.filter(room => room !== action.room);
             return [
                 ...newState, 
                 RoomReducer( 
@@ -25,7 +24,7 @@ export const RoomsReducer: Reducer<Room[]> = (
                         item: action.item 
                     }
                 )
-            ]
+            ];
         default:
             return state;
     }
@@ -43,10 +42,13 @@ export const RoomReducer: Reducer<Room> = (state, action: AnyAction) => {
             return {
                 ...state,
                 inventory: newInventory
-            }
+            };
         default:
             return state;
     }
-}
+};
 
-// IDEA: would it make sense to have an inventory reducer instead.??? takes an inventory as state and returns a new inventory......simple enough so both player and room use that reducer for any invetory action..... worth exploring. 
+/* IDEA: would it make sense to have an inventory reducer instead.??? 
+takes an inventory as state and returns a new inventory......simple 
+enough so both player and room use that reducer for any invetory action..... 
+worth exploring. */

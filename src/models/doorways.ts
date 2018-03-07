@@ -140,10 +140,6 @@ export class Doorways {
             } 
         }
 
-        if (validDirections.length < 1){
-            return 
-        }
-
         const randomLoop = Math.floor(Math.random() * validDirections.length);
         
         const removeAmount = getRandomInt(1, validDirections.length);
