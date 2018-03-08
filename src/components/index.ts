@@ -4,3 +4,4 @@ export * from './chat';
 export * from './message';
 export * from './GameMap';
 export * from './exit';
+export * from './inventory';

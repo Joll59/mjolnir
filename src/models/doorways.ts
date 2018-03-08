@@ -1,4 +1,4 @@
-import { getRandomInt, arrayEquals } from '../helpers/random';
+import { getRandomInt, arrayEquals } from '../helpers';
 import { Direction } from '../types';
 
 interface Doorway {

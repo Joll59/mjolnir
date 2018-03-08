@@ -24,29 +24,23 @@ const fist: Weapon = {
 let nextState: PlayerState;
 describe('PlayerReducer ', () => {
     it('returns inital state', () => {
-        expect(PlayerReducer(state, {type: "INIT"})).toMatchObject(state)
+        expect(PlayerReducer(state, {type: 'INIT'})).toMatchObject(state);
     });
 
-    it( 'sets player location',
-        () => {
-            nextState = PlayerReducer(state, setPlayerLocation([1, 1]));
-            expect(nextState).toMatchObject({...state, location: [1, 1]});
-        }
-    );
+    it( 'sets player location', () => {
+        nextState = PlayerReducer(state, setPlayerLocation([1, 1]));
+        expect(nextState).toMatchObject({...state, location: [1, 1]});
+    });
 
     describe('player inventory', () => {
-        it( 'adds item to player inventory',
-            () => {
-                nextState = PlayerReducer(state, addItem(fist, oneRoomState));
-                expect(nextState).toMatchObject({...state, inventory: [fist]});
-            }
-        );
+        it( 'adds item to player inventory', () => {
+            nextState = PlayerReducer(state, addItem(fist, oneRoomState));
+            expect(nextState).toMatchObject({...state, inventory: [fist]});
+        });
 
-        it ( 'removes item from player inventory',
-             () => {
-                nextState = PlayerReducer(state, removeItem(fist));
-                expect(nextState).toMatchObject(state);
-             }
-        );
+        it ( 'removes item from player inventory', () => {
+            nextState = PlayerReducer(state, removeItem(fist, oneRoomState));
+            expect(nextState).toMatchObject(state);
+        });
     });
 });

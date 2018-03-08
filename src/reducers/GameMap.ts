@@ -4,7 +4,7 @@ import { Doorways } from '../models/doorways';
 import { GameMapState, Item, ItemType, mapAction, Room, playerAction } from '../types';
 import { RoomsReducer } from './rooms';
 
-import { getRandomInt } from '../helpers/random';
+import { getRandomInt } from '../helpers';
 
 const c = {
     GRID_HEIGHT: 4,
@@ -47,7 +47,7 @@ const randomItems = (): Item[] => {
 
 const generateRoom = (roomCoordinate: [number, number]): Room => {
     return {
-        description: `Room${roomCoordinate[0]}${roomCoordinate[1]}`,
+        description: `#${Math.floor(Math.random()*16777215).toString(16)}`,
         inventory: randomItems(),
         location: roomCoordinate,
     };
@@ -71,7 +71,11 @@ export const GameMapReducer: Reducer<GameMapState> = (
         case playerAction.addItem: 
             return {
                 ...state, rooms: RoomsReducer(state.rooms, action)
-            };    
+            };
+        case playerAction.removeItem: 
+            return {
+                ...state, rooms: RoomsReducer(state.rooms, action)
+            };
         default:
         return state;
     }

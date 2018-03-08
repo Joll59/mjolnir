@@ -20,8 +20,9 @@ export const addItem = (
     });
 
 export const removeItem = (
-    item: Item
+    item: Item, room: Room
 ) => ({
         type: playerAction.removeItem,
-        item
+        item,
+        room
     });

@@ -1,6 +1,6 @@
 import { Reducer, AnyAction } from 'redux';
 import { PlayerState, ItemType, playerAction } from '../types/index';
-import { getRandomInt } from '../helpers/random';
+import { getRandomInt } from '../helpers';
 
 let health = getRandomInt(0, 250);
 
