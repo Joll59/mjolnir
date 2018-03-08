@@ -23,6 +23,8 @@ export type MessageInterface = {
     text: string;
 };
 
+export type userEvent = React.MouseEvent<HTMLButtonElement> | React.KeyboardEvent<HTMLInputElement>;
+
 export enum userInputAction {
     userInput = 'USER_INPUT',
 }
@@ -33,7 +35,9 @@ export enum mapAction {
 
 export enum roomAction {
     playerTakesItem = 'ADD_ITEM',
-    givePlayerItem = 'GIVE_PLAYER_ITEM'
+    playerGivesItem = 'REMOVE_ITEM',
+    givePlayerItem = 'GIVE_PLAYER_ITEM',
+    takePlayerItem = 'TAKE_PLAYER_ITEM'
 }
 
 export enum playerAction {

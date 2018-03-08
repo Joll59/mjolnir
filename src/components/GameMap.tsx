@@ -1,6 +1,6 @@
 // import { Doorways } from './doorways';
 import * as React from 'react';
-import { arrayEquals } from '../helpers/random';
+import { arrayEquals } from '../helpers';
 import { Icon } from 'office-ui-fabric-react/lib/components/Icon';
 
 interface MapRowData {
@@ -18,10 +18,10 @@ interface WholeGrid {
 const rowData = (data: [number, number], mapPath: any) => {
     if (mapPath.getConnectedDoorways(data).length > 0) {
         // return ` + `;
-        return <Icon iconName={'BoxAdditionSolid'}/>;
+        return <Icon className={'larger'} iconName={'BoxAdditionSolid'}/>;
     } else {
         // return `[_]`;
-        return <Icon iconName={'StopSolid'}/>;
+        return <Icon className={'larger'} iconName={'StopSolid'}/>;
     }
 };
 
@@ -43,7 +43,7 @@ const MapRow = ({ rows, mapPath, playerLocation }: MapRowData) => (
 );
 
 export const Gamemap = ({ grid, mapPath, playerLocation }: WholeGrid, ) => (
-    <table className={'lowerLeft'}>
+    <table className={'miniMap'}>
         <tbody>
             {
                 grid.map((rows, index) =>

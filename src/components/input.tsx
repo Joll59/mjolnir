@@ -47,7 +47,7 @@ export default class Input extends React.Component<Props, LocalState> {
                 value={this.state.userEntry.text}
                 // onChange={(e: any) => this.handleEntry(e)}
                 onKeyUp={(e: React.KeyboardEvent<HTMLInputElement>) => this.handleEntry(e)}
-                placeholder="Write Stuff"
+                placeholder="Input Commands"
             />
         );
     }

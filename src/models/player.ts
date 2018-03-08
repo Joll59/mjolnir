@@ -1,4 +1,4 @@
-import { getRandomInt } from '../helpers/random';
+import { getRandomInt } from '../helpers';
 import { Item, ItemType, Entity, Armor, Weapon } from '../types'; 
 
 class Player implements Entity {
