@@ -27,7 +27,7 @@ const mapPath =  new Doorways(c.MAX_ROOMS, [c.GRID_WIDTH, c.GRID_HEIGHT]);
 
 const coordinatesForAllRooms = mapPath.getConnectedRooms();
 
-let idCounter = 0;
+let idCounter = 3;
 
 const randomItems = (): Item[] => {
     let itemTypes = [];
@@ -40,7 +40,7 @@ const randomItems = (): Item[] => {
 
     return availableItemTypes.map(item => ({
         id: idCounter++,
-        name: `${item}${idCounter}`,
+        name: `${item}`,
         type: <ItemType> ItemType[item]
     }));
 };
