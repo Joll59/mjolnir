@@ -2,10 +2,11 @@ import * as React from 'react';
 import Message from './message';
 import { MessageInterface } from '../types';
 import Input from './input';
+import * as Rx from 'rxjs';
 
 interface ChatProps {
     messageList: MessageInterface[];
-    handleUserChatInput: (e: React.KeyboardEvent<HTMLInputElement>) => void;
+    handleUserChatInput: Rx.Subject<string>;
 }
 
 export const Chat = ( {messageList, handleUserChatInput}: ChatProps) => {

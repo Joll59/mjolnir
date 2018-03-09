@@ -1,6 +1,6 @@
 import { Item, Entity } from '../types';
 import * as React from 'react';
-import { Button, Header, Icon, Grid } from 'semantic-ui-react';
+import { Header, Grid, Popup } from 'semantic-ui-react';
 
 interface ItemProps {
     item: Item; 
@@ -8,57 +8,27 @@ interface ItemProps {
     buttonValue: string;
 }
 
-export class InventoryItem extends React.Component<ItemProps, {view: boolean}> {
+export class InventoryItem extends React.Component<ItemProps, { }> {
     
-    constructor (props: ItemProps) {
-        super (props);
-        this.state = {
-            view: true
-        };
-    }
-    changeView = () => {
-        this.setState({view: !this.state.view});
-    }
-
     handleItemInteraction = () => {
         this.props.InteractWithItem(this.props.item);
     }
-
     render() {
-        const itemInteractButton = (
-            <Button 
-                animated={true}
-                size="mini"
-                onClick={this.handleItemInteraction} 
-                title={this.props.buttonValue} 
-                aria-label={this.props.buttonValue}
-            >
-                <Button.Content 
-                    visible={true}
-                > 
-                    {this.props.buttonValue}
-                </Button.Content>
-                <Button.Content 
-                    hidden={true}
-                >
-                    <Icon 
-                        name="external"
-                    />
-                </Button.Content>
-            </Button>);
-
         const item = (<p>{this.props.item.name}</p>);
-
         return (
             <Grid.Column 
                 textAlign="center" 
-                onClick={this.changeView}
+                onClick={this.handleItemInteraction}
                 className={"inventoryItem"}
-            > 
-                    <Header as="h4">
-                        {item}
-                    </Header>
-                        {this.state.view ? <Icon name="world" size="small" /> : itemInteractButton}
+                alt={this.props.buttonValue}
+            >
+                <Header as="h4">
+                    <Popup
+                        trigger={item}
+                        content={this.props.buttonValue}
+                        basic
+                    />
+                </Header>
             </Grid.Column>
         );
     }
@@ -73,7 +43,6 @@ export const createInventory: any = (
             stackable={true} 
             container={true} 
             centered={true} 
-            divided={true} 
             columns={3}
         >
           {

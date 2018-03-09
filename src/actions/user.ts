@@ -1,8 +1,6 @@
 import { userInputAction } from '../types';
-import { MouseEvent, KeyboardEvent } from 'react';
 
-export const handleUserChatInput = (e: MouseEvent<HTMLButtonElement> | KeyboardEvent<HTMLInputElement>) => {
-    let text = e.currentTarget.value || e.currentTarget.name || e.currentTarget.innerText;
+export const handleUserChatInput = (text: string) => {
     return {
         type: userInputAction.userInput,
         payload : {
@@ -11,3 +9,13 @@ export const handleUserChatInput = (e: MouseEvent<HTMLButtonElement> | KeyboardE
         }
     };
 };
+
+export const handleBotChatOuput = (text: string) => {
+    return {
+        type: userInputAction.userInput,
+        payload: {
+            author: 'Bot',
+            text
+        }
+    }
+}

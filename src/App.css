@@ -159,7 +159,7 @@ body {
   grid-column: 3/9;
   align-self: center;
   /* justify-self: flex-end; */
-  height: 70vh;
+  height: 30vmax;
   padding: 1rem;
 }
 
