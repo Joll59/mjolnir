@@ -1,22 +1,20 @@
 import './App.css';
 
 import * as React from 'react';
-import { connect } from 'react-redux';
 import { AnyAction, bindActionCreators, Dispatch } from 'redux';
+import { connect } from 'react-redux';
+import * as Rx from 'rxjs';
 import 'isomorphic-fetch';
 import { initializeIcons } from '@uifabric/icons';
-import * as Rx from 'rxjs';
-
-import { removeItem, addItem, setPlayerLocation } from './actions/player';
-import { handleUserChatInput } from './actions/user';
-import { Chat, Gamemap, RoomComponent, PlayerComponent, Compass } from './components';
-import { arrayEquals } from './helpers';
-import { Direction, Item, Room, StoreState } from './types';
-
 initializeIcons();
 
+import { removeItem, addItem, setPlayerLocation } from './actions/player';
+import { Chat, Gamemap, RoomComponent, PlayerComponent, Compass } from './components';
+import { Direction, Item, Room, StoreState } from './types';
+
+
+
 interface DispatchProps {
-  handleUserChatInput: (text: string) => {}; /* currently useles method, was designed to generate chat history*/
   addItem: (Item: Item, room: Room | undefined) => {};
   removeItem: (Item: Item, room: Room | undefined) => {};
   setPlayerLocation: (location: [number, number]) => {};
@@ -29,86 +27,77 @@ type Props = StoreState & DispatchProps;
  */
 class App extends React.Component<Props, StoreState> {
 
-
+  message$ = new Rx.Subject<string>();
   /**
-   * method that is my current basic bot logic. 
+   * basic bot logic. 
    */
+
   logic = (text: string) => {
-    let currentExitTest = /Exit(.*)/i.exec(text);
+    let currentExitTest = /Exit (.*)/i.exec(text);
     if (currentExitTest) {
       let result = currentExitTest[1].trim().toLowerCase().split(' ');
       let direction = result[result.length - 1][0].toUpperCase() as Direction;
-      let { location } = this.props.player!;
-      if (this.props.gameMap!.map.isDoorway(location, direction)) {
-        let nextRoom = this.props.gameMap!.map.roomToFromDirection(location, direction);
-        this.props.setPlayerLocation(nextRoom);
+      this.go(direction);
+    }
+
+    let currentItemPickUpTest = /Pick Up (.*)/i.exec(text);
+    if (currentItemPickUpTest) {
+      let itemName = currentItemPickUpTest[1].trim();
+      let foundItem = this.getCurrentRoom(this.props.dungeon.rooms, this.props.player.location)!.inventory
+        .filter(item => item.name === itemName);
+      if (foundItem && foundItem.length === 1) {
+        this.givePlayerItem(foundItem[0]);
       }
     }
 
-    let currentItemPickUpTest = /Pick Up(.*)/i.exec(text);
-    if (currentItemPickUpTest) {
-      let itemName = currentItemPickUpTest[1].trim();
-      let foundItem = this.getCurrentRoom()!.inventory.filter(item => item.name === itemName)
-        foundItem && foundItem.length === 1 ? this.givePlayerItem(foundItem[0]) : this.itemLogicalRepercussion(foundItem);
-    }
-
-    let currentItemDropTest = /Drop(.*)/i.exec(text);
+    let currentItemDropTest = /Drop (.*)/i.exec(text);
     if (currentItemDropTest) {
       let itemName = currentItemDropTest[1].trim();
-      let foundItem = this.props.player!.inventory.filter(item => item.name === itemName)
-      foundItem && foundItem.length === 1 ? this.giveRoomItem(foundItem[0]) : null;
+      let foundItem = this.props.player!.inventory.filter(item => item.name === itemName);
+      if (foundItem && foundItem.length === 1) {
+          this.giveRoomItem(foundItem[0]);
+      }
     }
   }
 
-  itemLogicalRepercussion = (items: Item[]) => {
-    if(items.length === 0) {
-      
-    }
-  }
   /**
    * method that accepts a direction which player will go. 
    */
   go = (direction: Direction) => {
     let { location } = this.props.player!;
-    if (this.props.gameMap!.map.isDoorway(location, direction)) {
-      let nextRoom = this.props.gameMap!.map.roomToFromDirection(location, direction);
+    if (this.props.dungeon!.map.isDoorway(location, direction)) {
+      let nextRoom = this.props.dungeon!.map.coordinatesForRoomInGivenDirection(location, direction);
       this.props.setPlayerLocation(nextRoom);
     }
   }
 
-  /**
-   * method returns the current room object.
-   */
-  getCurrentRoom = () => {
-    return this.props.gameMap.rooms.find
-      (room => arrayEquals(room.location, this.props.player.location));
+  getCurrentRoom = (rooms: Map<string, Room>, location: [number, number]) => {
+    return rooms.get(location.toString());
   }
   /**
    * method used by room inventory to give player item/ drop item into player inventory, accepts item as argument
    */
   givePlayerItem = (item: Item) => {
-    let currentRoom = this.getCurrentRoom();
+    let currentRoom = this.getCurrentRoom(this.props.dungeon.rooms, this.props.player.location);
     return this.props.addItem(item, currentRoom);
   }
   /**
    * method used by player inventory to drop item and give it to the rooms iventory, accepts item as argument. 
    */
   giveRoomItem = (item: Item) => {
-    let currentRoom = this.getCurrentRoom();
-    return this.props.removeItem(item, currentRoom)
+    let currentRoom = this.getCurrentRoom(this.props.dungeon.rooms, this.props.player.location);
+    return this.props.removeItem(item, currentRoom);
   }
 
-  message$ = new Rx.Subject<string>();
-
   componentDidMount() {
-    this.props.setPlayerLocation(this.props.gameMap!.map.startingRoom());
-    this.message$.subscribe({ next: this.logic });
+    this.props.setPlayerLocation(this.props.dungeon!.map.startingRoom());
+    this.message$.subscribe(this.logic);
   }
 
   public render(): JSX.Element {
 
-    let { player, message, gameMap } = this.props;
-    let currentRoom = this.getCurrentRoom();
+    let { player, message, dungeon } = this.props;
+    let currentRoom = this.getCurrentRoom(this.props.dungeon.rooms, this.props.player.location);
     let divStyle = currentRoom ? {
       borderStyle: 'solid',
       borderWidth: 2,
@@ -116,9 +105,9 @@ class App extends React.Component<Props, StoreState> {
       margin: 5,
       padding: 15
     } : {};
-    // <h2 className="center">Mjolnir</h2>
     return (
       <div className={'parent'} style={divStyle}>
+        <h2 className="center">Mjolnir</h2>
 
         <PlayerComponent
           player={player!}
@@ -131,8 +120,7 @@ class App extends React.Component<Props, StoreState> {
         />
 
         <Gamemap
-          grid={gameMap!.grid}
-          mapPath={gameMap!.map}
+          mapPath={dungeon!.map}
           playerLocation={player!.location}
         />
 
@@ -142,7 +130,7 @@ class App extends React.Component<Props, StoreState> {
         />
 
         <div id={'compass'}>
-          {gameMap!.map.possibleExits(player!.location).map(
+          {dungeon!.map.possibleExits(player!.location).map(
             (
               door,
               index) =>
@@ -160,10 +148,9 @@ class App extends React.Component<Props, StoreState> {
 }
 
 const actionCreator = {
-  handleUserChatInput,
   setPlayerLocation,
   addItem,
-  removeItem
+  removeItem, 
 };
 
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => {
@@ -178,8 +165,8 @@ const mapStateToProps = (state: StoreState) => {
         messageList: state.message.messageList
       },
     player: state.player,
-    gameMap: state.gameMap
+    dungeon: state.dungeon
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(App as any);
+export default connect<StoreState, DispatchProps>(mapStateToProps, mapDispatchToProps)(App);

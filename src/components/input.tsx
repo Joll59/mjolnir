@@ -28,9 +28,7 @@ export default class Input extends React.Component<Props, LocalState> {
         let data = ({ author: 'User', text: e.currentTarget.value});
         this.setState({ userEntry: data});
     }
-    
-    
-    
+      
     render() {
         return (
             <TextField

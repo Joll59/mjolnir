@@ -1,11 +1,11 @@
 import { Item, Entity } from '../types';
 import * as React from 'react';
-import { Header, Grid, Popup } from 'semantic-ui-react';
+import { Popup, List } from 'semantic-ui-react';
 
 interface ItemProps {
     item: Item; 
     InteractWithItem: (Item: Item) => {};
-    buttonValue: string;
+    popupValue: string;
 }
 
 export class InventoryItem extends React.Component<ItemProps, { }> {
@@ -16,20 +16,20 @@ export class InventoryItem extends React.Component<ItemProps, { }> {
     render() {
         const item = (<p>{this.props.item.name}</p>);
         return (
-            <Grid.Column 
-                textAlign="center" 
+            <List.Item
+                // textAlign="center" 
                 onClick={this.handleItemInteraction}
-                className={"inventoryItem"}
-                alt={this.props.buttonValue}
+                className={'inventoryItem'}
+                alt={this.props.popupValue}
             >
-                <Header as="h4">
+                <section>
                     <Popup
                         trigger={item}
-                        content={this.props.buttonValue}
-                        basic
+                        content={this.props.popupValue}
+                        basic={true}
                     />
-                </Header>
-            </Grid.Column>
+                </section>
+            </List.Item>
         );
     }
 }
@@ -37,13 +37,14 @@ export class InventoryItem extends React.Component<ItemProps, { }> {
 export const createInventory: any = (
     entity: Entity, 
     itemClickMethod: (Item: Item) => {}, 
-    buttonValue: string
+    popupValue: string
 ) => (
-        <Grid 
-            stackable={true} 
-            container={true} 
-            centered={true} 
-            columns={3}
+        <List 
+            // stackable={true} 
+            // container={true} 
+            // centered={true} 
+            // columns={3}
+            celled={true}
         >
           {
                 entity.inventory!.map(x =>
@@ -51,9 +52,9 @@ export const createInventory: any = (
                         key={x.id + x.type}
                         item={x}
                         InteractWithItem={itemClickMethod}
-                        buttonValue={buttonValue}
+                        popupValue={popupValue}
                     />)
                 )
             }
-        </Grid>
+        </List>
 );

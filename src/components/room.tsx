@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Container} from 'semantic-ui-react';
+import { Container } from 'semantic-ui-react';
 import { Item, Room } from '../types/index';
 import { createInventory } from './inventory';
 
@@ -23,7 +23,7 @@ export class RoomComponent extends React.Component<RoomProps> {
         return (
             <div style={divStyle} className={'treasureChest'}>
             <Container textAlign="justified">
-                { currentRoom ?  roomInv() : null }
+                {currentRoom ?  roomInv() : null}
             </Container>
             </div>
         );

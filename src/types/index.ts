@@ -4,7 +4,7 @@ import { Doorways } from '../models/doorways';
 export type StoreState = {
     message: MessageState;
     player: PlayerState;
-    gameMap: GameMapState;
+    dungeon: GameMapState;
 };
 
 export type MessageState = {
@@ -13,9 +13,8 @@ export type MessageState = {
 };
 
 export interface GameMapState {
-    grid: Array<Array<[number, number]>>;
     map: Doorways;
-    rooms: Room[];
+    rooms: Map<string, Room>
 }
 
 export type MessageInterface = {
@@ -23,11 +22,13 @@ export type MessageInterface = {
     text: string;
 };
 
-export type userEvent = React.MouseEvent<HTMLButtonElement> | React.KeyboardEvent<HTMLInputElement>;
-
-export enum userInputAction {
+export enum InputAction {
     userInput = 'USER_INPUT',
 }
+
+export type InputAction$ = {
+    type: InputAction.userInput, payload: MessageInterface
+} | { type: roomAction.givePlayerItem } | {type: roomAction.playerTakesItem}
 
 export enum mapAction {
     newLevel = 'NEW_LEVEL',
@@ -38,6 +39,12 @@ export enum roomAction {
     playerGivesItem = 'REMOVE_ITEM',
     givePlayerItem = 'GIVE_PLAYER_ITEM',
     takePlayerItem = 'TAKE_PLAYER_ITEM'
+}
+
+export type roomActionTest = {    
+        type: 'ADD_ITEM';
+        item: Item;
+        room: Room;
 }
 
 export enum playerAction {
@@ -61,7 +68,7 @@ export enum ItemType {
     weapon = 'weapon',
 }
 
-export type Direction = 'N' | 'S' | 'E' | 'W' ;
+export type Direction = 'N' | 'S' | 'E' | 'W';
 
 export interface Item {
     id: number;

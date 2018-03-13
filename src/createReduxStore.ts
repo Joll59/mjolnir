@@ -1,20 +1,29 @@
-import { createStore, combineReducers } from 'redux';
+import { createStore, combineReducers, applyMiddleware, Reducer } from 'redux';
 import { MessageReducer } from './reducers/message';
 import { PlayerReducer } from './reducers/player';
 import { GameMapReducer } from './reducers/GameMap';
+import { createEpicMiddleware } from 'redux-observable';
+import { StoreState, InputAction$ } from './types';
+import { combineEpics, Epic } from 'redux-observable';
+import { TestEpic } from './epics/testEpic';
 
-const rootReducer = combineReducers({
+const rootReducer: Reducer<StoreState> = combineReducers({
     message: MessageReducer,
     player: PlayerReducer,
-    gameMap: GameMapReducer
+    dungeon: GameMapReducer
 });
 
-const devToolExt = 'devToolsExtension';
+const rootEpic: Epic<InputAction$,StoreState> = combineEpics(
+    TestEpic
+)
 
-const enhancer = window[devToolExt] ? window[devToolExt]()(createStore) : createStore;
+const reduxStore = createStore(rootReducer, applyMiddleware(createEpicMiddleware(rootEpic)));
 
-const reduxStore = enhancer(rootReducer);
+// const devToolExt = 'devToolsExtension';
 
-// const reduxStore = createStore(rootReducer);
+// const enhancer = window[devToolExt] ? window[devToolExt]()(createStore) : createStore;
+
+// const reduxStore: Store<StoreState> = enhancer(rootReducer, applyMiddleware(createEpicMiddleware(rootEpic)));
+
 
 export default reduxStore;

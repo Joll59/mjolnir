@@ -6,7 +6,7 @@ import { Direction } from '../types';
 
 interface DirectionProps {
     exitDirection: string;
-    go: (direction: Direction) => void
+    go: (direction: Direction) => void;
   }
   /**
    * Exit component representing the passing from one room to another. 
@@ -14,20 +14,20 @@ interface DirectionProps {
    */
 export class Compass extends React.Component<DirectionProps, {}> {
 
-  handleClick = () =>{
-      this.props.go(this.props.exitDirection as Direction)
-    }
+  handleClick = () => {
+    this.props.go(this.props.exitDirection as Direction);
+  }
 
   generateButtonIcon = (e: Direction) => {
     switch (e) {
       case 'S':
-        return <Icon name="caret down"/>
+        return <Icon name="caret down"/>;
       case 'N':
-        return <Icon name="caret up"/>
+        return <Icon name="caret up"/>;
       case 'E':
-        return <Icon name="caret right"/>
+        return <Icon name="caret right"/>;
       case 'W':
-        return <Icon name="caret left"/>  
+        return <Icon name="caret left"/>;  
       default:
         return;
     }

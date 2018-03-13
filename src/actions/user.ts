@@ -1,8 +1,8 @@
-import { userInputAction } from '../types';
+import { InputAction, InputAction$ } from '../types';
 
 export const handleUserChatInput = (text: string) => {
     return {
-        type: userInputAction.userInput,
+        type: InputAction.userInput,
         payload : {
             author: 'User', 
             text: text
@@ -10,12 +10,12 @@ export const handleUserChatInput = (text: string) => {
     };
 };
 
-export const handleBotChatOuput = (text: string) => {
+export const handleBotChatOuput = (text: string):  InputAction$ => {
     return {
-        type: userInputAction.userInput,
+        type: InputAction.userInput,
         payload: {
             author: 'Bot',
             text
         }
-    }
-}
+    };
+};
