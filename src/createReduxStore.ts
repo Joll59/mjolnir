@@ -3,9 +3,9 @@ import { MessageReducer } from './reducers/message';
 import { PlayerReducer } from './reducers/player';
 import { GameMapReducer } from './reducers/GameMap';
 import { createEpicMiddleware } from 'redux-observable';
-import { StoreState, InputAction$ } from './types';
+import { StoreState, CombinedItemAction } from './types';
 import { combineEpics, Epic } from 'redux-observable';
-import { TestEpic } from './epics/testEpic';
+import { AddItemEpic, RemoveItemEpic } from './epics/itemEpic';
 
 const rootReducer: Reducer<StoreState> = combineReducers({
     message: MessageReducer,
@@ -13,8 +13,8 @@ const rootReducer: Reducer<StoreState> = combineReducers({
     dungeon: GameMapReducer
 });
 
-const rootEpic: Epic<InputAction$,StoreState> = combineEpics(
-    TestEpic
+const rootEpic: Epic<CombinedItemAction,StoreState> = combineEpics(
+    AddItemEpic, RemoveItemEpic
 )
 
 const reduxStore = createStore(rootReducer, applyMiddleware(createEpicMiddleware(rootEpic)));

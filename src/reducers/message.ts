@@ -4,15 +4,12 @@ import { MessageState, InputAction } from '../types';
 // try not to make decisions you dont have to. 
 const botMessage = {
     author: 'bot', 
-    text: 'Hi'
+    text: `Hi, Welcome to the DnD bot, 
+    a work in progress, you can either type to
+    interact or click, currently I respond to "pick up/drop[Item], exit [direction]"`
 };
 
-const InitialState: MessageState = {
-    description: '', 
-    messageList: [
-        botMessage
-    ]
-};
+const InitialState: MessageState = [botMessage]
 
 export const MessageReducer: Reducer<MessageState> = (
     state = InitialState, 
@@ -20,14 +17,9 @@ export const MessageReducer: Reducer<MessageState> = (
 ) => {
     switch (action.type) {
         case InputAction.userInput:
-            return {
-                ...state, 
-                description: action.payload.text,
-                messageList: [
-                    ...state.messageList, 
-                    action.payload
-                ]
-            };
+            return  [...state, action.payload];
+        case InputAction.clear: 
+            return InitialState;    
         default:
             return state;
     }

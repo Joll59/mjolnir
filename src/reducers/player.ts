@@ -1,5 +1,5 @@
 import { Reducer, AnyAction } from 'redux';
-import { PlayerState, ItemType, playerAction } from '../types/index';
+import { PlayerState, ItemType, PlayerAction } from '../types/index';
 import { getRandomInt } from '../helpers';
 
 let health = getRandomInt(0, 250);
@@ -36,17 +36,17 @@ export const PlayerReducer: Reducer<PlayerState> = (
     action: AnyAction,
 ) => {
     switch (action.type) {
-        case playerAction.setLocation:
+        case PlayerAction.setLocation:
             return {
                 ...state, 
                 location: action.payload
             };
-        case playerAction.addItem:
+        case PlayerAction.addItem:
             return {
                 ...state, 
                 inventory: [...state.inventory, action.item]
             };
-        case playerAction.removeItem:
+        case PlayerAction.removeItem:
             let newInventory = state.inventory.filter(item => item !== action.item);
             return {
                 ...state,

@@ -11,10 +11,13 @@ initializeIcons();
 import { removeItem, addItem, setPlayerLocation } from './actions/player';
 import { Chat, Gamemap, RoomComponent, PlayerComponent, Compass } from './components';
 import { Direction, Item, Room, StoreState } from './types';
+import { handleUserChatInput, clearChatOutput } from './actions/user';
 
 
 
 interface DispatchProps {
+  handleUserChatInput: (arg :string) => {};
+  clearChatOutput: () => {};
   addItem: (Item: Item, room: Room | undefined) => {};
   removeItem: (Item: Item, room: Room | undefined) => {};
   setPlayerLocation: (location: [number, number]) => {};
@@ -33,6 +36,13 @@ class App extends React.Component<Props, StoreState> {
    */
 
   logic = (text: string) => {
+    this.props.handleUserChatInput(text);
+
+    const clearCheck = /clear/.exec(text)
+    if (clearCheck){
+      this.props.clearChatOutput();
+    }
+
     let currentExitTest = /Exit (.*)/i.exec(text);
     if (currentExitTest) {
       let result = currentExitTest[1].trim().toLowerCase().split(' ');
@@ -47,6 +57,8 @@ class App extends React.Component<Props, StoreState> {
         .filter(item => item.name === itemName);
       if (foundItem && foundItem.length === 1) {
         this.givePlayerItem(foundItem[0]);
+      } else if (foundItem.length > 1){
+        console.log(foundItem);
       }
     }
 
@@ -56,6 +68,8 @@ class App extends React.Component<Props, StoreState> {
       let foundItem = this.props.player!.inventory.filter(item => item.name === itemName);
       if (foundItem && foundItem.length === 1) {
           this.giveRoomItem(foundItem[0]);
+      } else if (foundItem.length > 1){
+        console.log(foundItem);
       }
     }
   }
@@ -68,6 +82,7 @@ class App extends React.Component<Props, StoreState> {
     if (this.props.dungeon!.map.isDoorway(location, direction)) {
       let nextRoom = this.props.dungeon!.map.coordinatesForRoomInGivenDirection(location, direction);
       this.props.setPlayerLocation(nextRoom);
+      this.props.handleUserChatInput(`you exited the room via ${direction} exit.`)
     }
   }
 
@@ -105,9 +120,11 @@ class App extends React.Component<Props, StoreState> {
       margin: 5,
       padding: 15
     } : {};
+
+    let description = currentRoom ? currentRoom.description: "Mjolnir Room"
     return (
       <div className={'parent'} style={divStyle}>
-        <h2 className="center">Mjolnir</h2>
+        <h4 className="center title">{description}</h4>
 
         <PlayerComponent
           player={player!}
@@ -125,7 +142,7 @@ class App extends React.Component<Props, StoreState> {
         />
 
         <Chat
-          messageList={message.messageList}
+          messageList={message}
           handleUserChatInput={this.message$}
         />
 
@@ -148,6 +165,8 @@ class App extends React.Component<Props, StoreState> {
 }
 
 const actionCreator = {
+  handleUserChatInput,
+  clearChatOutput,
   setPlayerLocation,
   addItem,
   removeItem, 
@@ -159,11 +178,7 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => {
 
 const mapStateToProps = (state: StoreState) => {
   return {
-    message:
-      {
-        ...state.message,
-        messageList: state.message.messageList
-      },
+    message: state.message,
     player: state.player,
     dungeon: state.dungeon
   };

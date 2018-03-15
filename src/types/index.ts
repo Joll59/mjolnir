@@ -7,10 +7,7 @@ export type StoreState = {
     dungeon: GameMapState;
 };
 
-export type MessageState = {
-    description: string;
-    messageList: MessageInterface[];
-};
+export type MessageState = MessageInterface[];
 
 export interface GameMapState {
     map: Doorways;
@@ -22,32 +19,46 @@ export type MessageInterface = {
     text: string;
 };
 
+
 export enum InputAction {
     userInput = 'USER_INPUT',
+    clear = 'CLEAR_CHAT',
 }
 
-export type InputAction$ = {
-    type: InputAction.userInput, payload: MessageInterface
-} | { type: roomAction.givePlayerItem } | {type: roomAction.playerTakesItem}
-
-export enum mapAction {
+export enum MapAction {
     newLevel = 'NEW_LEVEL',
 }
 
-export enum roomAction {
+export enum RoomAction {
     playerTakesItem = 'ADD_ITEM',
     playerGivesItem = 'REMOVE_ITEM',
     givePlayerItem = 'GIVE_PLAYER_ITEM',
     takePlayerItem = 'TAKE_PLAYER_ITEM'
 }
 
-export type roomActionTest = {    
-        type: 'ADD_ITEM';
-        item: Item;
-        room: Room;
+type AddItemAction = {
+    type: PlayerAction.addItem;
+    room: Room;
+    item: Item;
+} 
+
+type RemoveItemAction = {
+    type: PlayerAction.removeItem;
+    room: Room;
+    item: Item;
 }
 
-export enum playerAction {
+type MultiItemAction = {
+    type: "MULTI_ITEM";
+    priorAction: PlayerAction;
+    items: Item[];
+    room: Room;
+    item: Item
+}
+
+export type CombinedItemAction = AddItemAction | RemoveItemAction | MultiItemAction
+
+export enum PlayerAction {
     addItem = 'ADD_ITEM',
     removeItem = 'REMOVE_ITEM',
     setLocation = 'SET_LOCATION',
@@ -116,4 +127,5 @@ export interface Room {
     inventory: Item[];
     description: string;
     location: [number, number];
+    color: string;
 }

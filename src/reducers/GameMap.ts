@@ -1,10 +1,10 @@
 import { AnyAction, Reducer } from 'redux';
 
 import { Doorways } from '../models/doorways';
-import { GameMapState, Item, ItemType, mapAction, Room, playerAction } from '../types';
+import { GameMapState, Item, ItemType, MapAction, Room, PlayerAction } from '../types';
 import { RoomsReducer } from './rooms';
 
-import { getRandomInt } from '../helpers';
+import { getRandomInt, getRandomRoomDescription } from '../helpers';
 
 const c = {
     columnLength: 5,
@@ -38,9 +38,10 @@ const roomJSMap = new Map<string, Room>()
 
 const generateRoom = (roomCoordinate: [number, number]) => {
     roomJSMap.set(roomCoordinate.toString(), {
-        description: `#${Math.floor(Math.random() * 16777215).toString(16)}`,
+        description: getRandomRoomDescription(),
         inventory: randomItems(),
         location: roomCoordinate,
+        color: `#${Math.floor(Math.random() * 16777215).toString(16)}`
     });
 };
 
@@ -56,13 +57,13 @@ export const GameMapReducer: Reducer<GameMapState> = (
     action: AnyAction,
 ) => {
     switch (action.type) {
-        case mapAction.newLevel:
+        case MapAction.newLevel:
             return InitialState;
-        case playerAction.addItem:
+        case PlayerAction.addItem:
             return {
                 ...state, rooms: RoomsReducer(state.rooms, action)
             };
-        case playerAction.removeItem:
+        case PlayerAction.removeItem:
             return {
                 ...state, rooms: RoomsReducer(state.rooms, action)
             };

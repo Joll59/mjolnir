@@ -16,7 +16,7 @@ export class RoomComponent extends React.Component<RoomProps> {
         let divStyle = currentRoom ? {
             borderStyle: 'solid',
             borderWidth: 2,
-            borderColor: currentRoom!.description,
+            borderColor: currentRoom!.color,
             margin: 5,
         } : {}; 
         

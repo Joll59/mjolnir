@@ -1,4 +1,4 @@
-import { roomAction, Room } from '../types/index';
+import { RoomAction, Room } from '../types/index';
 import { Reducer, AnyAction } from 'redux';
 
 /**
@@ -8,13 +8,13 @@ import { Reducer, AnyAction } from 'redux';
  */
 export const RoomReducer: Reducer<Room> = (state, action: AnyAction) => {
     switch (action.type) {
-        case roomAction.givePlayerItem:
+        case RoomAction.givePlayerItem:
             let newInventory = state.inventory.filter(item => item !== action.item);
             return {
                 ...state,
                 inventory: newInventory
             };
-        case roomAction.takePlayerItem:
+        case RoomAction.takePlayerItem:
             return {
                 ...state,
                 inventory: [...state.inventory, action.item]
@@ -40,22 +40,22 @@ export const RoomsReducer: Reducer<Map<string, Room>> = (
 ) => {
     let newState = new Map(state);
     switch (action.type) {
-        case roomAction.playerTakesItem:
+        case RoomAction.playerTakesItem:
             newState.set(action.room.location.toString(),
                 RoomReducer(
                     action.room,
                     {
-                        type: roomAction.givePlayerItem,
+                        type: RoomAction.givePlayerItem,
                         item: action.item
                     }
                 ))
             return newState;
-        case roomAction.playerGivesItem:
+        case RoomAction.playerGivesItem:
             newState.set(action.room.location.toString(),
                 RoomReducer(
                     action.room,
                     {
-                        type: roomAction.takePlayerItem,
+                        type: RoomAction.takePlayerItem,
                         item: action.item
                     }
                 ))

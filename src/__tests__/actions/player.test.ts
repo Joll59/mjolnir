@@ -1,22 +1,22 @@
 import { setPlayerLocation, addItem, removeItem } from '../../actions/player';
-import { playerAction, Item, ItemType } from '../../types';
+import { PlayerAction, Item, ItemType } from '../../types';
 import { oneRoomState } from '../reducers/rooms.test';
 
 const playerLocationAction = {
-    type: playerAction.setLocation,
+    type: PlayerAction.setLocation,
     payload: [0, 0]
 };
 
 export const item: Item = {id: 0, type: ItemType.armor , name: 'shield'};
 
 const addItemAction = {
-    type: playerAction.addItem,
+    type: PlayerAction.addItem,
     item,
     oneRoomState
 };
 
 const removeItemAction = {
-    type: playerAction.removeItem,
+    type: PlayerAction.removeItem,
     item,
     oneRoomState
 };

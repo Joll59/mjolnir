@@ -58,7 +58,10 @@ body {
   grid-template-rows: repeat(10, 10%);
   height: 100ch;
 }
-
+.parent > .title {
+  grid-area: 1/2/3/9;
+  overflow-y: auto;
+}
 .parent > #compass {
   grid-row: 1/2;
   grid-column: 1/2;
@@ -175,12 +178,11 @@ body {
   align-self: end;
   /* justify-self: self-end; */
   margin-bottom: .5rem;
-  /* background-color: black;
-  color: white; */
 }
+
 .messageWindow {
   height: 40vh;
-  overflow-y: scroll;
+  overflow-y:auto;
 }
 
 /* HEALTH  BAR flash and animation*/

@@ -6,7 +6,8 @@ let allRoomsState: Map<string, Room> = new Map();
 export const oneRoomState: Room = {
     inventory: [item],
     description: 'a room object',
-    location: [1, 1]
+    location: [1, 1],
+    color: 'blue'
 };
 
 describe('RoomsReducer', () => {

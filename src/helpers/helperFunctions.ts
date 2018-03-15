@@ -5,10 +5,14 @@
  * @param maximum upper bound
  * @returns random number
  */
+import { RoomData } from './roomsDescriptionArray'
 export const getRandomInt = (minimum: number, maximum: number) => {
     return Math.floor(Math.random() * (maximum - minimum + 1)) + minimum;
 };
 
+export const getRandomRoomDescription = () => {
+   return RoomData[getRandomInt(0, RoomData.length)];
+}
 const percentage = (value: number) => {
     return (arg: number) => {
         return Math.floor((value / 100) * arg);
