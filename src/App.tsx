@@ -11,7 +11,7 @@ initializeIcons();
 import { interactWithItem, setPlayerLocation, multiItemResponse } from './actions/player';
 import { Chat, Gamemap, RoomComponent, PlayerComponent, Compass } from './components';
 import { Direction, Item, Room, StoreState, PlayerAction } from './types';
-import { handleChatInput, clearChatOutput,  } from './actions/user';
+import { handleChatInput, clearChatOutput, } from './actions/user';
 import { LuisHelper } from './helpers/LuisHelper';
 import { InventoryItem } from './components/inventory';
 import { List } from 'semantic-ui-react';
@@ -42,11 +42,14 @@ class App extends React.Component<Props> {
     let currentItemDropTest = /Drop (.*)/i.exec(text);
     let clearCheck = /clear/i.exec(text);
 
-    let currentRoom = this.getCurrentRoom(this.props.dungeon.rooms, this.props.player.location)!
+    let currentRoom = this.getCurrentRoom(this.props.dungeon.rooms, this.props.player.location)!;
 
-    if (currentExitTest || currentItemDropTest || currentItemPickUpTest || clearCheck || this.props.message.conversationTopic === 'MULTI_ITEM') {
+    if (currentExitTest || currentItemDropTest
+      || currentItemPickUpTest || clearCheck
+      || this.props.message.conversationTopic === 'MULTI_ITEM'
+    ) {
 
-      if (!currentExitTest && !currentItemDropTest && !currentItemPickUpTest && !clearCheck) {
+      if (this.props.message.conversationTopic === 'MULTI_ITEM') {
         let luisResponse = LuisHelper.ParseTextThroughLuis(text);
         luisResponse.then(this.parseMultiItemLuisResponse);
       }
@@ -72,7 +75,7 @@ class App extends React.Component<Props> {
         } else if (foundItems.length > 1) {
           this.startMultiItemConversationChain(foundItems, PlayerAction.addItem);
         } else {
-          this.props.handleChatInput(`Item is not avaible for pick up`, 'Bot');
+          this.props.handleChatInput(`${itemName} is not avaible in the current room`, 'Bot');
         }
       }
 
@@ -84,16 +87,14 @@ class App extends React.Component<Props> {
         } else if (foundItems.length > 1) {
           this.startMultiItemConversationChain(foundItems, PlayerAction.removeItem);
         } else {
-          this.props.handleChatInput(`Item can not be found in player inventory`, 'Bot');
+          this.props.handleChatInput(`${itemName} not available in player inventory`, 'Bot');
         }
       }
     } else {
-      this.props.handleChatInput(`I don't understand ${text} command!`, 'Bot');
+      this.props.handleChatInput(`${text} command does not compute!`, 'Bot');
     }
   }
 
-
-  
   /**
    * method that accepts a direction which player will go. 
    */
@@ -111,7 +112,7 @@ class App extends React.Component<Props> {
   getCurrentRoom(rooms: Map<string, Room>, location: [number, number]) {
     return rooms.get(location.toString());
   }
-  
+
   givePlayerItem = (item: Item) => {
     let currentRoom = this.getCurrentRoom(this.props.dungeon.rooms, this.props.player.location);
     return this.props.interactWithItem(item, currentRoom, PlayerAction.addItem);
@@ -127,6 +128,31 @@ class App extends React.Component<Props> {
     return this.props.multiItemResponse(items, currentRoom!, action);
   }
 
+  multiItemPicker = () => this.props.multiItem.items.map(
+    (item, index) => (
+      <InventoryItem
+        key={item.id + item.type}
+        item={item}
+        index={index + 1}
+        InteractWithItem={
+          (it) => this.props.interactWithItem(
+            it,
+            this.getCurrentRoom(this.props.dungeon.rooms, this.props.player.location),
+            this.props.multiItem.priorAction!
+          )
+        }
+        unique={false}
+        popupValue={`${this.props.multiItem.priorAction!.toLowerCase()}`}
+      />
+    )
+  )
+
+  parseMultiItemLuisResponse = (resp: any) => {
+    let { multiItem } = this.props;
+    let it = multiItem.items[parseInt(resp.entities[0].resolution.values[0], 10) - 1];
+    this.props.interactWithItem(it, multiItem.room, multiItem.priorAction!);
+  }
+
   componentDidMount() {
     this.props.setPlayerLocation(this.props.dungeon!.map.startingRoom());
     this.message$.subscribe(this.logic);
@@ -134,26 +160,6 @@ class App extends React.Component<Props> {
 
   componentWillUnmount() {
     this.message$.unsubscribe();
-  }
-  
-  multiItemPicker = () => this.props.multiItem.items.map(
-    (item, index) => (
-      <InventoryItem 
-        key={item.id + item.type} 
-        item={item} 
-        index={index + 1} 
-        InteractWithItem={(it) => this.props.interactWithItem(it, this.getCurrentRoom(this.props.dungeon.rooms, this.props.player.location), this.props.multiItem.priorAction!)}
-        unique={false}
-        popupValue={`${this.props.multiItem.priorAction!.toLowerCase()}`}
-      />
-    )
-  );
-
-  parseMultiItemLuisResponse = (resp: any) => {
-    let { multiItem, interactWithItem } = this.props
-    let it = multiItem.items[parseInt(resp.entities[0].resolution.values[0]) - 1]
-      debugger;
-    interactWithItem(it, multiItem.room, multiItem.priorAction!);
   }
 
   public render(): JSX.Element {
@@ -171,19 +177,19 @@ class App extends React.Component<Props> {
     let description = currentRoom ? currentRoom.description : 'Mjolnir Room';
 
     return (
-      <div className={'parent'}>
-        <p className="center title" style={divStyle}>{description}</p>
+      <div className={'parent'} style={divStyle}>
+        <p className="center title">{description}</p>
 
         {message.conversationTopic === 'MULTI_ITEM' ?
-          <List 
+          <List
             id="duplicateItems"
             divided={true}
             selection={true}
             celled={true}
-          > 
-            {this.multiItemPicker()} 
-          </List> : 
-          <div/>
+          >
+            {this.multiItemPicker()}
+          </List> :
+          <div />
         }
 
         <PlayerComponent
@@ -228,12 +234,12 @@ const actionCreator = {
   clearChatOutput,
   setPlayerLocation,
   multiItemResponse,
-  interactWithItem 
+  interactWithItem
 };
 
-const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => {
-  return bindActionCreators(actionCreator, dispatch);
-};
+const mapDispatchToProps = (
+  dispatch: Dispatch<AnyAction>
+) => bindActionCreators(actionCreator, dispatch);
 
 const mapStateToProps = (state: StoreState) => {
   return {

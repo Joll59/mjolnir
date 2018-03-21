@@ -8,7 +8,7 @@ interface LocalState {
 }
 
 interface Props {
- userChatInput: Rx.Subject<string> ;
+    userChatInput: Rx.Subject<string> ;
 }
 
 export default class Input extends React.Component<Props, LocalState> {
@@ -28,18 +28,26 @@ export default class Input extends React.Component<Props, LocalState> {
         let data = ({ author: 'User', text: e.currentTarget.value});
         this.setState({ userEntry: data});
     }
-      
+
+    handleSubmit = (e: any ) => {
+        // e.stopPropagation();
+        e.preventDefault();
+    }
+
     render() {
         return (
-            <TextField
-                type="text"
-                contentEditable={true}
-                tabIndex={0}
-                required={true}
-                value={this.state.userEntry.text}
-                onKeyUp={(e: React.KeyboardEvent<HTMLInputElement>) => this.handleEntry(e)}
-                placeholder="Input Commands"
-            />
+            <form onSubmit={this.handleSubmit}>
+                <TextField
+                    type="text"
+                    contentEditable={true}
+                    tabIndex={0}
+                    // required={true}
+                    value={this.state.userEntry.text}
+                    onKeyUp={(e: React.KeyboardEvent<HTMLInputElement>) => this.handleEntry(e)}
+                    autoComplete="on"
+                    // placeholder="Input Commands"
+                />
+            </form>    
         );
     }
 }

@@ -15,11 +15,14 @@ export class InventoryItem extends React.Component<ItemProps> {
     handleItemInteraction = () => {
         this.props.InteractWithItem(this.props.item);
     }
+    
     render() {
         const pStyle = {
             color: this.props.item.description
-        }
+        };
+
         const item = (<p style={pStyle}>{this.props.item.name}</p>);
+
         return (
             <List.Item
                 onClick={this.handleItemInteraction}

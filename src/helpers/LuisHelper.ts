@@ -7,7 +7,8 @@ export class LuisHelper {
     private static APPID = APPID;
 
     static ParseTextThroughLuis = (text: string): Promise<Response> => {
-        let URL = `https://westus.api.cognitive.microsoft.com/luis/v2.0/apps/${LuisHelper.APPID}?subscription-key=${LuisHelper.APIKEY}&verbose=true&timezoneOffset=0&q=${text}`;
+        let URL = `https://westus.api.cognitive.microsoft.com/luis/v2.0/apps/` +
+        `${LuisHelper.APPID}?subscription-key=${LuisHelper.APIKEY}&verbose=true&timezoneOffset=0&q=${text}`;
 
         return fetch(URL)
             .then(res => res.json());
