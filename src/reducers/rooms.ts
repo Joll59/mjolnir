@@ -1,4 +1,4 @@
-import { roomAction, Room } from '../types/index';
+import { RoomAction, Room } from '../types/index';
 import { Reducer, AnyAction } from 'redux';
 
 /**
@@ -8,14 +8,17 @@ import { Reducer, AnyAction } from 'redux';
  */
 export const RoomReducer: Reducer<Room> = (state, action: AnyAction) => {
     switch (action.type) {
-        case roomAction.givePlayerItem:
+        case RoomAction.givePlayerItem:
             let newInventory = state.inventory.filter(item => item !== action.item);
             return {
                 ...state,
                 inventory: newInventory
             };
-        case roomAction.takePlayerItem: 
-            return {...state, inventory: [...state.inventory, action.item]}
+        case RoomAction.takePlayerItem:
+            return {
+                ...state,
+                inventory: [...state.inventory, action.item]
+            };
         default:
             return state;
     }
@@ -27,39 +30,36 @@ enough so both player and room use that reducer for any invetory action.....
 worth exploring. */
 
 /**
- * reducer for rooms array
- * @param state rooms array, Room[ ]
+ * reducer for rooms 
+ * @param state rooms Map,
  * @param action object with a type. 
  */
-export const RoomsReducer: Reducer<Room[]> = (
-    state,
+export const RoomsReducer: Reducer<Map<string, Room>> = (
+    state, // state is now a Map not an array, you can't filter a map.....recreate. 
     action: AnyAction,
 ) => {
-    let newState = state.filter(room => room !== action.room);
+    let newState = new Map(state);
     switch (action.type) {
-        case roomAction.playerTakesItem: 
-            return [
-                ...newState, 
-                RoomReducer( 
-                    action.room, 
-                    { 
-                        type: roomAction.givePlayerItem, 
-                        item: action.item 
+        case RoomAction.playerTakesItem:
+            newState.set(action.room.location.toString(), RoomReducer(
+                    action.room,
+                    {
+                        type: RoomAction.givePlayerItem,
+                        item: action.item
                     }
                 )
-            ];
-        case roomAction.playerGivesItem:
-            return [
-                ...newState, 
-                RoomReducer( 
-                    action.room, 
-                    { 
-                        type: roomAction.takePlayerItem, 
-                        item: action.item 
+            );
+            return newState;
+        case RoomAction.playerGivesItem:
+            newState.set(action.room.location.toString(), RoomReducer(
+                    action.room,
+                    {
+                        type: RoomAction.takePlayerItem,
+                        item: action.item
                     }
                 )
-            ];
-
+            );
+            return newState;
         default:
             return state;
     }

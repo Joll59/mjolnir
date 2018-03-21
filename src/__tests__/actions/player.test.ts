@@ -1,22 +1,22 @@
-import { setPlayerLocation, addItem, removeItem } from '../../actions/player';
-import { playerAction, Item, ItemType } from '../../types';
+import { setPlayerLocation, interactWithItem } from '../../actions/player';
+import { PlayerAction, Item, ItemType } from '../../types';
 import { oneRoomState } from '../reducers/rooms.test';
 
 const playerLocationAction = {
-    type: playerAction.setLocation,
+    type: PlayerAction.setLocation,
     payload: [0, 0]
 };
 
 export const item: Item = {id: 0, type: ItemType.armor , name: 'shield'};
 
 const addItemAction = {
-    type: playerAction.addItem,
+    type: PlayerAction.addItem,
     item,
     oneRoomState
 };
 
 const removeItemAction = {
-    type: playerAction.removeItem,
+    type: PlayerAction.removeItem,
     item,
     oneRoomState
 };
@@ -30,13 +30,13 @@ describe('Player Action Creators', () => {
 
     describe('addItem', () => {
         it('creates Player add item action when item is given', () => {
-            expect(addItem(item, oneRoomState)).toMatchObject(addItemAction);
+            expect(interactWithItem(item, oneRoomState, PlayerAction.addItem)).toMatchObject(addItemAction);
         });
     });
 
     describe('removeItem', () => {
         it('creates Player remove item action when item is given', () => {
-            expect(removeItem(item, oneRoomState)).toMatchObject(removeItemAction);
+            expect(interactWithItem(item, oneRoomState, PlayerAction.removeItem)).toMatchObject(removeItemAction);
         });
     });
 });

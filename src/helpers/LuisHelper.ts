@@ -1,11 +1,15 @@
-import { userEvent } from '../types';
+const APIKEY = process.env.REACT_APP_LUIS_API_KEY;
+const APPID = process.env.REACT_APP_LUIS_APP_ID;
 
 export class LuisHelper {
 
-    private static APIKEY = "bd10b38d0ab64eb8b80c34510f011c1b"
+    private static APIKEY = APIKEY;
+    private static APPID = APPID;
 
-    static ParseEventThroughLuis = (e: userEvent) => {
-        let text = e.currentTarget!.value || e.currentTarget.name || e.currentTarget.innerText;
-        let URL = `https://westus.api.cognitive.microsoft.com/luis/v2.0/apps/13a23175-3b42-4df0-a821-106f9e5eca1e?subscription-key=${LuisHelper.APIKEY}&verbose=true&timezoneOffset=0&q=${text}`; 
-    return fetch(URL).then(res => res.json())};
+    static ParseTextThroughLuis = (text: string): Promise<Response> => {
+        let URL = `https://westus.api.cognitive.microsoft.com/luis/v2.0/apps/${LuisHelper.APPID}?subscription-key=${LuisHelper.APIKEY}&verbose=true&timezoneOffset=0&q=${text}`;
+
+        return fetch(URL)
+            .then(res => res.json());
+    }
 }

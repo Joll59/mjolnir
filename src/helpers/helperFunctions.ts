@@ -1,3 +1,4 @@
+import { RoomData } from './roomsDescriptionArray';
 
 /**
  * generates a random number between the minimum and maximum value provided, with minimum and maximum value included. 
@@ -7,6 +8,10 @@
  */
 export const getRandomInt = (minimum: number, maximum: number) => {
     return Math.floor(Math.random() * (maximum - minimum + 1)) + minimum;
+};
+
+export const getRandomRoomDescription = () => {
+    return RoomData[getRandomInt(0, RoomData.length - 1)];
 };
 
 const percentage = (value: number) => {

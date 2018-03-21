@@ -1,25 +1,25 @@
 import { Reducer, AnyAction } from 'redux';
-import { PlayerState, ItemType, playerAction } from '../types/index';
+import { PlayerState, ItemType, PlayerAction, MultiItem } from '../types/index';
 import { getRandomInt } from '../helpers';
 
 let health = getRandomInt(0, 250);
 
 let weapon = {
-    id: 1, 
-    power: Math.floor(Math.random() * 10) + 5, 
-    type: ItemType.weapon, 
+    id: 1,
+    power: Math.floor(Math.random() * 10) + 5,
+    type: ItemType.weapon,
     name: 'fists'
-  };
+};
 let armor = {
-    id: 2 , 
-    protection: getRandomInt(0, 5), 
-    type: ItemType.armor, 
-    name : 'basic_clothes'
-  };
+    id: 2,
+    protection: getRandomInt(0, 5),
+    type: ItemType.armor,
+    name: 'basic_clothes'
+};
 
 const InitialState: PlayerState = {
-    name: 'Player', 
-    health: health, 
+    name: 'Player',
+    health: health,
     initialHealth: health,
     inventory: [weapon, armor],
     location: [0, 0]
@@ -29,29 +29,47 @@ const InitialState: PlayerState = {
     // levelUpThreshold: 100,
     // weapon: this.inventory[0],
     // armor: this.inventory[1],
-}; 
+};
 
 export const PlayerReducer: Reducer<PlayerState> = (
-    state = InitialState, 
+    state = InitialState,
     action: AnyAction,
 ) => {
     switch (action.type) {
-        case playerAction.setLocation:
+        case PlayerAction.setLocation:
             return {
-                ...state, 
+                ...state,
                 location: action.payload
             };
-        case playerAction.addItem:
+        case PlayerAction.addItem:
             return {
-                ...state, 
+                ...state,
                 inventory: [...state.inventory, action.item]
             };
-        case playerAction.removeItem:
+        case PlayerAction.removeItem:
             let newInventory = state.inventory.filter(item => item !== action.item);
             return {
                 ...state,
-                inventory : newInventory
-            };        
+                inventory: newInventory
+            };
+        default:
+            return state;
+    }
+};
+
+export const MultiItemReducer: Reducer<MultiItem> = (
+    state = {items : []},
+    action: AnyAction
+) => {
+    switch (action.type) {
+        case 'MULTI_ITEM':
+            return {
+                priorAction: action.priorAction,
+                items: action.items,
+                room: action.room
+            };
+        case PlayerAction.setLocation:
+            return {items: []};    
         default:
             return state;
     }

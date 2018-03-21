@@ -26,9 +26,15 @@ export class Doorways {
             getRandomInt(1, this.mapSize[0] - 1),
             getRandomInt(1, this.mapSize[1] - 1)
         ] || [0, 0];
-
         this.createDoorways(maxRoomCount - 1, startingRoom);
-
+    }
+    
+    public get row(): number {
+        return this.mapSize[0];
+    }
+    
+    public get column(): number {
+        return this.mapSize[1];
     }
 
     possibleExits = (room: [number, number]) => {
@@ -67,7 +73,7 @@ export class Doorways {
      * @param room x,y coordinate of a room e.g. [0,0]
      * @param direction: direction you want to check: N,W,S,E
      */
-    roomToFromDirection = (room: [number, number], direction: Direction): [number, number] => {
+    coordinatesForRoomInGivenDirection = (room: [number, number], direction: Direction): [number, number] => {
         switch (direction) {
             case 'S':
                 return [room[0], room[1] + 1];
@@ -81,7 +87,6 @@ export class Doorways {
                 return room;
         }
     }
-
     /**
      * a method when given a room coordinate and a direction will check if there a doorway there.
      * @param room: x,y coordinate of a room e.g. [0,0]
@@ -90,14 +95,13 @@ export class Doorways {
     isDoorway = (room: [number, number], direction: Direction): boolean => {
         let normDoor = this.normalizeDoorway({
             from: room,
-            to: this.roomToFromDirection(room, direction)
+            to: this.coordinatesForRoomInGivenDirection(room, direction)
         });
         return this.doorways.find(
             doorway =>
                 arrayEquals(doorway.from, normDoor.from) &&
                 arrayEquals(normDoor.to, doorway.to)) !== undefined;
     }
-    
     /**
      * a method that returns the rooms that are available for exploration on the map.
      */
@@ -122,11 +126,15 @@ export class Doorways {
         return roomCollection;
     }
 
+    isRoomConnected = (room: [number, number]): boolean => {
+        return this.getConnectedDoorways(room).length > 0 ? true : false;
+    }
+
     private getConnectedDoorways = (room: [number, number]) => {
         return this.doorways.filter(doorway =>
             arrayEquals(doorway.to, room) || arrayEquals(doorway.from, room));
-        }
-  
+    }
+
     private createDoorways = (roomCount: number, room: [number, number]) => {
 
         const validDirections = [];
@@ -146,7 +154,6 @@ export class Doorways {
 
         let availableDirection = validDirections.splice(randomLoop, removeAmount);
 
-        // const availableDirection = [];
         for (let i = 0; i < randomLoop; i++) {
             const randomIndex = Math.floor(Math.random() * validDirections.length);
             availableDirection.push(validDirections.splice(randomIndex, 1)[0]);
@@ -159,7 +166,7 @@ export class Doorways {
             if (this.isDoorwayonGrid(room, <Direction> direction) &&
             !this.isDoorway(room, <Direction> direction)) {
                 this.addDoorway(room, <Direction> direction);
-                room = this.roomToFromDirection(room, <Direction> direction);
+                room = this.coordinatesForRoomInGivenDirection(room, <Direction> direction);
                 this.createDoorways(roomCount, room);
             }
         }
@@ -167,7 +174,7 @@ export class Doorways {
 
     private isDoorwayonGrid = (roomFrom: [number, number], direction: Direction): boolean => {
 
-        let roomTo = this.roomToFromDirection(roomFrom, direction);
+        let roomTo = this.coordinatesForRoomInGivenDirection(roomFrom, direction);
         if (roomFrom[0] < 0 ||
             roomFrom[1] < 0 ||
             roomFrom[0] > this.mapSize[0] - 1 ||
@@ -192,10 +199,10 @@ export class Doorways {
     private addDoorway = (room: [number, number], direction: Direction) =>
     this.doorways.push(this.normalizeDoorway({
             from: room,
-            to: this.roomToFromDirection(room, direction)
+            to: this.coordinatesForRoomInGivenDirection(room, direction)
         })
     )
-    
+
     private normalizeDoorway(
         doorway: Doorway
     ) {

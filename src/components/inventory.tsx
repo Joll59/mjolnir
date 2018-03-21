@@ -1,59 +1,65 @@
-import { Item, Entity } from '../types';
 import * as React from 'react';
-import { Header, Grid, Popup } from 'semantic-ui-react';
+import { Item, Entity } from '../types';
+import { Popup, List, Label } from 'semantic-ui-react';
 
 interface ItemProps {
-    item: Item; 
-    InteractWithItem: (Item: Item) => {};
-    buttonValue: string;
+    item: Item;
+    InteractWithItem: (Item: Item) => void;
+    popupValue: string;
+    index: number;
+    unique: boolean;
 }
 
-export class InventoryItem extends React.Component<ItemProps, { }> {
-    
+export class InventoryItem extends React.Component<ItemProps> {
+
     handleItemInteraction = () => {
         this.props.InteractWithItem(this.props.item);
     }
     render() {
-        const item = (<p>{this.props.item.name}</p>);
+        const pStyle = {
+            color: this.props.item.description
+        }
+        const item = (<p style={pStyle}>{this.props.item.name}</p>);
         return (
-            <Grid.Column 
-                textAlign="center" 
+            <List.Item
                 onClick={this.handleItemInteraction}
-                className={"inventoryItem"}
-                alt={this.props.buttonValue}
-            >
-                <Header as="h4">
+                className={'inventoryItem'}
+                alt={this.props.popupValue}
+            >{!this.props.unique ? <Label horizontal={true}>{this.props.index}</Label> : <div />}
+                <section>
                     <Popup
                         trigger={item}
-                        content={this.props.buttonValue}
-                        basic
+                        content={this.props.popupValue}
+                        basic={true}
                     />
-                </Header>
-            </Grid.Column>
+                </section>
+            </List.Item>
         );
     }
 }
 
 export const createInventory: any = (
-    entity: Entity, 
-    itemClickMethod: (Item: Item) => {}, 
-    buttonValue: string
+    entity: Entity,
+    itemClickMethod: (Item: Item) => void,
+    popupValue: string,
+    uniqueness: boolean = true
 ) => (
-        <Grid 
-            stackable={true} 
-            container={true} 
-            centered={true} 
-            columns={3}
+        <List
+            divided={true}
+            selection={true}
+            celled={true}
         >
-          {
-                entity.inventory!.map(x =>
+            {
+                entity.inventory!.map((x, index) =>
                     (<InventoryItem
                         key={x.id + x.type}
                         item={x}
+                        index={index}
                         InteractWithItem={itemClickMethod}
-                        buttonValue={buttonValue}
+                        popupValue={popupValue}
+                        unique={uniqueness}
                     />)
                 )
             }
-        </Grid>
-);
+        </List>
+    );

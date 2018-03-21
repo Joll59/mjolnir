@@ -1,46 +1,45 @@
 import { Doorways } from '../models/doorways';
 // VIEW/REACT TYPES
 
+export interface GameMapState {
+    map: Doorways;
+    rooms: Map<string, Room>;
+}
+
 export type StoreState = {
     message: MessageState;
     player: PlayerState;
-    gameMap: GameMapState;
+    dungeon: GameMapState;
+    multiItem: MultiItem;
 };
 
 export type MessageState = {
-    description: string;
+    conversationTopic: string;
     messageList: MessageInterface[];
 };
-
-export interface GameMapState {
-    grid: Array<Array<[number, number]>>;
-    map: Doorways;
-    rooms: Room[];
-}
 
 export type MessageInterface = {
     author: string;
     text: string;
 };
 
-export type userEvent = React.MouseEvent<HTMLButtonElement> | React.KeyboardEvent<HTMLInputElement>;
-
-export enum userInputAction {
-    userInput = 'USER_INPUT',
+export enum InputAction {
+    input = 'INPUT',
+    clear = 'CLEAR_CHAT',
 }
 
-export enum mapAction {
+export enum MapAction {
     newLevel = 'NEW_LEVEL',
 }
 
-export enum roomAction {
+export enum RoomAction {
     playerTakesItem = 'ADD_ITEM',
     playerGivesItem = 'REMOVE_ITEM',
     givePlayerItem = 'GIVE_PLAYER_ITEM',
     takePlayerItem = 'TAKE_PLAYER_ITEM'
 }
 
-export enum playerAction {
+export enum PlayerAction {
     addItem = 'ADD_ITEM',
     removeItem = 'REMOVE_ITEM',
     setLocation = 'SET_LOCATION',
@@ -50,6 +49,35 @@ export enum playerAction {
     // isDead = 'IS_DEAD',
     // gainExperience = 'GAIN_EXPERIENCE',
 }
+
+type AddItemAction = {
+    type: PlayerAction.addItem;
+    room: Room;
+    item: Item;
+};
+
+type RemoveItemAction = {
+    type: PlayerAction.removeItem;
+    room: Room;
+    item: Item;
+};
+
+export type MultiItem = {
+    priorAction?: PlayerAction;
+    items: Item[];
+    room?: Room;
+    item?: Item;
+};
+
+export type MultiItemAction = {
+    type: 'MULTI_ITEM';
+    priorAction: PlayerAction;
+    items: Item[];
+    room: Room;
+    item?: Item;
+};
+
+export type CombinedItemAction = AddItemAction | RemoveItemAction | MultiItemAction;
 
 // GAME LOGIC TYPES
 
@@ -61,7 +89,7 @@ export enum ItemType {
     weapon = 'weapon',
 }
 
-export type Direction = 'N' | 'S' | 'E' | 'W' ;
+export type Direction = 'N' | 'S' | 'E' | 'W';
 
 export interface Item {
     id: number;
@@ -109,4 +137,5 @@ export interface Room {
     inventory: Item[];
     description: string;
     location: [number, number];
+    color: string;
 }

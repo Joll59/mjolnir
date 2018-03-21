@@ -1,12 +1,13 @@
 import { Room } from '../../types/index';
 import { RoomsReducer, RoomReducer } from '../../reducers/rooms';
 import { item } from '../actions/player.test';
-let allRoomsState: Room[] = [];
+let allRoomsState: Map<string, Room> = new Map();
 
 export const oneRoomState: Room = {
     inventory: [item],
     description: 'a room object',
-    location: [1, 1]
+    location: [1, 1],
+    color: 'blue'
 };
 
 describe('RoomsReducer', () => {
@@ -19,8 +20,8 @@ describe('RoomsReducer', () => {
         expect(RoomsReducer(allRoomsState, { type: 'INIT' })).toMatchObject(allRoomsState);
     });
 
-    it('state is an array of rooms', () => {
-        expect(Array.isArray(allRoomsState)).toEqual(true);
+    it('state is NOT an array of rooms', () => {
+        expect(Array.isArray(allRoomsState)).toEqual(false);
     });
 
     describe('RoomReducer: Reducer for Individual room', () => {

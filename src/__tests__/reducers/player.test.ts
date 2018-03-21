@@ -1,6 +1,6 @@
-import { setPlayerLocation, addItem, removeItem } from '../../actions/player';
+import { setPlayerLocation, interactWithItem } from '../../actions/player';
 import { PlayerReducer } from '../../reducers/player';
-import { PlayerState, Weapon, ItemType } from '../../types/index';
+import { PlayerState, Weapon, ItemType, PlayerAction } from '../../types/index';
 import { oneRoomState } from './rooms.test';
 
 const state = {
@@ -34,12 +34,12 @@ describe('PlayerReducer ', () => {
 
     describe('player inventory', () => {
         it( 'adds item to player inventory', () => {
-            nextState = PlayerReducer(state, addItem(fist, oneRoomState));
+            nextState = PlayerReducer(state, interactWithItem(fist, oneRoomState, PlayerAction.addItem));
             expect(nextState).toMatchObject({...state, inventory: [fist]});
         });
 
         it ( 'removes item from player inventory', () => {
-            nextState = PlayerReducer(state, removeItem(fist, oneRoomState));
+            nextState = PlayerReducer(state, interactWithItem(fist, oneRoomState, PlayerAction.removeItem));
             expect(nextState).toMatchObject(state);
         });
     });

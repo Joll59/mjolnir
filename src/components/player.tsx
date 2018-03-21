@@ -7,10 +7,10 @@ import { Container } from 'semantic-ui-react';
 
 interface PlayerProps {
     player: PlayerState;
-    dropItem: (Item: Item) => {};
+    dropItem: (Item: Item) => void;
 }
 
-export class PlayerComponent extends React.Component<PlayerProps>{
+export class PlayerComponent extends React.Component<PlayerProps> {
 
     render() {
         let divStyle = {
@@ -18,8 +18,8 @@ export class PlayerComponent extends React.Component<PlayerProps>{
             borderWidth: 2,
             borderColor: 'tomato',
             margin: 5,
-            padding:5
-        } 
+            padding: 5
+        };
         const { player } = this.props;
         const healthBar = (
             <meter
@@ -40,6 +40,6 @@ export class PlayerComponent extends React.Component<PlayerProps>{
                 <div className={'healthBar'} hidden={true}>{healthBar} </div>
                 {playerInv()}
             </Container>
-        )
+        );
     }
 } 

@@ -1,55 +1,58 @@
-// import { Doorways } from './doorways';
 import * as React from 'react';
 import { arrayEquals } from '../helpers';
 import { Icon } from 'office-ui-fabric-react/lib/components/Icon';
+import { Doorways } from '../models/doorways';
 
-interface MapRowData {
-    rows: Array<[number, number]>;
-    mapPath: any;
+interface TableCellData {
+    row: number;
+    column: number;
+    doorways: Doorways;
     playerLocation: [number, number];
 }
 
-interface WholeGrid {
-    grid: Array<Array<[number, number]>>;
-    mapPath: any;
+interface GamemapData {
+    mapPath: Doorways;
     playerLocation: [number, number];
 }
 
-const rowData = (data: [number, number], mapPath: any) => {
-    if (mapPath.getConnectedDoorways(data).length > 0) {
-        // return ` + `;
-        return <Icon className={'larger'} iconName={'BoxAdditionSolid'}/>;
-    } else {
-        // return `[_]`;
-        return <Icon className={'larger'} iconName={'StopSolid'}/>;
-    }
-};
-
-const MapRow = ({ rows, mapPath, playerLocation }: MapRowData) => (
-    <tr>
+const TableData = ({ column, row, doorways, playerLocation }: TableCellData) => (
+    <td
+        className={arrayEquals(playerLocation, [row, column]) ? 'flash green center' : 'black center'}
+    >
         {
-            rows.map((data, index) =>
-                <td 
-                    key={index}
-                    className={arrayEquals(playerLocation, data) ? 'flash green center' : 'black center'}
-                >
-                    {
-                        rowData(data, mapPath)
-                    }
-                </td>
-            )
+            (doorways.isRoomConnected([row, column]))
+                ? <Icon className={'larger'} iconName={'BoxAdditionSolid'} />
+                : <Icon className={'larger'} iconName={'StopSolid'} />
+
         }
-    </tr>
+    </td>
 );
 
-export const Gamemap = ({ grid, mapPath, playerLocation }: WholeGrid, ) => (
+const tableRow = (column: number, doorways: Doorways, playerLocation: [number, number]) => {
+    let entireRow = [];
+    for (let j = 0; j < doorways.row; j++) {
+        entireRow.push((
+            <TableData
+                key={`${column + j}`}
+                doorways={doorways}
+                column={column}
+                row={j}
+                playerLocation={playerLocation}
+            />));
+    }
+    return <tr key={column}>{entireRow}</tr>;
+};
+
+const createGrid = (doorways: Doorways, playerLocation: [number, number]) => {
+    let tableBody = [];
+    for (let i = 0; i < doorways.column; i++) {
+        tableBody.push(tableRow(i, doorways, playerLocation));
+    }
+    return <tbody>{tableBody}</tbody>;
+};
+
+export const Gamemap = ({ mapPath, playerLocation }: GamemapData, ) => (
     <table className={'miniMap'}>
-        <tbody>
-            {
-                grid.map((rows, index) =>
-                    <MapRow key={index} mapPath={mapPath} rows={rows} playerLocation={playerLocation} />
-                )
-            }
-        </tbody>
+        {createGrid(mapPath, playerLocation)}
     </table>
 );

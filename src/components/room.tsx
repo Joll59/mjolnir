@@ -1,10 +1,10 @@
 import * as React from 'react';
-import {Container} from 'semantic-ui-react';
+import { Container } from 'semantic-ui-react';
 import { Item, Room } from '../types/index';
 import { createInventory } from './inventory';
 
 interface RoomProps {
-    playerPickUpItem: (Item: Item) => {};
+    playerPickUpItem: (Item: Item) => void;
     currentRoom: Room | undefined;
 }
 
@@ -16,14 +16,14 @@ export class RoomComponent extends React.Component<RoomProps> {
         let divStyle = currentRoom ? {
             borderStyle: 'solid',
             borderWidth: 2,
-            borderColor: currentRoom!.description,
+            borderColor: currentRoom!.color,
             margin: 5,
         } : {}; 
         
         return (
             <div style={divStyle} className={'treasureChest'}>
             <Container textAlign="justified">
-                { currentRoom ?  roomInv() : null }
+                {currentRoom ?  roomInv() : null}
             </Container>
             </div>
         );
