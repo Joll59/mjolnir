@@ -7,7 +7,7 @@ import { Container } from 'semantic-ui-react';
 
 interface PlayerProps {
     player: PlayerState;
-    dropItem: (Item: Item) => {};
+    dropItem: (Item: Item) => void;
 }
 
 export class PlayerComponent extends React.Component<PlayerProps> {

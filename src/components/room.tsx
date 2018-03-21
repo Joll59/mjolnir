@@ -4,7 +4,7 @@ import { Item, Room } from '../types/index';
 import { createInventory } from './inventory';
 
 interface RoomProps {
-    playerPickUpItem: (Item: Item) => {};
+    playerPickUpItem: (Item: Item) => void;
     currentRoom: Room | undefined;
 }
 

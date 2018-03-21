@@ -8,19 +8,20 @@ import 'isomorphic-fetch';
 import { initializeIcons } from '@uifabric/icons';
 initializeIcons();
 
-import { removeItem, addItem, setPlayerLocation } from './actions/player';
+import { interactWithItem, setPlayerLocation, multiItemResponse } from './actions/player';
 import { Chat, Gamemap, RoomComponent, PlayerComponent, Compass } from './components';
-import { Direction, Item, Room, StoreState } from './types';
-import { handleUserChatInput, clearChatOutput } from './actions/user';
-
-
+import { Direction, Item, Room, StoreState, PlayerAction } from './types';
+import { handleChatInput, clearChatOutput,  } from './actions/user';
+import { LuisHelper } from './helpers/LuisHelper';
+import { InventoryItem } from './components/inventory';
+import { List } from 'semantic-ui-react';
 
 interface DispatchProps {
-  handleUserChatInput: (arg :string) => {};
-  clearChatOutput: () => {};
-  addItem: (Item: Item, room: Room | undefined) => {};
-  removeItem: (Item: Item, room: Room | undefined) => {};
-  setPlayerLocation: (location: [number, number]) => {};
+  handleChatInput: (arg: string, author?: string) => void;
+  multiItemResponse: (items: Item[], room: Room, action: PlayerAction) => void;
+  clearChatOutput: () => void;
+  interactWithItem: (item: Item, room: Room | undefined, action: PlayerAction) => void;
+  setPlayerLocation: (location: [number, number]) => void;
 }
 
 type Props = StoreState & DispatchProps;
@@ -28,52 +29,71 @@ type Props = StoreState & DispatchProps;
 /** 
  * top level component.
  */
-class App extends React.Component<Props, StoreState> {
+class App extends React.Component<Props> {
 
   message$ = new Rx.Subject<string>();
   /**
    * basic bot logic. 
    */
-
   logic = (text: string) => {
-    this.props.handleUserChatInput(text);
-
-    const clearCheck = /clear/.exec(text)
-    if (clearCheck){
-      this.props.clearChatOutput();
-    }
 
     let currentExitTest = /Exit (.*)/i.exec(text);
-    if (currentExitTest) {
-      let result = currentExitTest[1].trim().toLowerCase().split(' ');
-      let direction = result[result.length - 1][0].toUpperCase() as Direction;
-      this.go(direction);
-    }
-
     let currentItemPickUpTest = /Pick Up (.*)/i.exec(text);
-    if (currentItemPickUpTest) {
-      let itemName = currentItemPickUpTest[1].trim();
-      let foundItem = this.getCurrentRoom(this.props.dungeon.rooms, this.props.player.location)!.inventory
-        .filter(item => item.name === itemName);
-      if (foundItem && foundItem.length === 1) {
-        this.givePlayerItem(foundItem[0]);
-      } else if (foundItem.length > 1){
-        console.log(foundItem);
-      }
-    }
-
     let currentItemDropTest = /Drop (.*)/i.exec(text);
-    if (currentItemDropTest) {
-      let itemName = currentItemDropTest[1].trim();
-      let foundItem = this.props.player!.inventory.filter(item => item.name === itemName);
-      if (foundItem && foundItem.length === 1) {
-          this.giveRoomItem(foundItem[0]);
-      } else if (foundItem.length > 1){
-        console.log(foundItem);
+    let clearCheck = /clear/i.exec(text);
+
+    let currentRoom = this.getCurrentRoom(this.props.dungeon.rooms, this.props.player.location)!
+
+    if (currentExitTest || currentItemDropTest || currentItemPickUpTest || clearCheck || this.props.message.conversationTopic === 'MULTI_ITEM') {
+
+      if (!currentExitTest && !currentItemDropTest && !currentItemPickUpTest && !clearCheck) {
+        let luisResponse = LuisHelper.ParseTextThroughLuis(text);
+        luisResponse.then(this.parseMultiItemLuisResponse);
       }
+
+      this.props.handleChatInput(text);
+
+      if (clearCheck) {
+        this.props.clearChatOutput();
+      }
+
+      if (currentExitTest) {
+        let result = currentExitTest[1].trim().toLowerCase().split(' ');
+        let direction = result[result.length - 1][0].toUpperCase() as Direction;
+        this.go(direction);
+      }
+
+      if (currentItemPickUpTest) {
+        let itemName = currentItemPickUpTest[1].trim().toLowerCase();
+        let foundItems = currentRoom.inventory
+          .filter(item => item.name.toLowerCase() === itemName);
+        if (foundItems && foundItems.length === 1) {
+          this.givePlayerItem(foundItems[0]);
+        } else if (foundItems.length > 1) {
+          this.startMultiItemConversationChain(foundItems, PlayerAction.addItem);
+        } else {
+          this.props.handleChatInput(`Item is not avaible for pick up`, 'Bot');
+        }
+      }
+
+      if (currentItemDropTest) {
+        let itemName = currentItemDropTest[1].trim().toLowerCase();
+        let foundItems = this.props.player!.inventory.filter(item => item.name.toLowerCase() === itemName);
+        if (foundItems && foundItems.length === 1) {
+          this.giveRoomItem(foundItems[0]);
+        } else if (foundItems.length > 1) {
+          this.startMultiItemConversationChain(foundItems, PlayerAction.removeItem);
+        } else {
+          this.props.handleChatInput(`Item can not be found in player inventory`, 'Bot');
+        }
+      }
+    } else {
+      this.props.handleChatInput(`I don't understand ${text} command!`, 'Bot');
     }
   }
 
+
+  
   /**
    * method that accepts a direction which player will go. 
    */
@@ -82,26 +102,29 @@ class App extends React.Component<Props, StoreState> {
     if (this.props.dungeon!.map.isDoorway(location, direction)) {
       let nextRoom = this.props.dungeon!.map.coordinatesForRoomInGivenDirection(location, direction);
       this.props.setPlayerLocation(nextRoom);
-      this.props.handleUserChatInput(`you exited the room via ${direction} exit.`)
+      this.props.handleChatInput(`you exited the room via ${direction} exit.`, 'Bot');
+    } else {
+      this.props.handleChatInput(`No viable exit strategy to the ${direction}`, 'Bot');
     }
   }
 
-  getCurrentRoom = (rooms: Map<string, Room>, location: [number, number]) => {
+  getCurrentRoom(rooms: Map<string, Room>, location: [number, number]) {
     return rooms.get(location.toString());
   }
-  /**
-   * method used by room inventory to give player item/ drop item into player inventory, accepts item as argument
-   */
+  
   givePlayerItem = (item: Item) => {
     let currentRoom = this.getCurrentRoom(this.props.dungeon.rooms, this.props.player.location);
-    return this.props.addItem(item, currentRoom);
+    return this.props.interactWithItem(item, currentRoom, PlayerAction.addItem);
   }
-  /**
-   * method used by player inventory to drop item and give it to the rooms iventory, accepts item as argument. 
-   */
+
   giveRoomItem = (item: Item) => {
     let currentRoom = this.getCurrentRoom(this.props.dungeon.rooms, this.props.player.location);
-    return this.props.removeItem(item, currentRoom);
+    return this.props.interactWithItem(item, currentRoom, PlayerAction.removeItem);
+  }
+
+  startMultiItemConversationChain(items: Item[], action: PlayerAction) {
+    let currentRoom = this.getCurrentRoom(this.props.dungeon.rooms, this.props.player.location);
+    return this.props.multiItemResponse(items, currentRoom!, action);
   }
 
   componentDidMount() {
@@ -109,22 +132,59 @@ class App extends React.Component<Props, StoreState> {
     this.message$.subscribe(this.logic);
   }
 
+  componentWillUnmount() {
+    this.message$.unsubscribe();
+  }
+  
+  multiItemPicker = () => this.props.multiItem.items.map(
+    (item, index) => (
+      <InventoryItem 
+        key={item.id + item.type} 
+        item={item} 
+        index={index + 1} 
+        InteractWithItem={(it) => this.props.interactWithItem(it, this.getCurrentRoom(this.props.dungeon.rooms, this.props.player.location), this.props.multiItem.priorAction!)}
+        unique={false}
+        popupValue={`${this.props.multiItem.priorAction!.toLowerCase()}`}
+      />
+    )
+  );
+
+  parseMultiItemLuisResponse = (resp: any) => {
+    let { multiItem, interactWithItem } = this.props
+    let it = multiItem.items[parseInt(resp.entities[0].resolution.values[0]) - 1]
+      debugger;
+    interactWithItem(it, multiItem.room, multiItem.priorAction!);
+  }
+
   public render(): JSX.Element {
 
     let { player, message, dungeon } = this.props;
-    let currentRoom = this.getCurrentRoom(this.props.dungeon.rooms, this.props.player.location);
+    let currentRoom = this.getCurrentRoom(dungeon.rooms, player.location);
     let divStyle = currentRoom ? {
       borderStyle: 'solid',
       borderWidth: 2,
-      borderColor: currentRoom!.description,
+      borderColor: currentRoom!.color,
       margin: 5,
       padding: 15
     } : {};
 
-    let description = currentRoom ? currentRoom.description: "Mjolnir Room"
+    let description = currentRoom ? currentRoom.description : 'Mjolnir Room';
+
     return (
-      <div className={'parent'} style={divStyle}>
-        <h4 className="center title">{description}</h4>
+      <div className={'parent'}>
+        <p className="center title" style={divStyle}>{description}</p>
+
+        {message.conversationTopic === 'MULTI_ITEM' ?
+          <List 
+            id="duplicateItems"
+            divided={true}
+            selection={true}
+            celled={true}
+          > 
+            {this.multiItemPicker()} 
+          </List> : 
+          <div/>
+        }
 
         <PlayerComponent
           player={player!}
@@ -135,14 +195,13 @@ class App extends React.Component<Props, StoreState> {
           playerPickUpItem={this.givePlayerItem}
           currentRoom={currentRoom}
         />
-
         <Gamemap
           mapPath={dungeon!.map}
           playerLocation={player!.location}
         />
 
         <Chat
-          messageList={message}
+          messageList={message.messageList}
           handleUserChatInput={this.message$}
         />
 
@@ -165,11 +224,11 @@ class App extends React.Component<Props, StoreState> {
 }
 
 const actionCreator = {
-  handleUserChatInput,
+  handleChatInput,
   clearChatOutput,
   setPlayerLocation,
-  addItem,
-  removeItem, 
+  multiItemResponse,
+  interactWithItem 
 };
 
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => {
@@ -180,7 +239,8 @@ const mapStateToProps = (state: StoreState) => {
   return {
     message: state.message,
     player: state.player,
-    dungeon: state.dungeon
+    dungeon: state.dungeon,
+    multiItem: state.multiItem
   };
 };
 

@@ -41,24 +41,24 @@ export const RoomsReducer: Reducer<Map<string, Room>> = (
     let newState = new Map(state);
     switch (action.type) {
         case RoomAction.playerTakesItem:
-            newState.set(action.room.location.toString(),
-                RoomReducer(
+            newState.set(action.room.location.toString(), RoomReducer(
                     action.room,
                     {
                         type: RoomAction.givePlayerItem,
                         item: action.item
                     }
-                ))
+                )
+            );
             return newState;
         case RoomAction.playerGivesItem:
-            newState.set(action.room.location.toString(),
-                RoomReducer(
+            newState.set(action.room.location.toString(), RoomReducer(
                     action.room,
                     {
                         type: RoomAction.takePlayerItem,
                         item: action.item
                     }
-                ))
+                )
+            );
             return newState;
         default:
             return state;

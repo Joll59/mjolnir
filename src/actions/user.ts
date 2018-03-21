@@ -1,10 +1,10 @@
-import { InputAction} from '../types';
+import { InputAction } from '../types';
 
-export const handleUserChatInput = (text: string) => {
+export const handleChatInput = (text: string, author: string = 'User') => {
     return {
-        type: InputAction.userInput,
+        type: InputAction.input,
         payload : {
-            author: 'User', 
+            author: author, 
             text: text
         }
     };
@@ -12,7 +12,7 @@ export const handleUserChatInput = (text: string) => {
 
 export const handleBotChatOuput = (text: string) => {
     return {
-        type: InputAction.userInput,
+        type: InputAction.input,
         payload: {
             author: 'Bot',
             text
@@ -20,4 +20,4 @@ export const handleBotChatOuput = (text: string) => {
     };
 };
 
-export const clearChatOutput = () => ({type: InputAction.clear})
+export const clearChatOutput = () => ({type: InputAction.clear});

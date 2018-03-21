@@ -26,21 +26,16 @@ export class Doorways {
             getRandomInt(1, this.mapSize[0] - 1),
             getRandomInt(1, this.mapSize[1] - 1)
         ] || [0, 0];
-
         this.createDoorways(maxRoomCount - 1, startingRoom);
-
     }
     
-    public get row() : number {
+    public get row(): number {
         return this.mapSize[0];
     }
-
     
-    public get column() : number {
+    public get column(): number {
         return this.mapSize[1];
     }
-    
-    
 
     possibleExits = (room: [number, number]) => {
         return this.getConnectedDoorways(room).map(
@@ -92,7 +87,6 @@ export class Doorways {
                 return room;
         }
     }
-
     /**
      * a method when given a room coordinate and a direction will check if there a doorway there.
      * @param room: x,y coordinate of a room e.g. [0,0]
@@ -108,7 +102,6 @@ export class Doorways {
                 arrayEquals(doorway.from, normDoor.from) &&
                 arrayEquals(normDoor.to, doorway.to)) !== undefined;
     }
-    
     /**
      * a method that returns the rooms that are available for exploration on the map.
      */
@@ -134,15 +127,14 @@ export class Doorways {
     }
 
     isRoomConnected = (room: [number, number]): boolean => {
-        return this.getConnectedDoorways(room).length > 0 ? true : false
+        return this.getConnectedDoorways(room).length > 0 ? true : false;
     }
-
 
     private getConnectedDoorways = (room: [number, number]) => {
         return this.doorways.filter(doorway =>
             arrayEquals(doorway.to, room) || arrayEquals(doorway.from, room));
     }
-  
+
     private createDoorways = (roomCount: number, room: [number, number]) => {
 
         const validDirections = [];
@@ -210,7 +202,7 @@ export class Doorways {
             to: this.coordinatesForRoomInGivenDirection(room, direction)
         })
     )
-    
+
     private normalizeDoorway(
         doorway: Doorway
     ) {

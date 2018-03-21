@@ -1,27 +1,30 @@
 import { Doorways } from '../models/doorways';
 // VIEW/REACT TYPES
 
+export interface GameMapState {
+    map: Doorways;
+    rooms: Map<string, Room>;
+}
+
 export type StoreState = {
     message: MessageState;
     player: PlayerState;
     dungeon: GameMapState;
+    multiItem: MultiItem;
 };
 
-export type MessageState = MessageInterface[];
-
-export interface GameMapState {
-    map: Doorways;
-    rooms: Map<string, Room>
-}
+export type MessageState = {
+    conversationTopic: string;
+    messageList: MessageInterface[];
+};
 
 export type MessageInterface = {
     author: string;
     text: string;
 };
 
-
 export enum InputAction {
-    userInput = 'USER_INPUT',
+    input = 'INPUT',
     clear = 'CLEAR_CHAT',
 }
 
@@ -36,28 +39,6 @@ export enum RoomAction {
     takePlayerItem = 'TAKE_PLAYER_ITEM'
 }
 
-type AddItemAction = {
-    type: PlayerAction.addItem;
-    room: Room;
-    item: Item;
-} 
-
-type RemoveItemAction = {
-    type: PlayerAction.removeItem;
-    room: Room;
-    item: Item;
-}
-
-type MultiItemAction = {
-    type: "MULTI_ITEM";
-    priorAction: PlayerAction;
-    items: Item[];
-    room: Room;
-    item: Item
-}
-
-export type CombinedItemAction = AddItemAction | RemoveItemAction | MultiItemAction
-
 export enum PlayerAction {
     addItem = 'ADD_ITEM',
     removeItem = 'REMOVE_ITEM',
@@ -68,6 +49,35 @@ export enum PlayerAction {
     // isDead = 'IS_DEAD',
     // gainExperience = 'GAIN_EXPERIENCE',
 }
+
+type AddItemAction = {
+    type: PlayerAction.addItem;
+    room: Room;
+    item: Item;
+};
+
+type RemoveItemAction = {
+    type: PlayerAction.removeItem;
+    room: Room;
+    item: Item;
+};
+
+export type MultiItem = {
+    priorAction?: PlayerAction;
+    items: Item[];
+    room?: Room;
+    item?: Item;
+};
+
+export type MultiItemAction = {
+    type: 'MULTI_ITEM';
+    priorAction: PlayerAction;
+    items: Item[];
+    room: Room;
+    item?: Item;
+};
+
+export type CombinedItemAction = AddItemAction | RemoveItemAction | MultiItemAction;
 
 // GAME LOGIC TYPES
 

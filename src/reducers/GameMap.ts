@@ -31,14 +31,15 @@ const randomItems = (): Item[] => {
     return availableItemTypes.map(item => ({
         id: idCounter++,
         name: `${item}`,
-        type: <ItemType>ItemType[item]
+        type: <ItemType> ItemType[item],
+        description: `#${Math.floor(Math.random() * 16777215).toString(16)}`
     }));
 };
-const roomJSMap = new Map<string, Room>()
+const roomJSMap = new Map<string, Room>();
 
 const generateRoom = (roomCoordinate: [number, number]) => {
     roomJSMap.set(roomCoordinate.toString(), {
-        description: getRandomRoomDescription(),
+        description: getRandomRoomDescription().replace(/\d(?=)\w+\.\s/g, ''),
         inventory: randomItems(),
         location: roomCoordinate,
         color: `#${Math.floor(Math.random() * 16777215).toString(16)}`
