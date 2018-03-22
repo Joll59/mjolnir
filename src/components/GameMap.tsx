@@ -13,6 +13,7 @@ interface TableCellData {
 interface GamemapData {
     mapPath: Doorways;
     playerLocation: [number, number];
+    showComponent: boolean;
 }
 
 const TableData = ({ column, row, doorways, playerLocation }: TableCellData) => (
@@ -51,8 +52,8 @@ const createGrid = (doorways: Doorways, playerLocation: [number, number]) => {
     return <tbody>{tableBody}</tbody>;
 };
 
-export const Gamemap = ({ mapPath, playerLocation }: GamemapData, ) => (
+export const Gamemap = ({ mapPath, playerLocation, showComponent }: GamemapData, ) => (
     <table className={'miniMap'}>
-        {createGrid(mapPath, playerLocation)}
+        {showComponent ? createGrid(mapPath, playerLocation): <div/>}
     </table>
 );

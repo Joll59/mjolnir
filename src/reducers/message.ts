@@ -5,8 +5,9 @@ import { MessageState, InputAction } from '../types';
 const botMessage = {
     author: 'Bot', 
     text: `Welcome, 
-    this is a work in progress DnD style bot, you can either type to
-    interact or click, currently I respond to "pick up/drop[Item], exit [direction] & clear"`
+    I am a work in progress DnD style bot, you can either type to
+    interact or click, I currently respond to "pick up/drop [Item], exit [direction], 
+    I can also list items/exits in the room with "items"/ "exits" command, you can "clear" our chat messages as well.\n`
 };
 
 const InitialState: MessageState = {conversationTopic: 'INIT', messageList: [botMessage]};

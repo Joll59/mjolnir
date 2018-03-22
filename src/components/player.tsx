@@ -8,6 +8,7 @@ import { Container } from 'semantic-ui-react';
 interface PlayerProps {
     player: PlayerState;
     dropItem: (Item: Item) => void;
+    showComponent: boolean;
 }
 
 export class PlayerComponent extends React.Component<PlayerProps> {
@@ -34,11 +35,11 @@ export class PlayerComponent extends React.Component<PlayerProps> {
         );
 
         const playerInv = () => createInventory(player, this.props.dropItem, 'drop item');
-       
+
         return (
             <Container className={'playerInventory'} style={divStyle}>
                 <div className={'healthBar'} hidden={true}>{healthBar} </div>
-                {playerInv()}
+                {this.props.showComponent? playerInv(): <div/>}
             </Container>
         );
     }

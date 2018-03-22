@@ -14,7 +14,7 @@ import { Direction, Item, Room, StoreState, PlayerAction } from './types';
 import { handleChatInput, clearChatOutput, } from './actions/user';
 import { LuisHelper } from './helpers/LuisHelper';
 import { InventoryItem } from './components/inventory';
-import { List } from 'semantic-ui-react';
+import { List, Button } from 'semantic-ui-react';
 
 interface DispatchProps {
   handleChatInput: (arg: string, author?: string) => void;
@@ -25,12 +25,29 @@ interface DispatchProps {
 }
 
 type Props = StoreState & DispatchProps;
-
+type LocalState = {
+  showChat: boolean;
+  showGame: boolean;
+}
 /** 
  * top level component.
  */
-class App extends React.Component<Props> {
+class App extends React.Component<Props, LocalState> {
 
+  constructor(props: Props){
+    super(props)
+    this.state = {
+      showChat: false,
+      showGame: true
+    }
+  }
+  toggleGameScreen = () => {
+    this.setState({showGame: !this.state.showGame})
+  }
+
+  toggleChatWindow = () => {
+    this.setState({showChat: !this.state.showChat})
+  }
   message$ = new Rx.Subject<string>();
   /**
    * basic bot logic. 
@@ -42,19 +59,52 @@ class App extends React.Component<Props> {
     let currentItemDropTest = /Drop (.*)/i.exec(text);
     let clearCheck = /clear/i.exec(text);
 
-    let currentRoom = this.getCurrentRoom(this.props.dungeon.rooms, this.props.player.location)!;
+    let listExitsCheck = /exits/i.exec(text);
+    let listItemsCheck = /items/i.exec(text);
 
+    let hideChatCheck = /hide chat/i.exec(text)
+    let toggleGameCheck = /toggle game/i.exec(text)
+
+    
+    let currentRoom = this.getCurrentRoom(this.props.dungeon.rooms, this.props.player.location)!;
+    
     if (currentExitTest || currentItemDropTest
       || currentItemPickUpTest || clearCheck
+      || listExitsCheck|| listItemsCheck 
+      || hideChatCheck || toggleGameCheck 
       || this.props.message.conversationTopic === 'MULTI_ITEM'
     ) {
+      
+      if (hideChatCheck) {
+        this.toggleChatWindow();
+      }
+  
+      if (toggleGameCheck) {
+        this.toggleGameScreen();
+      }
 
-      if (this.props.message.conversationTopic === 'MULTI_ITEM') {
+      if (!currentExitTest && !currentItemDropTest
+        && !currentItemPickUpTest && !clearCheck
+        && !listExitsCheck && !listItemsCheck && !toggleGameCheck && !hideChatCheck) {
         let luisResponse = LuisHelper.ParseTextThroughLuis(text);
-        luisResponse.then(this.parseMultiItemLuisResponse);
+        luisResponse.then(this.parseMultiItemLuisResponse).catch(err => this.props.handleChatInput(err, 'Bot') );
       }
 
       this.props.handleChatInput(text);
+
+      if (listExitsCheck) {
+        this.props.handleChatInput(
+          `You can leave this room using ${this.props.dungeon!.map.possibleExits(currentRoom.location)} exit(s)`, 
+          'Bot'
+        );
+      }
+
+      if (listItemsCheck) {
+        let roomInv = this.props.dungeon.rooms.get(currentRoom.location.toString())!.inventory;
+        let roomChatDescription = roomInv.length > 0 ? `this room contains ${roomInv.map(item => item.name)}` : 'This room has nothing to offer';
+        this.props.handleChatInput(`${roomChatDescription}.`, 'Bot');
+      }
+
 
       if (clearCheck) {
         this.props.clearChatOutput();
@@ -101,11 +151,17 @@ class App extends React.Component<Props> {
   go = (direction: Direction) => {
     let { location } = this.props.player!;
     if (this.props.dungeon!.map.isDoorway(location, direction)) {
+
       let nextRoom = this.props.dungeon!.map.coordinatesForRoomInGivenDirection(location, direction);
+      let roomInv = this.props.dungeon.rooms.get(nextRoom.toString())!.inventory;
+      let roomChatDescription = roomInv.length > 0 ? `this room contains ${roomInv.map(item => item.name)}` : 'This room has nothing to offer';
+      
       this.props.setPlayerLocation(nextRoom);
-      this.props.handleChatInput(`you exited the room via ${direction} exit.`, 'Bot');
+
+      this.props.handleChatInput(`you exited the room via ${direction} exit. ` 
+      + `You can leave this NEW area using ${this.props.dungeon!.map.possibleExits(nextRoom)} exit(s) ${roomChatDescription}.`, 'Bot');
     } else {
-      this.props.handleChatInput(`No viable exit strategy to the ${direction}`, 'Bot');
+      this.props.handleChatInput(`No viable exit strategy to the ${direction}, available exits are ${this.props.dungeon!.map.possibleExits(location)}`, 'Bot');
     }
   }
 
@@ -154,8 +210,16 @@ class App extends React.Component<Props> {
   }
 
   componentDidMount() {
-    this.props.setPlayerLocation(this.props.dungeon!.map.startingRoom());
     this.message$.subscribe(this.logic);
+
+    let location = this.props.dungeon!.map.startingRoom();
+    
+    this.props.setPlayerLocation(location);
+    
+    this.props.handleChatInput(
+      `You can leave this room using ${this.props.dungeon!.map.possibleExits(location)} exit(s)`, 
+      'Bot'
+    );
   }
 
   componentWillUnmount() {
@@ -178,41 +242,59 @@ class App extends React.Component<Props> {
 
     return (
       <div className={'parent'} style={divStyle}>
-        <p className="center title">{description}</p>
+      
+      <p className="center title">
+        {description}
+        </p>
+        
+        { !this.state.showChat ? 
+            <Button 
+              onClick={this.toggleChatWindow}
+              basic={true}
+              content="Show Chat Window"
+            /> : <div/>}
+        { this.state.showChat && this.state.showGame ? 
+          <Button 
+            onClick={this.toggleGameScreen}
+            basic={true}
+            content="Toggle Game Data"
+          /> : <div/>}    
+      {message.conversationTopic === 'MULTI_ITEM' ?
+        <List
+          id="duplicateItems"
+          divided={true}
+          selection={true}
+          celled={true}
+        >
+          {this.multiItemPicker()}
+        </List> :
+        <div />
+      }
+          
+          <PlayerComponent
+            player={player!}
+            dropItem={this.giveRoomItem}
+            showComponent={this.state.showGame}
+          />
 
-        {message.conversationTopic === 'MULTI_ITEM' ?
-          <List
-            id="duplicateItems"
-            divided={true}
-            selection={true}
-            celled={true}
-          >
-            {this.multiItemPicker()}
-          </List> :
-          <div />
-        }
+          <RoomComponent
+            playerPickUpItem={this.givePlayerItem}
+            currentRoom={currentRoom}
+            showComponent={this.state.showGame}
+          />
+          <Gamemap
+            mapPath={dungeon!.map}
+            playerLocation={player!.location}
+            showComponent={this.state.showGame}
+          />
 
-        <PlayerComponent
-          player={player!}
-          dropItem={this.giveRoomItem}
-        />
-
-        <RoomComponent
-          playerPickUpItem={this.givePlayerItem}
-          currentRoom={currentRoom}
-        />
-        <Gamemap
-          mapPath={dungeon!.map}
-          playerLocation={player!.location}
-        />
-
-        <Chat
+        { this.state.showChat ? <Chat
           messageList={message.messageList}
           handleUserChatInput={this.message$}
-        />
+        />: <div/>}
 
         <div id={'compass'}>
-          {dungeon!.map.possibleExits(player!.location).map(
+          {this.state.showGame ? dungeon!.map.possibleExits(player!.location).map(
             (
               door,
               index) =>
@@ -221,7 +303,7 @@ class App extends React.Component<Props> {
                 exitDirection={door}
                 go={this.go}
               />
-          )
+          ) : <div/>
           }
         </div>
       </div>

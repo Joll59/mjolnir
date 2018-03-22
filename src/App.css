@@ -152,7 +152,7 @@ body {
 }
 
 .messageWindow {
-  height: 40vh;
+  height: 60vh;
   overflow-y:auto;
 }
 

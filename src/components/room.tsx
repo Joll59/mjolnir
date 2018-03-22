@@ -6,6 +6,7 @@ import { createInventory } from './inventory';
 interface RoomProps {
     playerPickUpItem: (Item: Item) => void;
     currentRoom: Room | undefined;
+    showComponent: boolean;
 }
 
 export class RoomComponent extends React.Component<RoomProps> {
@@ -23,7 +24,7 @@ export class RoomComponent extends React.Component<RoomProps> {
         return (
             <div style={divStyle} className={'treasureChest'}>
             <Container textAlign="justified">
-                {currentRoom ?  roomInv() : null}
+                {currentRoom && this.props.showComponent ?  roomInv() : null}
             </Container>
             </div>
         );

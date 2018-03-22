@@ -78,9 +78,9 @@ Once submitted, your report will go into the issue tracking work flow. Be sure t
 
 ## Issue Management
 
-* currently carried out manually by: [joll59](https://github.com/joll59), give him time, he will respond. 
+* currently carried out manually by: [joll59](https://github.com/joll59), give him time, he will respond.
 
-# Thank You!
+## Thank You
 
 Your contributions to open source, large or small, make projects like this possible. Thank you for taking the time to contribute.
 
