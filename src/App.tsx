@@ -37,7 +37,7 @@ class App extends React.Component<Props, LocalState> {
   constructor(props: Props){
     super(props)
     this.state = {
-      showChat: false,
+      showChat: true,
       showGame: true
     }
   }
@@ -87,7 +87,7 @@ class App extends React.Component<Props, LocalState> {
         && !currentItemPickUpTest && !clearCheck
         && !listExitsCheck && !listItemsCheck && !toggleGameCheck && !hideChatCheck) {
         let luisResponse = LuisHelper.ParseTextThroughLuis(text);
-        luisResponse.then(this.parseMultiItemLuisResponse).catch(err => this.props.handleChatInput(err, 'Bot') );
+        luisResponse.then(this.parseMultiItemLuisResponse).catch(() => this.props.handleChatInput("Processing eror", 'Bot') );
       }
 
       this.props.handleChatInput(text);
