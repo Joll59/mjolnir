@@ -8,7 +8,7 @@ import  reduxStore from './createReduxStore';
 
 ReactDOM.render(
   <Provider store={reduxStore}>
-    <App /> 
+    <App />
   </Provider>,
   document.getElementById('root') as HTMLElement
 );

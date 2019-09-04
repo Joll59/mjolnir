@@ -21,7 +21,9 @@ let idCounter = 3;
 const randomItems = (): Item[] => {
     let itemTypes = [];
     for (let item in ItemType) {
-        itemTypes.push(item);
+        if (item) {
+            itemTypes.push(item);
+        }
     }
 
     const randomStart = Math.floor(Math.random() * itemTypes.length);

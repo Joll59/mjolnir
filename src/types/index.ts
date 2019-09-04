@@ -50,14 +50,20 @@ export enum PlayerAction {
     // gainExperience = 'GAIN_EXPERIENCE',
 }
 
-type AddItemAction = {
-    type: PlayerAction.addItem;
-    room: Room;
-    item: Item;
-};
+// type AddItemAction = {
+//     type: PlayerAction.addItem;
+//     room: Room;
+//     item: Item;
+// };
 
-type RemoveItemAction = {
-    type: PlayerAction.removeItem;
+// type RemoveItemAction = {
+//     type: PlayerAction.removeItem;
+//     room: Room;
+//     item: Item;
+// };
+
+type ItemAction = {
+    type: PlayerAction.removeItem | PlayerAction.addItem;
     room: Room;
     item: Item;
 };
@@ -77,7 +83,7 @@ export type MultiItemAction = {
     item?: Item;
 };
 
-export type CombinedItemAction = AddItemAction | RemoveItemAction | MultiItemAction;
+export type CombinedItemAction = ItemAction | MultiItemAction;
 
 // GAME LOGIC TYPES
 
@@ -127,7 +133,7 @@ export interface PlayerState {
     // strength: number;
     // experience: number;
     // level: number;
-    // weapon: Weapon; 
+    // weapon: Weapon;
     // // consider individual interfaces for weapon and armor both extending item, so you can use power/protection.
     // armor: Armor;
     // levelUpThreshold: number;
