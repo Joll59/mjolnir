@@ -42,8 +42,9 @@ class App extends React.Component<Props> {
     let currentItemDropTest = /Drop (.*)/i.exec(text);
     let clearCheck = /clear/i.exec(text);
 
-    let currentRoom = this.getCurrentRoom(this.props.dungeon.rooms, this.props.player.location)!
+    let currentRoom = this.getCurrentRoom(this.props.dungeon.rooms, this.props.player.location)!;
 
+    // tslint:disable-next-line: max-line-length
     if (currentExitTest || currentItemDropTest || currentItemPickUpTest || clearCheck || this.props.message.conversationTopic === 'MULTI_ITEM') {
 
       if (!currentExitTest && !currentItemDropTest && !currentItemPickUpTest && !clearCheck) {
@@ -92,8 +93,6 @@ class App extends React.Component<Props> {
     }
   }
 
-
-  
   /**
    * method that accepts a direction which player will go. 
    */
@@ -111,7 +110,6 @@ class App extends React.Component<Props> {
   getCurrentRoom(rooms: Map<string, Room>, location: [number, number]) {
     return rooms.get(location.toString());
   }
-  
   givePlayerItem = (item: Item) => {
     let currentRoom = this.getCurrentRoom(this.props.dungeon.rooms, this.props.player.location);
     return this.props.interactWithItem(item, currentRoom, PlayerAction.addItem);
@@ -135,23 +133,23 @@ class App extends React.Component<Props> {
   componentWillUnmount() {
     this.message$.unsubscribe();
   }
-  
   multiItemPicker = () => this.props.multiItem.items.map(
     (item, index) => (
       <InventoryItem 
         key={item.id + item.type} 
         item={item} 
-        index={index + 1} 
+        index={index + 1}
+        // tslint:disable-next-line: max-line-length
         InteractWithItem={(it) => this.props.interactWithItem(it, this.getCurrentRoom(this.props.dungeon.rooms, this.props.player.location), this.props.multiItem.priorAction!)}
         unique={false}
         popupValue={`${this.props.multiItem.priorAction!.toLowerCase()}`}
       />
     )
-  );
+  )
 
   parseMultiItemLuisResponse = (resp: any) => {
-    let { multiItem, interactWithItem } = this.props
-    let it = multiItem.items[parseInt(resp.entities[0].resolution.values[0]) - 1]
+    let { multiItem, interactWithItem } = this.props;
+    let it = multiItem.items[parseInt(resp.entities[0].resolution.values[0]) - 1];
       debugger;
     interactWithItem(it, multiItem.room, multiItem.priorAction!);
   }
